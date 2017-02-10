@@ -114,5 +114,14 @@ public class Event {
 	public void setCoordinates(List<Coordinate> coordinates) {
 		this.coordinates = coordinates;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Event [id=" + id + ", name=" + name + ", eventType=" + eventType + ", url=" + url + ", timestamp="
+				+ timestamp + ", description=" + description + ", coordinates=" + coordinates + "]";
+	}
 	
 }

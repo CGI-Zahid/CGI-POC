@@ -69,3 +69,7 @@ logging:
 # Swagger settings
 swagger:
   resourcePackage: com.cgi.poc.dw.rest.resource
+  
+# Quartz Scheduler config
+#jobs:
+ # eventpollingtime: 15s

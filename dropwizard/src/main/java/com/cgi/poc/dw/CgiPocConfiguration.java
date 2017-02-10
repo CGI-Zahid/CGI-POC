@@ -1,12 +1,17 @@
 package com.cgi.poc.dw;
 
+import java.util.Map;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Dropwizard Configuration class.
@@ -62,4 +67,19 @@ public class CgiPocConfiguration extends Configuration {
    */
   @JsonProperty("swagger")
   public SwaggerBundleConfiguration swaggerBundleConfiguration;
+  
+  /**
+   * Assign jobs bundle configuration.
+   */
+//  @JsonProperty("jobs")
+//  private Map<String , String> jobs;
+//
+//  public Map<String, String> getJobs() {
+//      return jobs;
+//  }
+//
+//  public void setJobs(Map<String, String> jobs) {
+//      this.jobs = jobs;
+//  }
+  
 }

@@ -30,6 +30,8 @@ import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import de.spinscale.dropwizard.jobs.JobsBundle;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -67,6 +69,8 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 
   /**
    * Application's main method.
+   * @params args the args
+   * @throws Exception
    */
   public static void main(final String[] args) throws Exception {
     new CgiPocApplication().run(args);
@@ -106,6 +110,11 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
         return configuration.swaggerBundleConfiguration;
       }
     });
+    
+    /**
+     * Adding Job Quartz Scheduler
+     */
+    //bootstrap.addBundle(new JobsBundle("com.cgi.poc.dw.jobs"));
 
     bootstrap.setConfigurationSourceProvider(
         new SubstitutingSourceProvider(
