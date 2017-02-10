@@ -32,3 +32,44 @@ CREATE TABLE assets (
   AUTO_INCREMENT = 1;
 
 -- ROLLBACK DROP TABLE assets;
+
+--changeset vincentbaylly:3
+-- COMMENT :Creating events TABLE.
+
+CREATE TABLE events (
+  id          BIGINT        NOT NULL AUTO_INCREMENT,
+  name		  VARCHAR(50)   NOT NULL,
+  url         VARCHAR(1024) NOT NULL,
+  description VARCHAR(2048)          DEFAULT NULL,
+  timeStamp     DATE        NOT NULL,
+  PRIMARY KEY (id)
+)
+  AUTO_INCREMENT = 1;
+
+-- ROLLBACK DROP TABLE events;
+
+--changeset vincentbaylly:4
+-- COMMENT :Creating coordinates TABLE.
+
+CREATE TABLE coordinates (
+  id          BIGINT        NOT NULL AUTO_INCREMENT,
+  xLong		  DOUBLE   NOT NULL,
+  xLat        DOUBLE NOT NULL,
+  PRIMARY KEY (id)
+)
+  AUTO_INCREMENT = 1;
+
+-- ROLLBACK DROP TABLE events;
+  
+--changeset vincentbaylly:5
+-- COMMENT :Creating eventCoordinate TABLE.
+
+CREATE TABLE eventCoordinate (
+	event_id       BIGINT        NOT NULL,
+	coordinate_id  BIGINT        NOT NULL,
+	PRIMARY KEY CLUSTERED ( event_id, coordinate_id ),
+    CONSTRAINT FOREIGN KEY (event_id) REFERENCES events (id),
+    CONSTRAINT FOREIGN KEY (coordinate_id) REFERENCES coordinates (id)
+)
+
+-- ROLLBACK DROP TABLE events;
