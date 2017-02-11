@@ -7,13 +7,13 @@ database:
     driverClass: com.mysql.jdbc.Driver
 
     # the username
-    user: ${MYSQL_ROOT_USERNAME}
+    user: cgi_user
 
     # the password
-    password: ${MYSQL_ROOT_PASSWORD}
+    password: cgi_P@ssw0rd
 
     # the JDBC URL
-    url: jdbc:mysql://${MYSQL_HOSTNAME}:${MYSQL_PORT}/${MYSQL_DB_NAME}?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/cgi_poc?createDatabaseIfNotExist=true
 
     # The initial size of the connection pool.
     initialSize: 2
@@ -31,8 +31,8 @@ server:
           port: 8080
         - type: https
           port: 8443
-          keyStorePath: ${KEYSTORE_FILE}
-          keyStorePassword: ${KEYSTORE_PASSWORD}
+          keyStorePath: development.keystore
+          keyStorePassword: p@ssw0rd
           validateCerts: false
           validatePeers: false
 
@@ -70,6 +70,17 @@ logging:
 swagger:
   resourcePackage: com.cgi.poc.dw.rest.resource
   
-# Quartz Scheduler config
-#jobs:
- # eventpollingtime: 15s
+#Jobs settings
+#Jobs settings
+scheduler:
+  thread: 2
+  jobs:    
+     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query
+       delay: 10
+       period: 10
+       timeUnit: SECONDS
+     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
+       delay: 10
+       period: 10
+       timeUnit: SECONDS
+  

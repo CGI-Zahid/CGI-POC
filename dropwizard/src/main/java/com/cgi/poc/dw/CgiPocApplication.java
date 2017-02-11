@@ -1,5 +1,23 @@
 package com.cgi.poc.dw;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.logging.Level;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.skife.jdbi.v2.DBI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cgi.poc.dw.auth.DBAuthenticator;
 import com.cgi.poc.dw.auth.JwtAuthFilter;
 import com.cgi.poc.dw.auth.UserRoleAuthorizer;
@@ -14,6 +32,7 @@ import com.cgi.poc.dw.dao.UserDao;
 import com.cgi.poc.dw.dao.impl.AssetDaoImpl;
 import com.cgi.poc.dw.dao.impl.UserDaoImpl;
 import com.cgi.poc.dw.dao.model.User;
+import com.cgi.poc.dw.jobs.JobExecutionService;
 import com.cgi.poc.dw.rest.resource.AdminUserResource;
 import com.cgi.poc.dw.rest.resource.AssetsResource;
 import com.cgi.poc.dw.rest.resource.LoginResource;
@@ -31,7 +50,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import de.spinscale.dropwizard.jobs.JobsBundle;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -44,21 +62,6 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.logging.Level;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.glassfish.jersey.logging.LoggingFeature;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.skife.jdbi.v2.DBI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main Dropwizard Application class.
@@ -110,11 +113,6 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
         return configuration.swaggerBundleConfiguration;
       }
     });
-    
-    /**
-     * Adding Job Quartz Scheduler
-     */
-    //bootstrap.addBundle(new JobsBundle("com.cgi.poc.dw.jobs"));
 
     bootstrap.setConfigurationSourceProvider(
         new SubstitutingSourceProvider(
@@ -146,6 +144,11 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
     configureCors(environment, configuration.getCorsConfiguration());
     // authentication
     registerAuthentication(environment, injector, keys);
+    
+    /**
+     * Adding Job Scheduler
+     */
+    environment.lifecycle().manage(new JobExecutionService(configuration.getJobsConfiguration()));
 
     LOG.debug("Application started");
   }

@@ -3,18 +3,53 @@ package com.cgi.poc.dw.jobs;
 import com.cgi.poc.dw.api.service.APICallerService;
 import com.cgi.poc.dw.api.service.impl.APICallerServiceImpl;
 
-import de.spinscale.dropwizard.jobs.Job;
-import de.spinscale.dropwizard.jobs.annotations.Every;
+/**
+ * Job to call the rest API and get the events for specific types
+ * 
+ * @author vincent baylly
+ *
+ */
+public class PollingDataJob implements Runnable{
+	
+	private APICallerService apiCallerService = new APICallerServiceImpl();
+	private String eventUrl;
+	
+	/**
+	 * default constructon
+	 */
+	public PollingDataJob(){
+		
+	}
+	
+	/**
+	 * set the rest api url for the job
+	 * 
+	 * @param eventUrl the rest api url event
+	 */
+	public PollingDataJob(String eventUrl){
+		this.eventUrl = eventUrl;
+	}
+	
+	/**
+	 * @return the eventUrl
+	 */
+	public String getEventUrl() {
+		return eventUrl;
+	}
 
-@Every("${eventpollingtime}")
-public class PollingDataJob extends Job{
+	/**
+	 * @param eventUrl the eventUrl to set
+	 */
+	public void setEventUrl(String eventUrl) {
+		this.eventUrl = eventUrl;
+	}
 	
-	APICallerService apiCallerService = new APICallerServiceImpl();
-	
+	/**
+	 * run the job
+	 */
 	@Override
-	public void doJob() {
-		//TODO add the event url in parameter to call the right event
-		apiCallerService.callServiceAPI();
+	public void run() {
+		apiCallerService.callServiceAPI(eventUrl);
 	}
 
 }

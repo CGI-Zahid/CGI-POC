@@ -34,14 +34,10 @@ public class APICallerServiceImpl implements APICallerService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(APICallerServiceImpl.class);
 
-	private static final String CONFIG_PROPERTIES = "/config.properties";
-
 	/**
 	 * call the service API to collect event information.
 	 */
-	public void callServiceAPI() {
-
-		String eventUrl = getEventURL();
+	public void callServiceAPI(String eventUrl) {
 
 		try {
 
@@ -111,31 +107,6 @@ public class APICallerServiceImpl implements APICallerService {
 		    LOGGER.info("Event to save : " + event.toString());
 		    
 		}
-	}
-
-	private String getEventURL() {
-		// TODO to be add in an utils class
-		Properties prop = new Properties();
-		InputStream input;
-
-		String eventUrl = "";
-
-		try {
-			input = new FileInputStream(CONFIG_PROPERTIES);
-
-			// load a properties file
-			prop.load(input);
-
-			eventUrl = prop.getProperty("URL_FIRE_EVENTS");
-
-		} catch (FileNotFoundException e) {
-			LOGGER.error("error with the properties file : " + CONFIG_PROPERTIES + " " + e.getMessage());
-		} catch (IOException e) {
-			LOGGER.error("unable to load properties file " + CONFIG_PROPERTIES + " with the API Event URL "
-					+ e.getMessage());
-		}
-		// End - TODO to be add in an utils class
-		return eventUrl;
 	}
 
 }
