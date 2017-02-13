@@ -1,18 +1,55 @@
 SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS notification_method;
+DROP TABLE IF EXISTS user_notification;
 SET foreign_key_checks = 1;
 
-CREATE TABLE users (
-  id    BIGINT       NOT NULL AUTO_INCREMENT,
-  email VARCHAR(50)  NOT NULL,
-  hash  VARCHAR(150) NOT NULL,
-  role  VARCHAR(150) NOT NULL,
+CREATE TABLE user (
+  id         BIGINT         NOT NULL AUTO_INCREMENT,
+  first_name VARCHAR(65)    NOT NULL,
+  last_name  VARCHAR(65)    NOT NULL,
+  email      VARCHAR(150)   NOT NULL,
+  password   VARCHAR(150)   NOT NULL,
+  phone      VARCHAR(20)    NOT NULL,
+  zip_code   VARCHAR(13)    NOT NULL,
+  role       VARCHAR(8)     NOT NULL,
+  latitude   DECIMAL(10, 8) NOT NULL,
+  longitude  DECIMAL(11, 8) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY email (email)
 )
   AUTO_INCREMENT = 1;
 
 /* insert admin user with password adminpw */
-INSERT INTO users (email, hash, role) VALUES ('admin@test.io',
-                                              '5b4f8788e3d7abbe847db2ac651aec742ecd142b6692e850b9bab3:2a7046a7af334f4e26e033a4b178b4a39ff591a22e19307ff08259',
-                                              'ADMIN');
+INSERT INTO user (id, first_name, last_name, email, password, phone, zip_code, role, latitude, longitude)
+VALUES (1,
+        'john',
+        'smith',
+        'admin@cgi.com',
+        '518bd5283161f69a6278981ad00f4b09a2603085f145426ba8800c:8bd85a69ed2cb94f4b9694d67e3009909467769c56094fc0fce5af',
+        '123-456-7890',
+        '95814',
+        'ADMIN',
+        38.5824933,
+        -121.4941738
+);
+
+CREATE TABLE notification_method (
+  id     BIGINT      NOT NULL AUTO_INCREMENT,
+  method VARCHAR(10) NOT NULL,
+  PRIMARY KEY (id)
+)
+  AUTO_INCREMENT = 1;
+
+INSERT INTO notification_method (method) VALUES ('EMAIL');
+INSERT INTO notification_method (method) VALUES ('SMS');
+INSERT INTO notification_method (method) VALUES ('PUSH');
+
+CREATE TABLE user_notification (
+  user_id         BIGINT NOT NULL,
+  notification_id BIGINT NOT NULL,
+  PRIMARY KEY (user_id, notification_id),
+  FOREIGN KEY (user_id) REFERENCES user (id),
+  FOREIGN KEY (notification_id) REFERENCES notification_method (id)
+);
+

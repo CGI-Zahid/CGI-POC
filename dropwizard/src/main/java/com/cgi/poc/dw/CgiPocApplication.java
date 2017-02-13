@@ -5,32 +5,29 @@ import com.cgi.poc.dw.auth.JwtAuthFilter;
 import com.cgi.poc.dw.auth.UserRoleAuthorizer;
 import com.cgi.poc.dw.auth.model.Keys;
 import com.cgi.poc.dw.auth.service.JwtBuilderService;
+import com.cgi.poc.dw.auth.service.JwtBuilderServiceImpl;
 import com.cgi.poc.dw.auth.service.JwtReaderService;
-import com.cgi.poc.dw.auth.service.impl.JwtBuilderServiceImpl;
-import com.cgi.poc.dw.auth.service.impl.JwtReaderServiceImpl;
-import com.cgi.poc.dw.auth.service.impl.KeyBuilderServiceImpl;
-import com.cgi.poc.dw.dao.AssetDao;
+import com.cgi.poc.dw.auth.service.JwtReaderServiceImpl;
+import com.cgi.poc.dw.auth.service.KeyBuilderServiceImpl;
+import com.cgi.poc.dw.auth.service.PasswordHash;
+import com.cgi.poc.dw.auth.service.PasswordHashImpl;
 import com.cgi.poc.dw.dao.UserDao;
-import com.cgi.poc.dw.dao.impl.AssetDaoImpl;
-import com.cgi.poc.dw.dao.impl.UserDaoImpl;
+import com.cgi.poc.dw.dao.UserDaoImpl;
+import com.cgi.poc.dw.dao.UserNotificationDao;
+import com.cgi.poc.dw.dao.UserNotificationDaoImpl;
 import com.cgi.poc.dw.dao.model.User;
-import com.cgi.poc.dw.rest.resource.AdminUserResource;
-import com.cgi.poc.dw.rest.resource.AssetsResource;
 import com.cgi.poc.dw.rest.resource.LoginResource;
-import com.cgi.poc.dw.rest.resource.SignupResource;
-import com.cgi.poc.dw.service.AdminUserService;
-import com.cgi.poc.dw.service.AssetService;
-import com.cgi.poc.dw.service.LoginService;
-import com.cgi.poc.dw.service.SignupService;
-import com.cgi.poc.dw.service.impl.AdminUserServiceImpl;
-import com.cgi.poc.dw.service.impl.AssetServiceImpl;
-import com.cgi.poc.dw.service.impl.LoginServiceImpl;
-import com.cgi.poc.dw.service.impl.SignupServiceImpl;
+import com.cgi.poc.dw.rest.resource.UserRegistrationResource;
 import com.cgi.poc.dw.sockets.AlertEndpoint;
+import com.cgi.poc.dw.service.LoginService;
+import com.cgi.poc.dw.service.LoginServiceImpl;
+import com.cgi.poc.dw.service.UserRegistrationService;
+import com.cgi.poc.dw.service.UserRegistrationServiceImpl;
 import com.google.common.base.Strings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.name.Names;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -120,6 +117,7 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
             new EnvironmentVariableSubstitutor(false)
         )
     );
+    
   }
 
   @Override
@@ -134,11 +132,10 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 
     // guice injector
     Injector injector = createInjector(configuration, environment, keys);
+    
     // resource registration
-    registerResource(environment, injector, SignupResource.class);
+    registerResource(environment, injector, UserRegistrationResource.class);
     registerResource(environment, injector, LoginResource.class);
-    registerResource(environment, injector, AdminUserResource.class);
-    registerResource(environment, injector, AssetsResource.class);
 
     // CORS support
     configureCors(environment, configuration.getCorsConfiguration());
@@ -223,17 +220,18 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
         final DBI jdbi = factory.build(env, conf.getDataSourceFactory(), "mysqlDb");
 
         final UserDaoImpl userDaoImpl = jdbi.onDemand(UserDaoImpl.class);
-        final AssetDaoImpl assetDaoImpl = jdbi.onDemand(AssetDaoImpl.class);
+        final UserNotificationDaoImpl userNotificationDaoImpl = jdbi.onDemand(UserNotificationDaoImpl.class);
         bind(UserDao.class).toInstance(userDaoImpl);
-        bind(AssetDao.class).toInstance(assetDaoImpl);
+        bind(UserNotificationDao.class).toInstance(userNotificationDaoImpl);
 
         // services
         bind(JwtReaderService.class).to(JwtReaderServiceImpl.class).asEagerSingleton();
         bind(JwtBuilderService.class).to(JwtBuilderServiceImpl.class).asEagerSingleton();
+        bind(PasswordHash.class).to(PasswordHashImpl.class).asEagerSingleton();
         bind(LoginService.class).to(LoginServiceImpl.class).asEagerSingleton();
-        bind(SignupService.class).to(SignupServiceImpl.class).asEagerSingleton();
-        bind(AdminUserService.class).to(AdminUserServiceImpl.class).asEagerSingleton();
-        bind(AssetService.class).to(AssetServiceImpl.class).asEagerSingleton();
+        bind(UserRegistrationService.class).to(UserRegistrationServiceImpl.class).asEagerSingleton();
+        //configs
+        bindConstant().annotatedWith(Names.named("apiUrl")).to(conf.getApiURL());
       }
     });
     return injector;

@@ -1,5 +1,11 @@
 jwtSignatureSecret: yt1V2tuIYVFrLYZx3lidEe7Xk7SFGoG8b2GH3vAtFOpaYdvrgCOfif5bZkhzujdtLKvdJ2CaY9QXZZ4b
 
+#API settings
+#API URL
+apiURL: http://maps.googleapis.com/maps/api/geocode/json?address=
+#API key
+apiKey: <your_key>
+
 server:
   applicationConnectors:
   - type: http 

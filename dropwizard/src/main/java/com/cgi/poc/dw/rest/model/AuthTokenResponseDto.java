@@ -6,7 +6,7 @@ import com.cgi.poc.dw.auth.model.Role;
 public class AuthTokenResponseDto {
 
   private String authToken;
-  private Role role = Role.NORMAL;
+  private Role role = Role.RESIDENT;
 
   public AuthTokenResponseDto() {
   }

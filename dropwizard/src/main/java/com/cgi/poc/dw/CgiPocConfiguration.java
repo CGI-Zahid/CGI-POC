@@ -2,6 +2,7 @@ package com.cgi.poc.dw;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
+import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import javax.validation.Valid;
@@ -13,6 +14,12 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class CgiPocConfiguration extends Configuration {
 
+  /**
+   * Assign swagger bundle configuration.
+   */
+  @JsonProperty("swagger")
+  public SwaggerBundleConfiguration swaggerBundleConfiguration;
+
   /* CORS */
   private CorsConfiguration corsConfiguration = new CorsConfiguration();
 
@@ -22,6 +29,20 @@ public class CgiPocConfiguration extends Configuration {
   @Valid
   @NotNull
   private DataSourceFactory dataSourceFactory = new DataSourceFactory();
+
+  @NotEmpty
+  private String jwtSignatureSecret;
+
+  /**
+   * The URL to access exchange rate API.
+   */
+  @NotEmpty
+  private String apiURL;
+  /**
+   * The key to access exchange rate API.
+   */
+  @NotEmpty
+  private String apiKey;
 
 
   /* CORS */
@@ -44,9 +65,6 @@ public class CgiPocConfiguration extends Configuration {
     return dataSourceFactory;
   }
 
-  @NotEmpty
-  private String jwtSignatureSecret;
-
   @JsonProperty
   public String getJwtSignatureSecret() {
     return jwtSignatureSecret;
@@ -57,9 +75,40 @@ public class CgiPocConfiguration extends Configuration {
     this.jwtSignatureSecret = jwtSignatureSecret;
   }
 
+
   /**
-   * Assign swagger bundle configuration.
+   * Jersey client default configuration.
    */
-  @JsonProperty("swagger")
-  public SwaggerBundleConfiguration swaggerBundleConfiguration;
+  @Valid
+  @NotNull
+  private JerseyClientConfiguration jerseyClientConfiguration
+      = new JerseyClientConfiguration();
+
+  /**
+   * @return Jersey Client
+   */
+  @JsonProperty("jerseyClient")
+  public JerseyClientConfiguration getJerseyClientConfiguration() {
+    return jerseyClientConfiguration;
+  }
+
+  /**
+   * A getter for the URL of currency rates the API.
+   *
+   * @return the URL of currency rates the API.
+   */
+  @JsonProperty
+  public String getApiURL() {
+    return apiURL;
+  }
+
+  /**
+   * A getter for the API key of currency rates the API.
+   *
+   * @return the API key of currency rates the API.
+   */
+  @JsonProperty
+  public String getApiKey() {
+    return apiKey;
+  }
 }
