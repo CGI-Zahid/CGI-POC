@@ -9,5 +9,5 @@
 
 'use strict';
 
-cgiWebApp // jshint ignore:line
-  .controller('websocketController', function($scope, WebsocketInit){});
+cgiWebApp
+  .controller('websocketController', function(){});

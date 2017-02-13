@@ -31,6 +31,7 @@ module.exports = function(config) {
       'bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'bower_components/angular-sessionstorage/angular-sessionstorage.js',
       'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/angular-websocket/dist/angular-websocket.js',
       // endbower
       "app/scripts/**/*.js",
       "test/mock/**/*.js",

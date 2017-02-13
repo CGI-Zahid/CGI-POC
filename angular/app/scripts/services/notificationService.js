@@ -8,10 +8,9 @@
  *
  * Broadcaster service.
  */
-cgiWebApp // jshint ignore:line
-  .service('Broadcaster', function($http, $location, urls) {
-
+cgiWebApp
+  .service('Broadcaster', function() {
     this.alertMessage = function(message) {
-      alert(message);
+      console.log(message);
     };
   });
