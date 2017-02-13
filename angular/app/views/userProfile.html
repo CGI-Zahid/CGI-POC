@@ -1,0 +1,268 @@
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registrationModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content usa-content usa-form-large">
+            <form class="usa-form-large" name="profileForm">
+                <fieldset>
+                    <div class="registrationFormDiv">
+                        <h3 class="profile-label">{{'REGISTRATION.LABEL.TITLE'
+                            | translate}}</h3>
+                        <hr/>
+                        <!--First Name-->
+                        <label for="profileFirstName" class="profile-label">{{'REGISTRATION.LABEL.FIRSTNAME'
+                            | translate}}</label>
+                        <!--Error Message First Name-->
+                        <div data-ng-messages="profileForm.userFirstName.$error"
+                            data-ng-show="profileForm.userFirstName.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="pattern">{{
+                                'REGISTRATION.MESSAGE.INVALID.FIRSTINVALID' |
+                                translate}}</span>
+                        </div>
+                        <input type="text" class="profile-form-input"
+                            name="profileFirstName" id="profileFirstName"
+                            data-ng-model="user.firstName"
+                            data-autocorrect="off" data-ng-pattern="regexName">
+                        <!--Last Name-->
+                        <label for="profileLastName" class="profile-label">{{'REGISTRATION.LABEL.LASTNAME'
+                            | translate}}</label>
+                        <!--Error Message Last Name-->
+                        <div data-ng-messages="profileForm.userLastName.$error"
+                            data-ng-show="profileForm.userLastName.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="pattern">{{
+                                'REGISTRATION.MESSAGE.INVALID.LASTINVALID' |
+                                translate}}</span>
+                        </div>
+                        <input type="text" class="profile-form-input"
+                            name="profileLastName" id="profileLastName"
+                            data-ng-model="user.lastName"
+                            data-ng-pattern="regexName">
+                        <!--Email-->
+                        <label for="profileEmail"
+                            class="usa-input-required profile-label">{{'REGISTRATION.LABEL.EMAIL'
+                            | translate}}</label>
+                        <!--Error Message Email-->
+                        <div data-ng-messages="profileForm.userEmail.$error"
+                            data-ng-show="profileForm.userEmail.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="required">{{
+                                'REGISTRATION.MESSAGE.INVALID.EMAILREQUIRED' |
+                                translate}}</span>
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="email">{{
+                                'REGISTRATION.MESSAGE.INVALID.EMAILINVALID' |
+                                translate}}</span>
+                        </div>
+                        <input type="email" class="profile-form-input"
+                            name="profileEmail" id="profileEmail"
+                            data-ng-model="user.email" required="true">
+                        <!--Password-->
+                        <label for="profilePassword"
+                            class="usa-input-required profile-label">{{'REGISTRATION.LABEL.PASSWORD'
+                            | translate}}</label>
+                        <!--Error Message Password-->
+                        <div data-ng-messages="profileForm.userPassword.$error"
+                            data-ng-show="profileForm.userPassword.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="required">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDREQUIRED'
+                                | translate}}</span>
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="pattern">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDINVALID'
+                                | translate}}</span>
+                        </div>
+                        <input type="password" class="profile-form-input"
+                            name="profilePassword" id="profilePassword"
+                            data-ng-model="user.password" required
+                            data-ng-pattern="regexPassword">
+                        <!--Confirm Password-->
+                        <label for="profilePasswordConfirmation"
+                            class="usa-input-required profile-label">{{'REGISTRATION.LABEL.PASSWORD.CONFIRMATION'
+                            | translate}}</label>
+                        <!--Error Message Confirm Password-->
+                        <div
+                            data-ng-messages="profileForm.userConfirmPassword.$error"
+                            data-ng-show="profileForm.userConfirmPassword.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="required">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDREQUIRED'
+                                | translate}}</span>
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="compareTo">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDNOMATCH'
+                                | translate}}</span>
+                        </div>
+                        <input type="password" class="profile-form-input"
+                            name="profilePasswordConfirmation"
+                            id="profilePasswordConfirmation"
+                            data-ng-model="user.confirmPassword" required
+                            data-compare-to="user.password"
+                            data-ng-pattern="regexPassword">
+                        <!--Phone Number-->
+                        <label class="usa-input-required profile-label">{{'REGISTRATION.LABEL.PHONE'
+                            | translate}}</label>{{'REGISTRATION.LABEL.PHONE.INFO' |
+                        translate}}
+                        <!--Error Message Phone Number-->
+                        <div
+                            data-ng-messages="profileForm.userPhoneNumber1.$error"
+                            data-ng-show="profileForm.userPhoneNumber1.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="required">{{'REGISTRATION.MESSAGE.INVALID.PHONENUMBERREQUIRED'
+                                | translate}}</span>
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="pattern">{{
+                                'REGISTRATION.MESSAGE.INVALID.PHONENUMBERFORMATINVALID'
+                                | translate}}</span>
+                        </div>
+                        <div
+                            data-ng-messages="profileForm.userPhoneNumber2.$error"
+                            data-ng-show="profileForm.userPhoneNumber2.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="required">{{
+                                'REGISTRATION.MESSAGE.INVALID.PHONENUMBERREQUIRED'
+                                | translate}}</span>
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="pattern">{{
+                                'REGISTRATION.MESSAGE.INVALID.PHONENUMBERFORMATINVALID'
+                                | translate}}</span>
+                        </div>
+                        <div
+                            data-ng-messages="profileForm.userPhoneNumber3.$error"
+                            data-ng-show="profileForm.userPhoneNumber3.$touched">
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="required">{{
+                                'REGISTRATION.MESSAGE.INVALID.PHONENUMBERREQUIRED'
+                                | translate}}</span>
+                            <span class="usa-input-error-message" role="alert"
+                                data-ng-message="pattern">{{
+                                'REGISTRATION.MESSAGE.INVALID.PHONENUMBERINVALID'
+                                | translate}}</span>
+                        </div>
+                        <div class="usa-date-of-birth">
+                            <div class="usa-form-group">
+                                <input
+                                    class="phone profile-form-input"
+                                    type="text" name="userPhoneNumber1"
+                                    maxlength="3"
+                                    data-ng-model="user.phoneNumberAreaCode"
+                                    data-ng-pattern="regexPhone3" required />
+                            </div>
+                            <div class="usa-form-group">
+                                <input
+                                    class="phone profile-form-input"
+                                    type="text" name="userPhoneNumber2"
+                                    maxlength="3"
+                                    data-ng-disabled="profileForm.userPhoneNumber1.$invalid"
+                                    data-ng-model="user.phoneNumberMiddle"
+                                    data-ng-pattern="regexPhone3" required />
+                            </div>
+                            <div class="usa-form-group">
+                                <input
+                                    class="phoneLong profile-form-input"
+                                    type="text" name="userPhoneNumber3"
+                                    maxlength="4"
+                                    data-ng-disabled="profileForm.userPhoneNumber2.$invalid"
+                                    data-ng-model="user.phoneNumberEnd"
+                                    data-ng-pattern="regexPhone4" required />
+                            </div>
+                        </div>
+                        <!--Zip Code-->
+                        <label class="usa-input-required profile-label">{{
+                            'REGISTRATION.LABEL.ZIPCODE' | translate}}</label>
+                        <!--Error Message Zip Code-->
+                        <div data-ng-messages="profileForm.userZipCode.$error"
+                            data-ng-show="profileForm.userZipCode.$touched">
+                            <span class="usa-input-error-message"
+                                id="input-error-message" role="alert"
+                                data-ng-message="required">{{
+                                'REGISTRATION.MESSAGE.INVALID.ZIPCODEREQUIRED' |
+                                translate}}</span>
+                            <span class="usa-input-error-message"
+                                id="input-error-message" role="alert"
+                                data-ng-message="pattern">{{
+                                'REGISTRATION.MESSAGE.INVALID.ZIPCODEINVALID' |
+                                translate}}</span>
+                        </div>
+                        <input class="profile-form-input" type="text"
+                            name="userZipCode" maxlength="5"
+                            data-ng-model="user.zipCode"
+                            data-ng-pattern="regexZip" required>
+                        <!-- Subscription to notification service -->
+                        <div>
+                            <h5>
+                                <label class="usa-input-required notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.OPTIONS'
+                                    | translate}}</label>
+                            </h5>
+                            <hr />
+                            <ul class="usa-unstyled-list">
+                                <li><input id="email" type="checkbox"
+                                        name="notification" value="email"
+                                        data-ng-model="user.notification[1]"
+                                        data-ng-required="!someSelected(user.notification)">
+                                    <label for="email" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.EMAIL'
+                                        | translate}}</label></li>
+                                <li><input id="push" type="checkbox"
+                                        name="notification" value="push"
+                                        data-ng-model="user.notification[2]"
+                                        data-ng-required="!someSelected(user.notification)">
+                                    <label for="push" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.PUSH'
+                                        | translate}}</label></li>
+                                <li><input id="sms" type="checkbox"
+                                        name="notification" value="sms"
+                                        data-ng-model="user.notification[3]"
+                                        data-ng-required="!someSelected(user.notification)">
+                                    <label for="sms" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.TEXT'
+                                        | translate}}</label></li>
+                                <li><input id="phone" type="checkbox"
+                                        name="notification" value="phone"
+                                        data-ng-model="user.notification[4]"
+                                        data-ng-required="!someSelected(user.notification)">
+                                    <label for="phone" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.PHONE'
+                                        | translate}}</label></li>
+                            </ul>
+                            <div data-ng-messages="userForm.subscribe.$error"
+                                data-ng-show="profileForm.notification.$invalid && profileForm.notification.$touched">
+                                <span class="usa-input-error-message"
+                                    role="alert" data-ng-message="required">{{
+                                    'REGISTRATION.MESSAGE.INVALID.CHECKBOXREQUIRED'
+                                    | translate}}</span>
+                            </div>
+                        </div>
+                        <div class="usa-grid-full">
+                            <!--Reset Button-->
+                            <!--button data-ng-click="reset()">Reset</button>  -->
+                            <!-- Cancel button -->
+                            <button class="usa-width-one-half"
+                                data-ng-click="" data-toggle="modal" href="#closeConfirmationModal" formnovalidate>{{
+                                'REGISTRATION.BUTTON.CANCEL' | translate }}</button>
+                            <!--Save Button-->
+                            <button class="usa-width-one-half"
+                                data-ng-disabled="profileForm.userFirstName.$invalid ||
+        profileForm.userLastName.$invalid||
+        profileForm.userEmail.$invalid ||
+        profileForm.userPhoneNumber1.$invalid ||
+        profileForm.userPhoneNumber2.$invalid ||
+        profileForm.userPhoneNumber3.$invalid ||
+        profileForm.userZipCode.$invalid"
+                                data-ng-click="submit()">{{
+                                'REGISTRATION.BUTTON.SAVE' | translate }}</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Close confirmation modal -->
+<div class="modal fade" id="closeConfirmationModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content usa-content usa-form-large">
+            <form class="usa-form-large" name="profileForm">
+                <fieldset>
+                    <div class="registrationFormDiv">hello</div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
