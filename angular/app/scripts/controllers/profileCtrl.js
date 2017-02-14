@@ -130,10 +130,6 @@ function($scope, $rootScope, $state, uswdsLoadService, registrationService, $tim
         }
     };
     
-    $scope.toggleConfirmation = function(){
-        $('#registrationModal').modal('hide');// jshint ignore:line
-        $('#closeConfirmationModal').modal('show');// jshint ignore:line
-    };
     $scope.backToForm = function(){
         $('#closeConfirmationModal').modal('hide');// jshint ignore:line
         $('#registrationModal').modal('show');// jshint ignore:line
