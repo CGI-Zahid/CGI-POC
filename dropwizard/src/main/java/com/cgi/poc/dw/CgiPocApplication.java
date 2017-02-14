@@ -36,7 +36,6 @@ import com.cgi.poc.dw.auth.service.JwtReaderServiceImpl;
 import com.cgi.poc.dw.auth.service.KeyBuilderServiceImpl;
 import com.cgi.poc.dw.auth.service.PasswordHash;
 import com.cgi.poc.dw.auth.service.PasswordHashImpl;
-import com.cgi.poc.dw.dao.model.FireEvent;
 import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.dao.model.UserNotification;
 import com.cgi.poc.dw.jobs.JobExecutionService;
@@ -48,6 +47,7 @@ import com.cgi.poc.dw.service.LoginService;
 import com.cgi.poc.dw.service.LoginServiceImpl;
 import com.cgi.poc.dw.service.UserRegistrationService;
 import com.cgi.poc.dw.service.UserRegistrationServiceImpl;
+import com.cgi.poc.dw.sockets.AlertEndpoint;
 import com.cgi.poc.dw.util.CustomConstraintViolationExceptionMapper;
 import com.cgi.poc.dw.util.CustomSQLConstraintViolationException;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -58,7 +58,6 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.google.inject.name.Names;
 
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -71,6 +70,7 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.websockets.WebsocketBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
@@ -82,7 +82,7 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 	private final static Logger LOG = LoggerFactory.getLogger(CgiPocApplication.class);
 
 	private final HibernateBundle<CgiPocConfiguration> hibernateBundle = new HibernateBundle<CgiPocConfiguration>(
-			User.class, UserNotification.class, FireEvent.class) {
+			User.class, UserNotification.class) {
 		@Override
 		public DataSourceFactory getDataSourceFactory(CgiPocConfiguration configuration) {
 			return configuration.getDataSourceFactory();
@@ -91,11 +91,6 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 
 	/**
 	 * Application's main method.
-	 * 
-	 * @param args
-	 *            parameter to start the application
-	 * @throws Exception
-	 *             all the exception in the application
 	 */
 	public static void main(final String[] args) throws Exception {
 		new CgiPocApplication().run(args);
@@ -133,6 +128,11 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 			}
 		});
 
+		/**
+		 * Adding Websocket bundle.
+		 */
+		bootstrap.addBundle(new WebsocketBundle(AlertEndpoint.class));
+
 		bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
 				bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
 
@@ -146,7 +146,7 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 
 	@Override
 	public void run(final CgiPocConfiguration configuration, final Environment environment)
-			throws Exception {
+			throws NoSuchAlgorithmException {
 
 		// logging requests & responses
 		environment.jersey().register(new LoggingFeature(java.util.logging.Logger.getLogger("inbound"), Level.INFO,
@@ -252,14 +252,16 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 			protected void configure() {
 				// keys
 				bind(Keys.class).toInstance(keys);
-				
-				//scheduler
+
+				// scheduler
 				final Client client = new JerseyClientBuilder(env).build("EventsRESTClient");
 				bind(JobsConfiguration.class).toInstance(conf.getJobsConfiguration());
-				install(new FactoryModuleBuilder().implement(APICallerService.class, APICallerServiceImpl.class).build(APIServiceFactory.class));
-				install(new FactoryModuleBuilder().implement(Runnable.class, PollingDataJob.class).build(JobFactory.class));
+				install(new FactoryModuleBuilder().implement(APICallerService.class, APICallerServiceImpl.class)
+						.build(APIServiceFactory.class));
+				install(new FactoryModuleBuilder().implement(Runnable.class, PollingDataJob.class)
+						.build(JobFactory.class));
 				bind(Client.class).toInstance(client);
-				
+
 				// services
 				bind(Validator.class).toInstance(env.getValidator());
 				bind(JwtReaderService.class).to(JwtReaderServiceImpl.class).asEagerSingleton();
@@ -267,7 +269,7 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 				bind(PasswordHash.class).to(PasswordHashImpl.class).asEagerSingleton();
 				bind(LoginService.class).to(LoginServiceImpl.class).asEagerSingleton();
 				bind(UserRegistrationService.class).to(UserRegistrationServiceImpl.class).asEagerSingleton();
-				bindConstant().annotatedWith(Names.named("apiUrl")).to(conf.getApiURL());
+				bind(MapApiConfiguration.class).toInstance(conf.getMapApiConfiguration());
 			}
 
 			@Singleton
@@ -280,7 +282,8 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 						hibernateBundle.run(conf, env);
 						return hibernateBundle.getSessionFactory();
 					} catch (Exception e) {
-						// logger.error("Unable to run hibernatebundle");
+						LOG.error("Unable to run hibernatebundle");
+
 					}
 				} else {
 					return sf;

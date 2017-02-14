@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- *
  * @author dawna.floyd
  */
 @XmlRootElement
@@ -17,50 +16,56 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class Error {
 
 
+  String code;
+  String message;
 
-    String code;
-    String message;
-    public Error() {
-    }
-    
-    public Error(String code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-    
-    public Error(Error error) {
-        this.code = error.getCode();
-        this.message = error.getMessage();
-    }
-    
-    public String getCode() {
-        return code;
-    }
+  public Error() {
+  }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+  public Error(String code, String message) {
+    this.code = code;
+    this.message = message;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public Error(Error error) {
+    this.code = error.getCode();
+    this.message = error.getMessage();
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) {
+      return false;
     }
-    
-    @Override
-    public boolean equals(Object other){
-        if(other == null) return false;
-        if(other == this) return true;
-        if(!(other instanceof Error))return false;
-        Error error = (Error)other;
-        
-        return (this.getCode().equals(error.getCode()) && this.getMessage().equals(error.getMessage()));
+    if (other == this) {
+      return true;
     }
-    
-    @Override
-    public int hashCode(){
-        return new HashCodeBuilder(11, 101).append(code).append(message).toHashCode();
+    if (!(other instanceof Error)) {
+      return false;
     }
+    Error error = (Error) other;
+
+    return (this.getCode().equals(error.getCode()) && this.getMessage().equals(error.getMessage()));
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(11, 101).append(code).append(message).toHashCode();
+  }
 }

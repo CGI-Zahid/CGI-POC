@@ -6,6 +6,7 @@ import com.cgi.poc.dw.auth.service.PasswordHash;
 import com.cgi.poc.dw.dao.UserDao;
 import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.rest.model.AuthTokenResponseDto;
+import com.cgi.poc.dw.rest.model.LoginUserDto;
 import com.cgi.poc.dw.util.LoginValidationGroup;
 import com.google.inject.Inject;
 import javax.validation.Validator;
@@ -34,25 +35,24 @@ public class LoginServiceImpl extends BaseServiceImpl implements LoginService {
   }
 
   @Override
-  public Response login(User user) {
+  public Response login(LoginUserDto loginUserDto) {
 
-   if (user == null) {
+    if (loginUserDto == null) {
       throw new BadRequestException("Missing credentials.");
     }
-    
-    validate(user, "rest", LoginValidationGroup.class);
 
-    User retUser = userDao.findUserByEmail(user.getEmail());
+    validate(loginUserDto, "rest", LoginValidationGroup.class);
+
+    User retUser = userDao.findUserByEmail(loginUserDto.getEmail());
     if (retUser == null) {
       LOG.warn("User not found.");
       throw new NotFoundException("Invalid username or password.");
     }
-    
-    
-    if (hasValidPassword(user, retUser)) {
+
+    if (hasValidPassword(loginUserDto, retUser)) {
       String authToken;
       try {
-        authToken = jwtBuilderService.createJwt(user);
+        authToken = jwtBuilderService.createJwt(retUser);
       } catch (JoseException e) {
         LOG.error("Unable to create authToken.", e);
         throw new InternalServerErrorException("Unable to issue authToken.");
@@ -66,7 +66,7 @@ public class LoginServiceImpl extends BaseServiceImpl implements LoginService {
     }
   }
 
-  private boolean hasValidPassword(User loginUserDto, User user) {
+  private boolean hasValidPassword(LoginUserDto loginUserDto, User user) {
     boolean hasValidPassword = false;
     try {
       hasValidPassword = passwordHash

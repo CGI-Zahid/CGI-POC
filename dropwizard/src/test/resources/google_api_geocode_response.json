@@ -1,0 +1,64 @@
+{
+  "results" : [
+    {
+      "address_components" : [
+        {
+          "long_name" : "95814",
+          "short_name" : "95814",
+          "types" : [ "postal_code" ]
+        },
+        {
+          "long_name" : "Sacramento",
+          "short_name" : "Sacramento",
+          "types" : [ "locality", "political" ]
+        },
+        {
+          "long_name" : "Sacramento County",
+          "short_name" : "Sacramento County",
+          "types" : [ "administrative_area_level_2", "political" ]
+        },
+        {
+          "long_name" : "California",
+          "short_name" : "CA",
+          "types" : [ "administrative_area_level_1", "political" ]
+        },
+        {
+          "long_name" : "United States",
+          "short_name" : "US",
+          "types" : [ "country", "political" ]
+        }
+      ],
+      "formatted_address" : "Sacramento, CA 95814, USA",
+      "geometry" : {
+        "bounds" : {
+          "northeast" : {
+            "lat" : 38.592193,
+            "lng" : -121.4801911
+          },
+          "southwest" : {
+            "lat" : 38.570573,
+            "lng" : -121.5115659
+          }
+        },
+        "location" : {
+          "lat" : 38.5824933,
+          "lng" : -121.4941738
+        },
+        "location_type" : "APPROXIMATE",
+        "viewport" : {
+          "northeast" : {
+            "lat" : 38.592193,
+            "lng" : -121.4801911
+          },
+          "southwest" : {
+            "lat" : 38.570573,
+            "lng" : -121.5115659
+          }
+        }
+      },
+      "place_id" : "ChIJM0meoirRmoARbXPLD4PkeBE",
+      "types" : [ "postal_code" ]
+    }
+  ],
+  "status" : "OK"
+}

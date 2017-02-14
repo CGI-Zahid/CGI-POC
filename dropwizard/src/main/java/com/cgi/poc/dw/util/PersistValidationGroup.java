@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 package com.cgi.poc.dw.util;
+
 import javax.validation.groups.Default;
+
 /**
- *
  * @author dawna.floyd
  */
-public interface PersistValidationGroup extends Default 
- {
-    
+public interface PersistValidationGroup extends Default {
+
 }

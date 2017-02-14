@@ -1,13 +1,16 @@
 'use strict';
 
-var cgiWebApp = angular.module('cgi-web-app', ['pascalprecht.translate', 'ngSessionStorage', 'ngRoute']);
+var cgiWebApp = angular.module('cgi-web-app', ['pascalprecht.translate', 'ngSessionStorage', 'ngRoute', 'ngWebSocket']);
 
 var POP_UP_DURATION = 30 * 1000; // jshint ignore:line
 
+var HOST = 'localhost';
+
 cgiWebApp
     .constant('urls', {
-        //have to be change depending of the envirronment
-        BASE: 'http://localhost:8080',
+        //have to be change depending of the environment
+        BASE: 'http://' + HOST + ':8080',
+        HOSTNAME: HOST
     })
     .config(['$translateProvider', '$routeProvider', function($translateProvider, $routeProvider) {
 

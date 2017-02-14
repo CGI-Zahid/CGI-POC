@@ -5,14 +5,10 @@
  */
 package com.cgi.poc.dw.util;
 
-import javax.validation.GroupSequence;
-import javax.validation.groups.Default;
-
 /**
- *
  * @author dawna.floyd
  */
 // this one does NOT inherit from default.. b/c we only want the ones defined w/ this group to execute
 public interface LoginValidationGroup {
-    
+
 }

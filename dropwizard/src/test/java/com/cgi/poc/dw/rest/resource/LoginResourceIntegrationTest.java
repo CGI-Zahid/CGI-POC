@@ -1,5 +1,6 @@
 package com.cgi.poc.dw.rest.resource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,10 +10,10 @@ import com.cgi.poc.dw.auth.model.Role;
 import com.cgi.poc.dw.dao.model.NotificationType;
 import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.dao.model.UserNotification;
+import com.cgi.poc.dw.rest.model.LoginUserDto;
 import com.cgi.poc.dw.helper.IntegrationTest;
 import com.cgi.poc.dw.util.ErrorInfo;
 import com.cgi.poc.dw.util.GeneralErrors;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.client.Client;
@@ -20,7 +21,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +45,7 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
   @Test
   public void noEmail() {
     Client client = new JerseyClientBuilder().build();
-    User loginUserDto = new User();
+    LoginUserDto loginUserDto = new LoginUserDto();
     loginUserDto.setPassword("test123");
     Response response = client.target(String.format(url, RULE.getLocalPort())).request()
         .post(Entity.json(loginUserDto));
@@ -54,19 +54,21 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
     Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     ErrorInfo errorInfo = response.readEntity(ErrorInfo.class);
     for (com.cgi.poc.dw.util.Error error : errorInfo.getErrors()) {
-        assertThat(error.getCode()).isEqualTo(GeneralErrors.INVALID_INPUT.getCode());
-        // The data provided in the API call is invalid. Message: <XXXXX>
-        // where XXX is the message associated to the validation
-        String partString  = "email  may not be null";
-        String expectedErrorString = GeneralErrors.INVALID_INPUT.getMessage().replace("REPLACE", partString);
-        assertThat(error.getMessage()).isEqualTo(expectedErrorString);
+      assertThat(error.getCode()).isEqualTo(GeneralErrors.INVALID_INPUT.getCode());
+      // The data provided in the API call is invalid. Message: <XXXXX>
+      // where XXX is the message associated to the validation
+      String partString = "email  may not be null";
+      String expectedErrorString = GeneralErrors.INVALID_INPUT.getMessage()
+          .replace("REPLACE", partString);
+      assertThat(error.getMessage()).isEqualTo(expectedErrorString);
     }
   }
 
-  
+
+  @Test
   public void noPassword() {
     Client client = new JerseyClientBuilder().build();
-    User loginUserDto = new User();
+    LoginUserDto loginUserDto = new LoginUserDto();
     loginUserDto.setEmail("helper@gmail.com");
     Response response = client.target(String.format(url, RULE.getLocalPort())).request()
         .post(Entity.json(loginUserDto));
@@ -76,22 +78,23 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
     ErrorInfo errorInfo = response.readEntity(ErrorInfo.class);
     boolean bValidErr = false;
     for (com.cgi.poc.dw.util.Error error : errorInfo.getErrors()) {
-        assertThat(error.getCode()).isEqualTo(GeneralErrors.INVALID_INPUT.getCode());
-        // The data provided in the API call is invalid. Message: <XXXXX>
-        // where XXX is the message associated to the validation
-        String partString  = "password  is missing";
-        String expectedErrorString = GeneralErrors.INVALID_INPUT.getMessage().replace("REPLACE", partString);
-        if (error.getMessage().equals(expectedErrorString)){
-            bValidErr = true;
-        }
+      assertThat(error.getCode()).isEqualTo(GeneralErrors.INVALID_INPUT.getCode());
+      // The data provided in the API call is invalid. Message: <XXXXX>
+      // where XXX is the message associated to the validation
+      String partString = "password  is missing";
+      String expectedErrorString = GeneralErrors.INVALID_INPUT.getMessage()
+          .replace("REPLACE", partString);
+      if (error.getMessage().equals(expectedErrorString)) {
+        bValidErr = true;
+      }
     }
-        assertThat(bValidErr).isEqualTo(true);
+    assertThat(bValidErr).isEqualTo(true);
   }
 
   @Test
   public void userNotFound() {
     Client client = new JerseyClientBuilder().build();
-    User loginUserDto = new User();
+    LoginUserDto loginUserDto = new LoginUserDto();
     loginUserDto.setEmail("user.not.found@gmail.com");
     loginUserDto.setPassword("test123");
     Response response = client.target(String.format(url, RULE.getLocalPort())).request()
@@ -108,24 +111,25 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
   public void registerUserLoginUserSuccess() throws JSONException {
     Client client = new JerseyClientBuilder().build();
     // registerUser user
-    User userRegistrationDto = new User();
-    userRegistrationDto.setEmail("success@gmail.com");
-    userRegistrationDto.setPassword("test123");
-    userRegistrationDto.setFirstName("john");
-    userRegistrationDto.setLastName("smith");
-    userRegistrationDto.setRole(Role.RESIDENT.name());
-    userRegistrationDto.setPhone("1234567890");
-    userRegistrationDto.setZipCode("98765");
+    User user = new User();
+    user.setEmail("success@gmail.com");
+    user.setPassword("test123");
+    user.setFirstName("john");
+    user.setLastName("smith");
+    user.setRole(Role.RESIDENT.name());
+    user.setPhone("1234567890");
+    user.setZipCode("98765");
+    user.setLatitude(0.0);
+    user.setLongitude(0.0);
     UserNotification selNot = new UserNotification(Long.valueOf(NotificationType.EMAIL.ordinal()));
     Set<UserNotification> notificationType = new HashSet<>();
     notificationType.add(selNot);
-    userRegistrationDto.setNotificationType(notificationType);
-    
-    
+    user.setNotificationType(notificationType);
+
     client.target(String.format("http://localhost:%d/register", RULE.getLocalPort())).request()
-        .post(Entity.json(userRegistrationDto));
+        .post(Entity.json(user));
     // login user
-    User loginUserDto = new User();
+    LoginUserDto loginUserDto = new LoginUserDto();
     loginUserDto.setEmail("success@gmail.com");
     loginUserDto.setPassword("test123");
     Response response = client.target(String.format(url, RULE.getLocalPort())).request()
@@ -139,9 +143,10 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
   @Test
   public void loginAdminSuccess() throws JSONException {
     Client client = new JerseyClientBuilder().build();
-    User loginUserDto = new User();
+    LoginUserDto loginUserDto = new LoginUserDto();
     loginUserDto.setEmail("admin@cgi.com");
     loginUserDto.setPassword("adminpw");
+    
     Response response = client.target(String.format(url, RULE.getLocalPort())).request()
         .post(Entity.json(loginUserDto));
     Assert.assertEquals(200, response.getStatus());
@@ -154,29 +159,31 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
   public void loginFailureWrongPassword() {
     Client client = new JerseyClientBuilder().build();
     // registerUser user
-    User userRegistrationDto = new User();
-    userRegistrationDto.setEmail("wrong.pw@gmail.com");
-    userRegistrationDto.setPassword("test123");
-    userRegistrationDto.setFirstName("john");
-    userRegistrationDto.setLastName("smith");
-    userRegistrationDto.setRole(Role.RESIDENT.name());
-    userRegistrationDto.setPhone("1234567890");
-    userRegistrationDto.setZipCode("98765");
+    User user = new User();
+    user.setEmail("wrong.pw@gmail.com");
+    user.setPassword("test123");
+    user.setFirstName("john");
+    user.setLastName("smith");
+    user.setRole(Role.RESIDENT.name());
+    user.setPhone("1234567890");
+    user.setZipCode("98765");
+    user.setLatitude(0.0);
+    user.setLongitude(0.0);
     UserNotification selNot = new UserNotification(Long.valueOf(NotificationType.SMS.ordinal()));
     Set<UserNotification> notificationType = new HashSet<>();
     notificationType.add(selNot);
-    userRegistrationDto.setNotificationType(notificationType);
+    user.setNotificationType(notificationType);
 
     client.target(String.format("http://localhost:%d/register", RULE.getLocalPort())).request()
-        .post(Entity.json(userRegistrationDto));
+        .post(Entity.json(user));
     // login user
-    User loginUserDto = new User();
+    LoginUserDto loginUserDto = new LoginUserDto();
     loginUserDto.setEmail("wrong.pw@gmail.com");
     loginUserDto.setPassword("wrong");
-    
+
     Response response = client.target(String.format(url, RULE.getLocalPort())).request()
         .post(Entity.json(loginUserDto));
-    
+
     assertNotNull(response);
     assertThat(response.readEntity(String.class),
         containsString("Invalid username or password."));

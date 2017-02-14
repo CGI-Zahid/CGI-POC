@@ -2,8 +2,9 @@ package com.cgi.poc.dw.auth.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+
 public interface PasswordHash {
-  
+
   /**
    * Returns a salted PBKDF2 hash of the password.
    *
@@ -20,7 +21,8 @@ public interface PasswordHash {
    * @param password the password to hash
    * @return a salted PBKDF2 hash of the password
    */
-   String createHash(char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException;
+  String createHash(char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException;
+
   /**
    * Validates a password using a hash.
    *
@@ -33,6 +35,7 @@ public interface PasswordHash {
   boolean validatePassword(String password, String correctHash)
       throws NoSuchAlgorithmException,
       InvalidKeySpecException;
+
   /**
    * Validates a password using a hash.
    *

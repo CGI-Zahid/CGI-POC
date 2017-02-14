@@ -8,9 +8,8 @@ package com.cgi.poc.dw.util;
 import javax.validation.groups.Default;
 
 /**
- *
  * @author dawna.floyd
  */
-public  interface RestValidationGroup extends Default {
-    
+public interface RestValidationGroup extends Default {
+
 }
