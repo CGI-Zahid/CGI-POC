@@ -22,9 +22,9 @@ public class DBAuthenticator implements Authenticator<JwtContext, User> {
 
   @Inject
   UserDao userDao;
-
   @Inject
   JwtReaderService jwtReaderService;
+
 
   @Override
   public Optional<User> authenticate(JwtContext context) throws AuthenticationException {

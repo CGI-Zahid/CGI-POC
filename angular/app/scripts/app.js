@@ -4,9 +4,12 @@ var cgiWebApp = angular.module('cgi-web-app', [ 'pascalprecht.translate', 'ngMes
 
 var POP_UP_DURATION = 30 * 1000; // jshint ignore:line
 
+var HOST = 'localhost';
+
 cgiWebApp.constant('urls', {
     // have to be change depending of the environment
-    BASE : 'http://localhost:8080',
+    BASE: 'http://' + HOST + ':8080',
+    HOSTNAME: HOST
 }).config([ '$translateProvider', '$urlRouterProvider', '$stateProvider', function($translateProvider, $urlRouterProvider, $stateProvider) {
 
     $translateProvider.useStaticFilesLoader({

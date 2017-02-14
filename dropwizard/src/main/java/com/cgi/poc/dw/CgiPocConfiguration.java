@@ -2,6 +2,7 @@ package com.cgi.poc.dw;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
+import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import javax.validation.Valid;
@@ -13,6 +14,22 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class CgiPocConfiguration extends Configuration {
 
+  private MapApiConfiguration mapApiConfiguration = new MapApiConfiguration();
+
+  public MapApiConfiguration getMapApiConfiguration() {
+    return mapApiConfiguration;
+  }
+  @JsonProperty("mapsApi")
+  public void setMapApiConfiguration(MapApiConfiguration mapApiConfiguration) {
+    this.mapApiConfiguration = mapApiConfiguration;
+  }
+
+  /**
+   * Assign swagger bundle configuration.
+   */
+  @JsonProperty("swagger")
+  public SwaggerBundleConfiguration swaggerBundleConfiguration;
+
   /* CORS */
   private CorsConfiguration corsConfiguration = new CorsConfiguration();
 
@@ -23,6 +40,16 @@ public class CgiPocConfiguration extends Configuration {
   @NotNull
   private DataSourceFactory dataSourceFactory = new DataSourceFactory();
 
+  @NotEmpty
+  private String jwtSignatureSecret;
+
+  /**
+   * Jersey client default configuration.
+   */
+  @Valid
+  @NotNull
+  private JerseyClientConfiguration jerseyClientConfiguration
+      = new JerseyClientConfiguration();
 
   /* CORS */
   public CorsConfiguration getCorsConfiguration() {
@@ -44,9 +71,6 @@ public class CgiPocConfiguration extends Configuration {
     return dataSourceFactory;
   }
 
-  @NotEmpty
-  private String jwtSignatureSecret;
-
   @JsonProperty
   public String getJwtSignatureSecret() {
     return jwtSignatureSecret;
@@ -58,8 +82,10 @@ public class CgiPocConfiguration extends Configuration {
   }
 
   /**
-   * Assign swagger bundle configuration.
+   * @return Jersey Client
    */
-  @JsonProperty("swagger")
-  public SwaggerBundleConfiguration swaggerBundleConfiguration;
+  @JsonProperty("jerseyClient")
+  public JerseyClientConfiguration getJerseyClientConfiguration() {
+    return jerseyClientConfiguration;
+  }
 }

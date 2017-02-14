@@ -36,6 +36,13 @@ server:
           validateCerts: false
           validatePeers: false
 
+#Jersey client settings
+jerseyClient:
+    #The maximum idle time for a connection, once established.
+    timeout: 1000ms
+    #The size of the work queue of the pool used for asynchronous requests.
+    #Additional threads will be spawn only if the queue is reached its maximum size.
+    workQueueSize: 16
 # CORS settings
 #   A list of comma-separated domains that the service will allow cross-origin access from.  If the Origin matches one
 #     of the domains in the list the application will generate a matching Access-Control-Allow-Origin header in the response.
@@ -59,6 +66,10 @@ cors:
    - x-api-key
    - x-requested-by
    - x-requested-with
+
+mapsApi:
+  apiURL: http://maps.googleapis.com/maps/api/geocode/json
+  apiKey: <your_key>
 
 # Logging settings
 logging:
