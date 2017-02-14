@@ -46,7 +46,7 @@ function($scope, $rootScope, $state, uswdsLoadService, registrationService, $tim
   
   $scope.popUp = function(code, message, duration) {
       if (code === 'error') {
-          rrorNotif = true;
+          errorNotif = true;
           errorMessage = message;
       } else if (code === 'success') {
           successNotif = true;
@@ -78,7 +78,7 @@ function($scope, $rootScope, $state, uswdsLoadService, registrationService, $tim
     
     $scope.submit = function(isValid){
         // this is used by angular validation
-        var submitted = true;
+        var submitted = true;// jshint ignore:line
         
         if(isValid){
             
@@ -97,14 +97,14 @@ function($scope, $rootScope, $state, uswdsLoadService, registrationService, $tim
             }    
                         
             var sessionToRegister = {
-                "firstName": $scope.user.firstName,
-                "lastName": $scope.user.lastName,
-                "email": $scope.user.email,
-                "password": $scope.user.password,
-                "phone": completePhone,
-                "zipCode": $scope.user.firstName,
-                "notificationType": notificationType
-            }
+                'firstName': $scope.user.firstName,
+                'lastName': $scope.user.lastName,
+                'email': $scope.user.email,
+                'password': $scope.user.password,
+                'phone': completePhone,
+                'zipCode': $scope.user.firstName,
+                'notificationType': notificationType
+            };
             
             //call to register
             registrationService.register(sessionToRegister).then(function(response){
@@ -115,7 +115,7 @@ function($scope, $rootScope, $state, uswdsLoadService, registrationService, $tim
                     successMessage = 'PROFILE.MESSAGE.REGISTERED';
                     //token if user is logged in during registration.
                     //$sessionStorage.put('jwt', response.data.authToken);
-                    $timeout(function(){$('#registrationModal').modal('hide')},3);
+                    $timeout(function(){$('#registrationModal').modal('hide')},3);// jshint ignore:line
 
                 } else if (response.status === 401) {
                     $scope.popUp('error', 'PROFILE.MESSAGE.INVALID', POP_UP_DURATION); // jshint ignore:line
@@ -180,7 +180,7 @@ cgiWebApp// jshint ignore:line
     return {
         restrict: 'A',
         link: function (scope, el, attrs) {
-            el.bind('keyup', function(e) {
+            el.bind('keyup', function() {
                 if (this.value.length === parseInt(attrs.ngMaxlength)) {
                     var element = document.getElementById(attrs.autoTabTo);
                     if (element){
