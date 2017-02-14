@@ -18,6 +18,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.SessionFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,6 +31,8 @@ import com.cgi.poc.dw.dao.FireEventDAO;
 import com.cgi.poc.dw.dao.model.FireEvent;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+
+import io.dropwizard.hibernate.UnitOfWork;
 
 /**
  * class to call API to collect the resources event information
@@ -44,6 +47,7 @@ public class APICallerServiceImpl implements APICallerService {
 	private Client client;
 	private String eventUrl;
 	private FireEventDAO fireEventDAO;
+	private SessionFactory sessionFactory;
 	
 	@Inject
 	public APICallerServiceImpl(@Assisted String eventUrl, @Assisted Client client, @Assisted FireEventDAO fireEventDAO){
@@ -87,6 +91,7 @@ public class APICallerServiceImpl implements APICallerService {
 	 * 
 	 * @param eventJson
 	 */
+	@UnitOfWork
 	@SuppressWarnings("unchecked")
 	private void parsingEventsResponse(JSONObject eventJson) {
 
@@ -121,10 +126,10 @@ public class APICallerServiceImpl implements APICallerService {
 	 * @param fieldName
 	 * @param attributes
 	 */
+	
 	public void reflect(FireEvent event, String fieldName, JSONObject attributes) {
-
-		try {
-
+		
+		try{
 			// with reflection
 			Class<?> c = Class.forName("com.cgi.poc.dw.dao.model.FireEvent");
 

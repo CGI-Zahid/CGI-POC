@@ -67,6 +67,7 @@ import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -261,6 +262,7 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 				install(new FactoryModuleBuilder().implement(Runnable.class, PollingDataJob.class)
 						.build(JobFactory.class));
 				bind(Client.class).toInstance(client);
+//				bind(Managed.class).to(JobExecutionService.class).asEagerSingleton();
 
 				// services
 				bind(Validator.class).toInstance(env.getValidator());

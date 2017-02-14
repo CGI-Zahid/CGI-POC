@@ -30,25 +30,22 @@ public class JobExecutionService implements Managed{
     
     @Inject
     JobFactory jobFactory;
-    
     @Inject
     APIServiceFactory aPIServiceFactory;
-    
     @Inject
-    JobsConfiguration conf;
-    
+    JobsConfiguration jobsConfiguration;
     @Inject
     Client client;
-    
     @Inject
     FireEventDAO fireEventDAO;
 
 	/**
 	 * @param conf the job configuration
 	 */
-	public JobExecutionService() {
+    @Inject
+	public JobExecutionService(JobsConfiguration jobsConfiguration) {
 		super();
-		this.service = Executors.newScheduledThreadPool(conf.getThread());
+		this.service = Executors.newScheduledThreadPool(jobsConfiguration.getThread());
 	}
 
 	/**
@@ -58,7 +55,7 @@ public class JobExecutionService implements Managed{
     public void start() throws Exception {
     	LOGGER.debug("Starting jobs");
     	
-    	for(JobParameter jobParam : conf.getJobs()){
+    	for(JobParameter jobParam : jobsConfiguration.getJobs()){
     		LOGGER.debug("Instanciate job : " + jobParam.toString());
     		
     		APICallerService apiCallerService = aPIServiceFactory.create(client, jobParam.getEventURL(), fireEventDAO);
