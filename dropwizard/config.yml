@@ -1,5 +1,11 @@
 jwtSignatureSecret: o5KnhuFU8q8bo6qPxG2Z75q3yLlNiVCSOUd0vqbv6X8E8QLUSbP6Uxn7hn2678NZ3sQ1ZKy9ih7jAHXu
 
+#API settings
+#API URL
+apiURL: http://maps.googleapis.com/maps/api/geocode/json
+#API key
+apiKey: <your_key>
+
 # Database settings.
 database:
 
@@ -7,13 +13,13 @@ database:
     driverClass: com.mysql.jdbc.Driver
 
     # the username
-    user: cgi_user
+    user: ${MYSQL_ROOT_USERNAME}
 
     # the password
-    password: cgi_P@ssw0rd
+    password: ${MYSQL_ROOT_PASSWORD}
 
     # the JDBC URL
-    url: jdbc:mysql://localhost:3306/cgi_poc?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${MYSQL_HOSTNAME}:${MYSQL_PORT}/${MYSQL_DB_NAME}?createDatabaseIfNotExist=true
 
     # The initial size of the connection pool.
     initialSize: 2
@@ -31,11 +37,18 @@ server:
           port: 8080
         - type: https
           port: 8443
-          keyStorePath: development.keystore
-          keyStorePassword: p@ssw0rd
+          keyStorePath: ${KEYSTORE_FILE}
+          keyStorePassword: ${KEYSTORE_PASSWORD}
           validateCerts: false
           validatePeers: false
 
+#Jersey client settings
+jerseyClient:
+    #The maximum idle time for a connection, once established.
+    timeout: 512ms
+    #The size of the work queue of the pool used for asynchronous requests.
+    #Additional threads will be spawn only if the queue is reached its maximum size.
+    workQueueSize: 16
 # CORS settings
 #   A list of comma-separated domains that the service will allow cross-origin access from.  If the Origin matches one
 #     of the domains in the list the application will generate a matching Access-Control-Allow-Origin header in the response.
@@ -73,14 +86,14 @@ swagger:
 #Jobs settings
 #Jobs settings
 scheduler:
-  thread: 2
+  thread: 5
   jobs:    
      - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query
        delay: 10
-       period: 10
+       period: 60
        timeUnit: SECONDS
-     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
-       delay: 10
-       period: 10
-       timeUnit: SECONDS
+#     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
+#       delay: 10
+#       period: 10
+#       timeUnit: SECONDS
   

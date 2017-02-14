@@ -4,10 +4,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.client.Client;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cgi.poc.dw.JobsConfiguration;
+import com.cgi.poc.dw.api.service.APICallerService;
+import com.cgi.poc.dw.api.service.APIServiceFactory;
+import com.cgi.poc.dw.dao.FireEventDAO;
+import com.google.inject.Inject;
 
 import io.dropwizard.lifecycle.Managed;
 
@@ -19,18 +25,29 @@ import io.dropwizard.lifecycle.Managed;
 public class JobExecutionService implements Managed{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(JobExecutionService.class);
-	
-	//TODO to be add in the configuration
+
     private final ScheduledExecutorService service;
     
-    private JobsConfiguration conf;	
+    @Inject
+    JobFactory jobFactory;
+    
+    @Inject
+    APIServiceFactory aPIServiceFactory;
+    
+    @Inject
+    JobsConfiguration conf;
+    
+    @Inject
+    Client client;
+    
+    @Inject
+    FireEventDAO fireEventDAO;
 
 	/**
 	 * @param conf the job configuration
 	 */
-	public JobExecutionService(JobsConfiguration conf) {
+	public JobExecutionService() {
 		super();
-		this.conf = conf;
 		this.service = Executors.newScheduledThreadPool(conf.getThread());
 	}
 
@@ -41,10 +58,11 @@ public class JobExecutionService implements Managed{
     public void start() throws Exception {
     	LOGGER.debug("Starting jobs");
     	
-    	
     	for(JobParameter jobParam : conf.getJobs()){
     		LOGGER.debug("Instanciate job : " + jobParam.toString());
-        	service.scheduleAtFixedRate(new PollingDataJob(jobParam.getEventURL()), jobParam.getDelay(), jobParam.getPeriod(), TimeUnit.valueOf(jobParam.getTimeUnit()));
+    		
+    		APICallerService apiCallerService = aPIServiceFactory.create(client, jobParam.getEventURL(), fireEventDAO);
+        	service.scheduleAtFixedRate(jobFactory.create(apiCallerService), jobParam.getDelay(), jobParam.getPeriod(), TimeUnit.valueOf(jobParam.getTimeUnit()));
     	}
 
     }

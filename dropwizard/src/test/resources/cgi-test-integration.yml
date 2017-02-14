@@ -36,7 +36,7 @@ scheduler:
        delay: 10
        period: 10
        timeUnit: SECONDS
-     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
-       delay: 10
-       period: 10
-       timeUnit: SECONDS
+#     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
+#       delay: 10
+#       period: 10
+#       timeUnit: SECONDS

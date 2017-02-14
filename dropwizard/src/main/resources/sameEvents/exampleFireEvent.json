@@ -1,0 +1,34 @@
+{
+ 
+  "attributes": {
+    "objectid": 1,
+    "latitude": 34.5769,
+    "longitude": -95.9172,
+    "acres": 500,
+    "gacc": "SACC",
+    "hotlink": "http://www.nifc.gov/fireInfo/nfn.htm",
+    "state": "OK",
+    "irwinid": "{888D9E44-6E2F-44D6-AE9A-2AD4C80F2B8F}",
+    "status": "I",
+    "iscomplex": "false",
+    "complexparentirwinid": null,
+    "firecause": "Human",
+    "reportdatetime": 1486681200000,
+    "percentcontained": 50,
+    "uniquefireidentifier": "2017-OKSEU-170070",
+    "firediscoverydatetime": 1486598400000,
+    "pooresponsibleunit": "OKSEU",
+    "incidentname": "Wesley Fire",
+    "irwinmodifiedon": 1486639991000,
+    "mapsymbol": "1",
+    "datecurrent": 1486901162000,
+    "pooownerunit": null,
+    "owneragency": null,
+    "fireyear": null,
+    "localincidentidentifier": null,
+    "incidenttypecategory": null
+  },
+  "geometry": {
+    "x": -10677457.159137897,
+    "y": 4106537.9944933983
+  }}

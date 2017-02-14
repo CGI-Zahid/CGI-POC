@@ -1,12 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
-         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         <property name="now" value="CURRENT_TIMESTAMP()" dbms="h2"/>
+         <property name="now" value="now()" dbms="postgresql"/>
+         <property name="now" value="now()" dbms="mysql"/>
 
-  <include file="sql/cgi-poc-schema.sql"/>
+  <include file="sql/user_profile.sql"/>
   <include file="sql/test-data.sql"/>
-
+    <changeSet id="5" author="Dawna Floyd">
+        <createTable tableName="event_fire">
+            <column name="uniquefireidentifier" type="varchar(36)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="geometry" type="json" />
+            <column name="incidentname" type="varchar(20)" />
+            <column name="hotlink" type="varchar(60)" />
+            <column name="status" type="varchar(1)" />
+            <column name="objectid" type="integer" />
+            <column name="latitude" type="NUMERIC(25,20)" />
+            <column name="longitude" type="NUMERIC(25,20)" />
+            <column name="acres" type="NUMERIC(10,5)" />
+            <column name="gacc" type="varchar(4)" />
+            <column name="state" type="varchar(2)" />
+            <column name="shape" type="geometry" />
+            <column name="irwinid" type="VARCHAR(38)" />
+            <column name="iscomplex" type="VARCHAR(1)" />
+            <column name="complexparentirwinid" type="VARCHAR(38)" />
+            <column name="firecause" type="VARCHAR(5)" />
+            <column name="reportdatetime" type="timestamp" />
+            <column name="percentcontained" type="integer" />
+            <column name="firediscoverydatetime" type="timestamp" />
+            <column name="pooresponsibleunit" type="VARCHAR(6)" />
+            <column name="irwinmodifiedon" type="timestamp" />
+            <column name="mapsymbol" type="VARCHAR(1)" />
+            <column name="datecurrent" type="timestamp" />
+            <column name="pooownerunit" type="VARCHAR(6)" />
+            <column name="owneragency" type="VARCHAR(15)" />
+            <column name="fireyear" type="integer" />
+            <column name="localincidentidentifier" type="VARCHAR(10)" />
+            <column name="incidenttypecategory" type="VARCHAR(2)" />
+            <column name="last_modified" type="timestamp" defaultValueComputed="${now}"/>
+            <column name="notification_id" type="integer" />
+    </createTable>
+    </changeSet>
 </databaseChangeLog>

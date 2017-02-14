@@ -1,7 +1,11 @@
 package com.cgi.poc.dw.jobs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cgi.poc.dw.api.service.APICallerService;
-import com.cgi.poc.dw.api.service.impl.APICallerServiceImpl;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * Job to call the rest API and get the events for specific types
@@ -11,37 +15,13 @@ import com.cgi.poc.dw.api.service.impl.APICallerServiceImpl;
  */
 public class PollingDataJob implements Runnable{
 	
-	private APICallerService apiCallerService = new APICallerServiceImpl();
-	private String eventUrl;
+	private static final Logger LOGGER = LoggerFactory.getLogger(PollingDataJob.class);
 	
-	/**
-	 * default constructon
-	 */
-	public PollingDataJob(){
-		
-	}
+	private APICallerService apiCallerService;
 	
-	/**
-	 * set the rest api url for the job
-	 * 
-	 * @param eventUrl the rest api url event
-	 */
-	public PollingDataJob(String eventUrl){
-		this.eventUrl = eventUrl;
-	}
-	
-	/**
-	 * @return the eventUrl
-	 */
-	public String getEventUrl() {
-		return eventUrl;
-	}
-
-	/**
-	 * @param eventUrl the eventUrl to set
-	 */
-	public void setEventUrl(String eventUrl) {
-		this.eventUrl = eventUrl;
+	@Inject
+	public PollingDataJob(@Assisted APICallerService apiCallerService){
+		this.apiCallerService = apiCallerService;
 	}
 	
 	/**
@@ -49,7 +29,11 @@ public class PollingDataJob implements Runnable{
 	 */
 	@Override
 	public void run() {
-		apiCallerService.callServiceAPI(eventUrl);
+		try{
+			apiCallerService.callServiceAPI();
+		}catch(Exception e){
+			LOGGER.error("the job get an error " + e.getMessage());
+		}
 	}
 
 }

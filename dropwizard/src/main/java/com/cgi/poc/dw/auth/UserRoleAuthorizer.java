@@ -30,6 +30,6 @@ public class UserRoleAuthorizer implements Authorizer<User> {
       LOG.error("Unable to authorize since role " + role + " is not a valid role.");
       return false;
     }
-    return user.getRole() == roleToEnum;
+    return user.getRole().equals(role);
   }
 }
