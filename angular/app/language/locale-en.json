@@ -44,6 +44,8 @@
   "REGISTRATION.MESSAGE.INVALID.ZIPCODEREQUIRED":"You must enter a valid zip code",
   "REGISTRATION.MESSAGE.INVALID.ZIPCODEINVALID":"You must enter a valid zip code",
   "REGISTRATION.MESSAGE.INVALID.CHECKBOXREQUIRED" : "You must select at least 1 notification option",
+  "REGISTRATION.MESSAGE.REGISTERED" : "Registration successful",
+  "REGISTRATION.MESSAGE.INVALID" : "An error occured during the registration proces",
   "REGISTRATION.BUTTON.SAVE" : "Save",
   "REGISTRATION.BUTTON.CANCEL" : "Cancel",
   "CONFIRMATION.LABEL.CANCEL.MESSAGE" : "You have not saved your Profile. Are you sure you want to cancel?",

@@ -188,26 +188,26 @@
                             <ul class="usa-unstyled-list">
                                 <li><input id="email" type="checkbox"
                                         name="notification" value="email"
-                                        data-ng-model="user.notification[1]"
-                                        data-ng-required="!someSelected(user.notification)">
+                                        data-ng-model="user.emailNotification"
+                                        data-ng-required="">
                                     <label for="email" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.EMAIL'
                                         | translate}}</label></li>
                                 <li><input id="push" type="checkbox"
                                         name="notification" value="push"
-                                        data-ng-model="user.notification[2]"
-                                        data-ng-required="!someSelected(user.notification)">
+                                        data-ng-model="user.pushNotification"
+                                        data-ng-required="">
                                     <label for="push" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.PUSH'
                                         | translate}}</label></li>
                                 <li><input id="sms" type="checkbox"
                                         name="notification" value="sms"
-                                        data-ng-model="user.notification[3]"
-                                        data-ng-required="!someSelected(user.notification)">
+                                        data-ng-model="user.smsNotification"
+                                        data-ng-required="">
                                     <label for="sms" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.TEXT'
                                         | translate}}</label></li>
                                 <li><input id="phone" type="checkbox"
                                         name="notification" value="phone"
-                                        data-ng-model="user.notification[4]"
-                                        data-ng-required="!someSelected(user.notification)">
+                                        data-ng-model="user.byPhoneGeolocation"
+                                        data-ng-required="">
                                     <label for="phone" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.PHONE'
                                         | translate}}</label></li>
                             </ul>
@@ -228,7 +228,7 @@
                                 'REGISTRATION.BUTTON.CANCEL' | translate }}</button>
                             <!--Save Button-->
                             <button class="usa-width-one-half"
-                                data-ng-click="submit()">{{
+                                data-ng-click="submit(profileForm.$valid)">{{
                                 'REGISTRATION.BUTTON.SAVE' | translate }}</button>
                         </div>
                     </div>

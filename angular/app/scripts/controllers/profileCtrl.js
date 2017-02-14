@@ -9,9 +9,9 @@
 'use strict';
 
 cgiWebApp // jshint ignore:line
-.controller('profileController', [ '$scope', '$rootScope', '$state','uswdsLoadService', '$sessionStorage',
+.controller('profileController', [ '$scope', '$rootScope', '$state','uswdsLoadService', 'registrationService', '$timeout','$sessionStorage',
 
-function($scope, $rootScope, $state, uswdsLoadService, $sessionStorage) {
+function($scope, $rootScope, $state, uswdsLoadService, registrationService, $timeout, $sessionStorage) {
   
   $scope.manageProfile = function(){
      $rootScope.toggleRegistration = false;
@@ -28,12 +28,35 @@ function($scope, $rootScope, $state, uswdsLoadService, $sessionStorage) {
       confirmEmail: '',
       password:'',
       confirmPassword:'',
-      phone:'',
       phoneNumberAreaCode: '',
       phoneNumberMiddle:'',
       phoneNumberEnd:'',
-      zipCode: ''
-    };
+      zipCode: '',
+      notification:'',
+      emailNotification: false,
+      pushNotification: false,
+      smsNotification:false,
+      byPhoneGeolocation: false
+      
+  };
+  var errorNotif = false;
+  var errorMessage = false;
+  var successMessage = false;
+  var successNotif = false;
+  
+  $scope.popUp = function(code, message, duration) {
+      if (code === 'error') {
+          rrorNotif = true;
+          errorMessage = message;
+      } else if (code === 'success') {
+          successNotif = true;
+          successMessage = message;
+      }
+      $timeout(function() {
+          $scope.closeAlert(code);
+      }, duration);
+  };
+  
    var blankUser = $scope.user;
    
   
@@ -43,9 +66,6 @@ function($scope, $rootScope, $state, uswdsLoadService, $sessionStorage) {
     $scope.regexPhone4 = /^\d{4}$/;
     $scope.regexZip = /^\d{5}$/;
     $scope.regexPassword = /^(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*/;
-    $scope.cancel = function(){
-       confirm('You have not saved your profile. Are you sure you want to cancel?');// jshint ignore:line
-    };
     
     $scope.someSelected = function (object) {
         if (!object) {
@@ -56,46 +76,81 @@ function($scope, $rootScope, $state, uswdsLoadService, $sessionStorage) {
         });
     };
     
-    $scope.submit = function(){
+    $scope.submit = function(isValid){
+        // this is used by angular validation
         var submitted = true;
-        //Save user
-//        {
-//            "firstName": "first",
-//            "lastName": "last",
-//            "email": "firstlast@cgi.com",
-//            "password": "abc123",
-//            "phone": "4031234567",
-//            "zipCode": "92109",
-//            "notificationType": [
-//              {
-//                "notificationId": 1
-//              },
-//              {
-//                "notificationId": 2
-//              }
-//          }
-    }
+        
+        if(isValid){
+            
+            var completePhone = $scope.user.phoneNumberAreaCode + $scope.user.phoneNumberMiddle + $scope.user.phoneNumberEnd;
+
+            var notificationType;
+            //Notification: 1 - EMAIL, 2 - SMS, 3 -PUSH
+            if($scope.user.emailNotification){
+                notificationType.push(1);
+            }
+            if($scope.user.smsNotification){
+                notificationType.push(2); 
+            }
+            if($scope.user.pushNotification){
+                notificationType.push(3); 
+            }    
+                        
+            var sessionToRegister = {
+                "firstName": $scope.user.firstName,
+                "lastName": $scope.user.lastName,
+                "email": $scope.user.email,
+                "password": $scope.user.password,
+                "phone": completePhone,
+                "zipCode": $scope.user.firstName,
+                "notificationType": notificationType
+            }
+            
+            //call to register
+            registrationService.register(sessionToRegister).then(function(response){
+                if (response.status === 200) {
+                    errorNotif = false;
+
+                    successNotif = true;
+                    successMessage = 'PROFILE.MESSAGE.REGISTERED';
+                    //token if user is logged in during registration.
+                    //$sessionStorage.put('jwt', response.data.authToken);
+                    $timeout(function(){$('#registrationModal').modal('hide')},3);
+
+                } else if (response.status === 401) {
+                    $scope.popUp('error', 'PROFILE.MESSAGE.INVALID', POP_UP_DURATION); // jshint ignore:line
+                } else {
+                    $scope.popUp('error', 'GENERIC.MESSAGE.ERROR.SERVER', POP_UP_DURATION); // jshint ignore:line
+                }
+                //$scope.profileForm.$setPristine();
+                //$scope.profileForm.$setUntouched();
+                
+                //currently do nothing if the response fails  
+            });
+        }
+    };
     
     $scope.toggleConfirmation = function(){
-        $('#registrationModal').modal('hide');
-        $('#closeConfirmationModal').modal('show');
-    }
+        $('#registrationModal').modal('hide');// jshint ignore:line
+        $('#closeConfirmationModal').modal('show');// jshint ignore:line
+    };
     $scope.backToForm = function(){
-        $('#closeConfirmationModal').modal('hide');
-        $('#registrationModal').modal('show');
+        $('#closeConfirmationModal').modal('hide');// jshint ignore:line
+        $('#registrationModal').modal('show');// jshint ignore:line
     };
     $scope.closeToLogin = function(){
         $scope.user = angular.copy(blankUser);
+        $sessionStorage.clear();
         $state.go('login');
     };
    
    var init = function(){
        uswdsLoadService.triggerEvent(document, 'DOMContentLoaded');
        if($rootScope.toggleRegistration === true){
-           $('#registrationModal').modal({
+           $('#registrationModal').modal({// jshint ignore:line
                backdrop: 'static',
                keyboard: false
-             });// jshint ignore:line
+             });
        }  
    };
     
@@ -123,7 +178,7 @@ cgiWebApp// jshint ignore:line
     };
 }).directive('autoTabTo', function () {
     return {
-        restrict: "A",
+        restrict: 'A',
         link: function (scope, el, attrs) {
             el.bind('keyup', function(e) {
                 if (this.value.length === parseInt(attrs.ngMaxlength)) {
@@ -134,6 +189,6 @@ cgiWebApp// jshint ignore:line
                 }
             });
         }
-    }
+    };
  });
 

@@ -13,6 +13,7 @@ cgiWebApp // jshint ignore:line
 
 function ($scope, $rootScope, $state, Authenticator, uswdsLoadService, $timeout, $sessionStorage) {
 
+    //change to directive
     $scope.popUp = function(code, message, duration) {
         if (code === 'error') {
             model.errorNotif = true;
@@ -53,7 +54,7 @@ function ($scope, $rootScope, $state, Authenticator, uswdsLoadService, $timeout,
                     model.errorNotif = false;
 
                     model.successNotif = true;
-                    model.successMessage = 'LOGIN.MESSAGE.LOGGEDIN';;
+                    model.successMessage = 'LOGIN.MESSAGE.LOGGEDIN';
                     $sessionStorage.put('jwt', response.data.authToken);
                     $state.go('profile');
 
