@@ -19,6 +19,8 @@ body{
 
 .profile-form-input{
     height:3rem;
+    padding-top:0px;
+    padding-bottom:0px;
 }
 .profile-label{
     margin-top:1.4rem;
@@ -53,14 +55,32 @@ button.usa-button-login{
 label.notifications{
     margin-top:0px;
 }
+.login-text{
+    display:inline-block;
+    align:center;
+}
+.login-error{
+    float:left;
+}
 .login-alert{
 	padding:0px;
+}
+.usa-form-note{
+    clear:both;
 }
 input.phone{
     float:left;
     clear:none;
     margin-right: 1rem;
     width: 5rem;
+}
+.zipCodeText{
+    float:right;
+    width:80%;
+}
+input.zipCode{
+    display:inline-block;
+    width: 7rem;
 }
 input.phoneLong{
     display:inline-block;

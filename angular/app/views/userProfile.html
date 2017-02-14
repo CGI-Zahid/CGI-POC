@@ -1,6 +1,6 @@
 
 <!-- Registration Modal -->
-<div class="modal fade" id="registrationModal" role="dialog">
+<div class="modal fade" id="registrationModal" role="dialog" data-ng-controller="profileController">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content usa-content usa-form-large">
@@ -14,8 +14,8 @@
                         <label for="profileFirstName" class="profile-label">{{'REGISTRATION.LABEL.FIRSTNAME'
                             | translate}}</label>
                         <!--Error Message First Name-->
-                        <div data-ng-messages="profileForm.userFirstName.$error"
-                            data-ng-show="profileForm.userFirstName.$touched">
+                        <div data-ng-messages="profileForm.profileFirstName.$error"
+                            data-ng-show="profileForm.profileFirstName.$touched">
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="pattern">{{
                                 'REGISTRATION.MESSAGE.INVALID.FIRSTINVALID' |
@@ -29,8 +29,8 @@
                         <label for="profileLastName" class="profile-label">{{'REGISTRATION.LABEL.LASTNAME'
                             | translate}}</label>
                         <!--Error Message Last Name-->
-                        <div data-ng-messages="profileForm.userLastName.$error"
-                            data-ng-show="profileForm.userLastName.$touched">
+                        <div data-ng-messages="profileForm.profileLastName.$error"
+                            data-ng-show="profileForm.profileLastName.$touched">
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="pattern">{{
                                 'REGISTRATION.MESSAGE.INVALID.LASTINVALID' |
@@ -41,12 +41,12 @@
                             data-ng-model="user.lastName"
                             data-ng-pattern="regexName">
                         <!--Email-->
-                        <label for="profileEmail"
+                        <label for="profileEmail" id="profileEmailLabel"
                             class="usa-input-required profile-label">{{'REGISTRATION.LABEL.EMAIL'
                             | translate}}</label>
                         <!--Error Message Email-->
-                        <div data-ng-messages="profileForm.userEmail.$error"
-                            data-ng-show="profileForm.userEmail.$touched">
+                        <div data-ng-messages="profileForm.profileEmail.$error"
+                            data-ng-show="profileForm.profileEmail.$touched">
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="required">{{
                                 'REGISTRATION.MESSAGE.INVALID.EMAILREQUIRED' |
@@ -64,8 +64,8 @@
                             class="usa-input-required profile-label">{{'REGISTRATION.LABEL.PASSWORD'
                             | translate}}</label>
                         <!--Error Message Password-->
-                        <div data-ng-messages="profileForm.userPassword.$error"
-                            data-ng-show="profileForm.userPassword.$touched">
+                        <div data-ng-messages="profileForm.profilePassword.$error"
+                            data-ng-show="profileForm.profilePassword.$touched">
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="required">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDREQUIRED'
                                 | translate}}</span>
@@ -83,10 +83,10 @@
                             | translate}}</label>
                         <!--Error Message Confirm Password-->
                         <div
-                            data-ng-messages="profileForm.userConfirmPassword.$error"
-                            data-ng-show="profileForm.userConfirmPassword.$touched">
+                            data-ng-messages="profileForm.profilePasswordConfirmation.$error"
+                            data-ng-show="profileForm.profilePasswordConfirmation.$touched">
                             <span class="usa-input-error-message" role="alert"
-                                data-ng-message="required">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDREQUIRED'
+                                data-ng-message="required">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDNOMATCH'
                                 | translate}}</span>
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="compareTo">{{'REGISTRATION.MESSAGE.INVALID.PASSWORDNOMATCH'
@@ -99,36 +99,28 @@
                             data-compare-to="user.password"
                             data-ng-pattern="regexPassword">
                         <!--Phone Number-->
-                        <label class="usa-input-required profile-label">{{'REGISTRATION.LABEL.PHONE'
-                            | translate}}</label>{{'REGISTRATION.LABEL.PHONE.INFO' |
-                        translate}}
+                        <label class="profile-label">{{'REGISTRATION.LABEL.PHONE'
+                            | translate}} {{'REGISTRATION.LABEL.PHONE.INFO' |
+                        translate}}</label>
                         <!--Error Message Phone Number-->
                         <div
-                            data-ng-messages="profileForm.userPhoneNumber1.$error"
-                            data-ng-show="profileForm.userPhoneNumber1.$touched">
+                            data-ng-messages="profileForm.profilePhoneNumber1.$error"
+                            data-ng-show="profileForm.profilePhoneNumber1.$touched">
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="required">{{'REGISTRATION.MESSAGE.INVALID.PHONENUMBERREQUIRED'
                                 | translate}}</span>
-                            <span class="usa-input-error-message" role="alert"
-                                data-ng-message="pattern">{{
-                                'REGISTRATION.MESSAGE.INVALID.PHONENUMBERFORMATINVALID'
-                                | translate}}</span>
                         </div>
                         <div
-                            data-ng-messages="profileForm.userPhoneNumber2.$error"
-                            data-ng-show="profileForm.userPhoneNumber2.$touched">
+                            data-ng-messages="profileForm.profilePhoneNumber2.$error"
+                            data-ng-show="profileForm.profilePhoneNumber2.$touched">
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="required">{{
                                 'REGISTRATION.MESSAGE.INVALID.PHONENUMBERREQUIRED'
                                 | translate}}</span>
-                            <span class="usa-input-error-message" role="alert"
-                                data-ng-message="pattern">{{
-                                'REGISTRATION.MESSAGE.INVALID.PHONENUMBERFORMATINVALID'
-                                | translate}}</span>
                         </div>
                         <div
-                            data-ng-messages="profileForm.userPhoneNumber3.$error"
-                            data-ng-show="profileForm.userPhoneNumber3.$touched">
+                            data-ng-messages="profileForm.profilePhoneNumber3.$error"
+                            data-ng-show="profileForm.profilePhoneNumber3.$touched">
                             <span class="usa-input-error-message" role="alert"
                                 data-ng-message="required">{{
                                 'REGISTRATION.MESSAGE.INVALID.PHONENUMBERREQUIRED'
@@ -142,7 +134,7 @@
                             <div class="usa-form-group">
                                 <input
                                     class="phone profile-form-input"
-                                    type="text" name="userPhoneNumber1"
+                                    type="text" name="profilePhoneNumber1"
                                     maxlength="3"
                                     data-ng-model="user.phoneNumberAreaCode"
                                     data-ng-pattern="regexPhone3" required />
@@ -150,43 +142,42 @@
                             <div class="usa-form-group">
                                 <input
                                     class="phone profile-form-input"
-                                    type="text" name="userPhoneNumber2"
+                                    type="text" name="profilePhoneNumber2"
                                     maxlength="3"
-                                    data-ng-disabled="profileForm.userPhoneNumber1.$invalid"
+                                    data-ng-disabled="profileForm.profilePhoneNumber1.$invalid"
                                     data-ng-model="user.phoneNumberMiddle"
                                     data-ng-pattern="regexPhone3" required />
                             </div>
                             <div class="usa-form-group">
                                 <input
                                     class="phoneLong profile-form-input"
-                                    type="text" name="userPhoneNumber3"
+                                    type="text" name="profilePhoneNumber3"
                                     maxlength="4"
-                                    data-ng-disabled="profileForm.userPhoneNumber2.$invalid"
+                                    data-ng-disabled="profileForm.profilePhoneNumber2.$invalid"
                                     data-ng-model="user.phoneNumberEnd"
-                                    data-ng-pattern="regexPhone4" required />
+                                    data-ng-pattern="regexPhone4" required="false"/>
                             </div>
                         </div>
                         <!--Zip Code-->
                         <label class="usa-input-required profile-label">{{
                             'REGISTRATION.LABEL.ZIPCODE' | translate}}</label>
                         <!--Error Message Zip Code-->
-                        <div data-ng-messages="profileForm.userZipCode.$error"
-                            data-ng-show="profileForm.userZipCode.$touched">
-                            <span class="usa-input-error-message"
-                                id="input-error-message" role="alert"
+                        <div data-ng-messages="profileForm.profileZipCode.$error"
+                            data-ng-show="profileForm.profileZipCode.$touched">
+                            <span class="usa-input-error-message" role="alert"
                                 data-ng-message="required">{{
                                 'REGISTRATION.MESSAGE.INVALID.ZIPCODEREQUIRED' |
                                 translate}}</span>
-                            <span class="usa-input-error-message"
-                                id="input-error-message" role="alert"
+                            <span class="usa-input-error-message" role="alert"
                                 data-ng-message="pattern">{{
                                 'REGISTRATION.MESSAGE.INVALID.ZIPCODEINVALID' |
                                 translate}}</span>
                         </div>
-                        <input class="profile-form-input" type="text"
-                            name="userZipCode" maxlength="5"
+                        <input class="profile-form-input zipCode" type="text"
+                            name="profileZipCode" maxlength="5"
                             data-ng-model="user.zipCode"
                             data-ng-pattern="regexZip" required>
+                        <div class="zipCodeText">{{'REGISTRATION.LABEL.ZIPCODE.INFO'| translate}}</div>
                         <!-- Subscription to notification service -->
                         <div>
                             <h5>
@@ -220,12 +211,12 @@
                                     <label for="phone" class="notifications">{{'REGISTRATION.LABEL.NOTIFICATIONS.PHONE'
                                         | translate}}</label></li>
                             </ul>
-                            <div data-ng-messages="userForm.subscribe.$error"
-                                data-ng-show="profileForm.notification.$invalid && profileForm.notification.$touched">
-                                <span class="usa-input-error-message"
-                                    role="alert" data-ng-message="required">{{
-                                    'REGISTRATION.MESSAGE.INVALID.CHECKBOXREQUIRED'
-                                    | translate}}</span>
+                            <div data-ng-messages="profileForm.notification.$error" 
+                                   data-ng-show="submitted && profileForm.notification.$invalid">
+                                   <span class="usa-input-error-message"
+                                        role="alert" data-ng-message="required">{{
+                                        'REGISTRATION.MESSAGE.INVALID.CHECKBOXREQUIRED'
+                                        | translate}}</span>
                             </div>
                         </div>
                         <div class="usa-grid-full">
@@ -233,17 +224,10 @@
                             <!--button data-ng-click="reset()">Reset</button>  -->
                             <!-- Cancel button -->
                             <button class="usa-width-one-half"
-                                data-ng-click="" data-toggle="modal" href="#closeConfirmationModal" formnovalidate>{{
+                                data-ng-click="toggleConfirmation()" formnovalidate>{{
                                 'REGISTRATION.BUTTON.CANCEL' | translate }}</button>
                             <!--Save Button-->
                             <button class="usa-width-one-half"
-                                data-ng-disabled="profileForm.userFirstName.$invalid ||
-        profileForm.userLastName.$invalid||
-        profileForm.userEmail.$invalid ||
-        profileForm.userPhoneNumber1.$invalid ||
-        profileForm.userPhoneNumber2.$invalid ||
-        profileForm.userPhoneNumber3.$invalid ||
-        profileForm.userZipCode.$invalid"
                                 data-ng-click="submit()">{{
                                 'REGISTRATION.BUTTON.SAVE' | translate }}</button>
                         </div>
@@ -258,9 +242,13 @@
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content usa-content usa-form-large">
-            <form class="usa-form-large" name="profileForm">
+            <form class="usa-form-large" name="closeConfirmationForm">
                 <fieldset>
-                    <div class="registrationFormDiv">hello</div>
+                    <div class="registrationFormDiv">
+                        <p>{{'CONFIRMATION.LABEL.CANCEL.MESSAGE' | translate }}</p>
+                        <button class="usa-width-one-half" data-ng-click="backToForm()")>{{'CONFIRMATION.BUTTON.NO' | translate }}</button>
+                        <button class="usa-width-one-half" data-ng-click="closeToLogin()">{{'CONFIRMATION.BUTTON.YES' | translate }}</button>
+                    </div>
                 </fieldset>
             </form>
         </div>

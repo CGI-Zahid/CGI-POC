@@ -9,9 +9,9 @@
 'use strict';
 
 cgiWebApp // jshint ignore:line
-.controller('loginController', [ '$scope', '$rootScope', '$state','Authenticator', '$timeout', '$sessionStorage',
+.controller('loginController', [ '$scope', '$rootScope', '$state','Authenticator', 'uswdsLoadService','$timeout', '$sessionStorage',
 
-function ($scope, $rootScope, $state, Authenticator, $timeout, $sessionStorage) {
+function ($scope, $rootScope, $state, Authenticator, uswdsLoadService, $timeout, $sessionStorage) {
 
     $scope.popUp = function(code, message, duration) {
         if (code === 'error') {
@@ -38,7 +38,8 @@ function ($scope, $rootScope, $state, Authenticator, $timeout, $sessionStorage) 
         password : ''
     };
 
-    model.submitForm = function(isValid) {
+       
+    $scope.submitForm = function(isValid) {
         if (isValid) {
 
             var dataObject = {
@@ -51,12 +52,10 @@ function ($scope, $rootScope, $state, Authenticator, $timeout, $sessionStorage) 
                 if (response.status === 200) {
                     model.errorNotif = false;
 
-                    // $scope.$parent.USER = data.user;
-                    // $scope.$parent.template.url = '';
                     model.successNotif = true;
-                    model.successMessage = 'LOGIN.MESSAGE.LOGGEDIN';
-                    // $scope.$parent.navigate('INDEX');
+                    model.successMessage = 'LOGIN.MESSAGE.LOGGEDIN';;
                     $sessionStorage.put('jwt', response.data.authToken);
+                    $state.go('profile');
 
                 } else if (response.status === 401) {
                     $scope.popUp('error', 'LOGIN.MESSAGE.INVALID', POP_UP_DURATION); // jshint ignore:line
@@ -64,8 +63,8 @@ function ($scope, $rootScope, $state, Authenticator, $timeout, $sessionStorage) 
                     $scope.popUp('error', 'GENERIC.MESSAGE.ERROR.SERVER', POP_UP_DURATION); // jshint ignore:line
                 }
 
-                $scope.authForm.$setPristine();
-                $scope.authForm.$setUntouched();
+                //$scope.authForm.$setPristine();
+                //$scope.authForm.$setUntouched();
 
             });
 
@@ -89,5 +88,10 @@ function ($scope, $rootScope, $state, Authenticator, $timeout, $sessionStorage) 
             model.successMessage = '';
         }
     };
-
+    var init = function(){
+        $rootScope.toggleRegistration = false;
+        uswdsLoadService.triggerEvent(document, 'DOMContentLoaded');
+    };
+    
+    init();
 } ]);

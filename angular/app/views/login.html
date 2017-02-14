@@ -1,10 +1,10 @@
 <div data-ng-if="$parent.USER?false:true" class="usa-content">
     <div class="usa-grid login-alert">
         <div class="usa-alert usa-alert-error" role="alert"
-            data-ng-show="vm.errorNotif">
+            data-ng-show="errorNotif">
             <div class="usa-alert-body">
                 <h3 class="usa-alert-heading">Error Status</h3>
-                <p class="usa-alert-text">{{vm.errorMessage | translate}}</p>
+                <p class="usa-alert-text">{{errorMessage | translate}}</p>
                 <a href="#" data-ng-click="closeAlert('success')"
                     aria-label="close">&times;</a>
             </div>
@@ -19,7 +19,7 @@
                     <input id="username" name="username"
                         type="text" data-autocapitalize="off"
                         data-autocorrect="off" data-ng-model="user.username" required="true" />
-                    <span
+                    <span class="usa-input-error-message"
                         data-ng-show="authForm.username.$touched && authForm.username.$error.required">{{'LOGIN.MESSAGE.INVALID.USERNAMEREQUIRED'
                         | translate}}</span>
                 </div>
@@ -28,20 +28,20 @@
                     <input id="password" name="password" type="password"
                         data-ng-model="user.password" required="false"
                         data-ng-pattern="$parent.VALID_PWD_REGEX">
-<!--                     <p class="usa-form-note"> -->
-<!--                         <a title="Show password" href="javascript:void(0);" -->
-<!--                             class="usa-show_password" aria-controls="password"> -->
-<!--                             Show password</a> -->
-<!--                     </p> -->
-                    <span
+                    <p class="usa-form-note">
+                        <a title="Show password" href="javascript:void(0);"
+                            class="usa-show_password" aria-controls="password">
+                            Show password</a>
+                    </p>
+                    <span class="login-error usa-input-error-message"
                         data-ng-show="authForm.password.$touched && authForm.password.$error.required">{{'LOGIN.MESSAGE.INVALID.PASSWORDREQUIRED'
                         | translate}}</span>
-                    <span
-                        data-ng-show="authForm.password.$touched && authForm.password.$error.pattern">{{'GENERIC.MESSAGE.INVALID.PASSWORDPATTERN'
-                        | translate }}</span>
+<!--                     <span class="login-error usa-input-error-message" -->
+<!--                         data-ng-show="authForm.password.$touched && authForm.password.$error.pattern">{{'GENERIC.MESSAGE.INVALID.PASSWORDPATTERN' -->
+<!--                         | translate }}</span> -->
                 </div>
                 <div class="loginFormDiv">
-                    <h5>
+                    <h5 class="login-text">
                         {{'LOGIN.MESSAGE.SIGNIN' | translate}} <a href=""
                             data-ng-click="toggleRegistrationModal()">{{'LOGIN.MESSAGE.SIGNIN.LINK'
                             | translate}}</a>.
@@ -49,7 +49,7 @@
                 </div>
                 <div>
                     <button class="usa-button-primary-alt usa-button-login"
-                        data-ng-click="vm.submitForm(authForm.$valid)">{{'LOGIN.BUTTON.SUBMIT'
+                        data-ng-click="submitForm(authForm.$valid)">{{'LOGIN.BUTTON.SUBMIT'
                         | translate}}</button>
                 </div>
             </fieldset>
