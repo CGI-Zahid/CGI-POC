@@ -36,6 +36,7 @@ import com.cgi.poc.dw.auth.service.JwtReaderServiceImpl;
 import com.cgi.poc.dw.auth.service.KeyBuilderServiceImpl;
 import com.cgi.poc.dw.auth.service.PasswordHash;
 import com.cgi.poc.dw.auth.service.PasswordHashImpl;
+import com.cgi.poc.dw.dao.model.FireEvent;
 import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.dao.model.UserNotification;
 import com.cgi.poc.dw.jobs.JobExecutionService;
@@ -67,7 +68,6 @@ import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
-import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -83,7 +83,7 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 	private final static Logger LOG = LoggerFactory.getLogger(CgiPocApplication.class);
 
 	private final HibernateBundle<CgiPocConfiguration> hibernateBundle = new HibernateBundle<CgiPocConfiguration>(
-			User.class, UserNotification.class) {
+			User.class, UserNotification.class, FireEvent.class) {
 		@Override
 		public DataSourceFactory getDataSourceFactory(CgiPocConfiguration configuration) {
 			return configuration.getDataSourceFactory();
@@ -262,7 +262,6 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 				install(new FactoryModuleBuilder().implement(Runnable.class, PollingDataJob.class)
 						.build(JobFactory.class));
 				bind(Client.class).toInstance(client);
-//				bind(Managed.class).to(JobExecutionService.class).asEagerSingleton();
 
 				// services
 				bind(Validator.class).toInstance(env.getValidator());

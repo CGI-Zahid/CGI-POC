@@ -40,79 +40,106 @@ public class FireEvent implements Serializable {
     @Size(min = 1, max = 36)
     @Column(name = "uniquefireidentifier")
     private String uniquefireidentifier;
+    
     @NotNull
     @Column(name = "geometry")
     private String geometry;
+    
     @Size(max = 20)
     @Column(name = "incidentname")
     private String incidentname;
+    
     @Size(max = 60)
     @Column(name = "hotlink")
     private String hotlink;
+    
     @Size(max = 1)
     @Column(name = "status")
     private String status;
+    
     @Column(name = "objectid")
-    private Long objectid;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    private Integer objectid;
+    
+// @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "latitude")
     private BigDecimal latitude;
+    
     @Column(name = "longitude")
     private BigDecimal longitude;
+    
     @Column(name = "acres")
-    private Long acres;
+    private BigDecimal acres;
+    
     @Size(max = 4)
     @Column(name = "gacc")
     private String gacc;
+    
     @Size(max = 2)
     @Column(name = "state")
     private String state;
+    
     @Lob
     @Column(name = "shape")
     private byte[] shape;
+    
     @Size(max = 38)
     @Column(name = "irwinid")
     private String irwinid;
-    @Size(max = 1)
+    
+    @Size(max = 5)
     @Column(name = "iscomplex")
     private String iscomplex;
+    
     @Size(max = 38)
     @Column(name = "complexparentirwinid")
     private String complexparentirwinid;
-    @Size(max = 5)
+    
+    @Size(max = 15)
     @Column(name = "firecause")
     private String firecause;
+    
     @Column(name = "reportdatetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date reportdatetime;
+    
     @Column(name = "percentcontained")
-    private Long percentcontained;
+    private Integer percentcontained;
+    
     @Column(name = "firediscoverydatetime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date firediscoverydatetime;
+    
     @Size(max = 6)
     @Column(name = "pooresponsibleunit")
     private String pooresponsibleunit;
+    
     @Column(name = "irwinmodifiedon")
     @Temporal(TemporalType.TIMESTAMP)
     private Date irwinmodifiedon;
+    
     @Size(max = 1)
     @Column(name = "mapsymbol")
     private String mapsymbol;
+    
     @Column(name = "datecurrent")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datecurrent;
+    
     @Size(max = 6)
     @Column(name = "pooownerunit")
     private String pooownerunit;
+    
     @Size(max = 15)
     @Column(name = "owneragency")
     private String owneragency;
+    
     @Column(name = "fireyear")
     private Integer fireyear;
+    
     @Size(max = 10)
     @Column(name = "localincidentidentifier")
     private String localincidentidentifier;
+    
     @Size(max = 2)
     @Column(name = "incidenttypecategory")
     private String incidenttypecategory;
@@ -173,11 +200,11 @@ public class FireEvent implements Serializable {
         this.status = status;
     }
 
-    public Long getObjectid() {
+    public Integer getObjectid() {
         return objectid;
     }
 
-    public void setObjectid(Long objectid) {
+    public void setObjectid(Integer objectid) {
         this.objectid = objectid;
     }
 
@@ -197,11 +224,11 @@ public class FireEvent implements Serializable {
         this.longitude = longitude;
     }
 
-    public Long getAcres() {
+    public BigDecimal getAcres() {
         return acres;
     }
 
-    public void setAcres(Long acres) {
+    public void setAcres(BigDecimal acres) {
         this.acres = acres;
     }
 
@@ -269,11 +296,11 @@ public class FireEvent implements Serializable {
         this.reportdatetime = reportdatetime;
     }
 
-    public Long getPercentcontained() {
+    public Integer getPercentcontained() {
         return percentcontained;
     }
 
-    public void setPercentcontained(Long percentcontained) {
+    public void setPercentcontained(Integer percentcontained) {
         this.percentcontained = percentcontained;
     }
 
