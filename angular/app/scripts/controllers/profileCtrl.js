@@ -53,7 +53,7 @@ function($scope, $rootScope, $state, uswdsLoadService, registrationService, $tim
           successMessage = message;
       }
       $timeout(function() {
-          $scope.closeAlert(code);
+          //$scope.closeAlert(code);
       }, duration);
   };
   
