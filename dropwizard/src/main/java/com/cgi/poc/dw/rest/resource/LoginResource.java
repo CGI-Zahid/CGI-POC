@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,7 +38,7 @@ public class LoginResource {
   })
   @UnitOfWork
   @Timed(name = "User.login")
-  public Response login(@Valid LoginUserDto loginUserDto) {
+  public Response login(LoginUserDto loginUserDto) {
     Response response =  loginService.login(loginUserDto);
       if (!response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL)) {
                 throw new WebApplicationException(response);

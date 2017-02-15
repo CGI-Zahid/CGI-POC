@@ -26,6 +26,30 @@ mapsApi:
   apiURL: http://maps.googleapis.com/maps/api/geocode/json
   apiKey: <your_key>
 
+# Notification mail settings.
+mail:
+
+   #The host running the SMTP server to use. 
+  hostname: "127.0.0.1"
+
+   #The port at which the SMTP server listens on. 
+  port: 3025
+
+   #The address used as From for outgoing notification mails sent by the server.
+  systemEmail: "mysystememail@cgi.com"
+
+   #The username used to access the mail server.
+  username: "myusername"
+
+   #The password used to access the mail server.
+  password: "mypass"
+  
+   #Connect using SSL.
+  ssl: false
+  
+   #Connect using TLS.
+  tls: false
+
 logging:
   loggers:
     org.glassfish.jersey.filter.LoggingFilter: INFO

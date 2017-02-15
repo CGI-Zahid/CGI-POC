@@ -12,6 +12,7 @@ import com.cgi.poc.dw.util.RestValidationGroup;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import java.util.Arrays;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.groups.Default;
@@ -35,21 +36,22 @@ public class UserRegistrationServiceImpl extends BaseServiceImpl implements
   private Client client;
 
   private MapApiConfiguration mapApiConfiguration;
+  
+  private final EmailService emailService;
 
   //The name of the query param for the 
   private static final String ADDRESS = "address";
-
+  
 
   @Inject
   public UserRegistrationServiceImpl(MapApiConfiguration mapApiConfiguration, UserDao userDao,
-      PasswordHash passwordHash,
-      Validator validator, Client client) {
+      PasswordHash passwordHash, Validator validator, Client client, EmailService emailService) {
     super(validator);
     this.userDao = userDao;
     this.passwordHash = passwordHash;
     this.client = client;
     this.mapApiConfiguration = mapApiConfiguration;
-
+    this.emailService = emailService;
   }
 
   public Response registerUser(User user) {
@@ -84,6 +86,9 @@ public class UserRegistrationServiceImpl extends BaseServiceImpl implements
       }
       
       userDao.save(user);
+      
+      //Future TODO enhancement: make the subject and email body configurable
+      emailService.send(null, Arrays.asList(user.getEmail()), "Registration confirmation", "Hello there, thank you for registering." );
       
     } catch (ConstraintViolationException exception) {
       throw exception;

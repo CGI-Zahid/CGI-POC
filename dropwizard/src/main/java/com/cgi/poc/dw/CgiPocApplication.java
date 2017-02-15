@@ -44,6 +44,8 @@ import com.cgi.poc.dw.jobs.JobFactory;
 import com.cgi.poc.dw.jobs.PollingDataJob;
 import com.cgi.poc.dw.rest.resource.LoginResource;
 import com.cgi.poc.dw.rest.resource.UserRegistrationResource;
+import com.cgi.poc.dw.service.EmailService;
+import com.cgi.poc.dw.service.EmailServiceImpl;
 import com.cgi.poc.dw.service.LoginService;
 import com.cgi.poc.dw.service.LoginServiceImpl;
 import com.cgi.poc.dw.service.UserRegistrationService;
@@ -269,8 +271,11 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 				bind(JwtBuilderService.class).to(JwtBuilderServiceImpl.class).asEagerSingleton();
 				bind(PasswordHash.class).to(PasswordHashImpl.class).asEagerSingleton();
 				bind(LoginService.class).to(LoginServiceImpl.class).asEagerSingleton();
+				bind(EmailService.class).to(EmailServiceImpl.class).asEagerSingleton();
 				bind(UserRegistrationService.class).to(UserRegistrationServiceImpl.class).asEagerSingleton();
 				bind(MapApiConfiguration.class).toInstance(conf.getMapApiConfiguration());
+				bind(MailConfiguration.class).toInstance(conf.getMailConfig());
+
 			}
 
 			@Singleton
@@ -284,7 +289,6 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 						return hibernateBundle.getSessionFactory();
 					} catch (Exception e) {
 						LOG.error("Unable to run hibernatebundle");
-
 					}
 				} else {
 					return sf;

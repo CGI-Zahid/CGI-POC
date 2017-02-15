@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -64,6 +66,9 @@ public class UserRegistrationServiceUnitTest {
 
   @Mock
   private MapApiConfiguration mapApiConfiguration;
+  
+  @Mock
+  private EmailService emailService;
 
   private User user;
 
@@ -96,6 +101,8 @@ public class UserRegistrationServiceUnitTest {
     Invocation.Builder mockBuilder = mock(Invocation.Builder.class);
     when(mockWebTarget.request(anyString())).thenReturn(mockBuilder);
     when(mockBuilder.get(String.class)).thenReturn(jsonRespone.toString());
+    
+    doNothing().when(emailService).send(anyString(), anyList(), anyString(), anyString());
   }
 
   @Test

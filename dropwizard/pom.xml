@@ -108,6 +108,11 @@
       <version>4.1.0</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-email</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
 		<groupId>com.google.inject.extensions</groupId>
 		<artifactId>guice-assistedinject</artifactId>
 		<version>4.1.0</version>
@@ -128,6 +133,12 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20070829</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.icegreen</groupId>
+      <artifactId>greenmail</artifactId>
+      <version>1.5.3</version>
       <scope>test</scope>
     </dependency>
 	<dependency>

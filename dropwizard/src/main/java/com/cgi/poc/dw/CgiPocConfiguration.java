@@ -36,6 +36,21 @@ public class CgiPocConfiguration extends Configuration {
   /* JOB PARAMETER */
   private JobsConfiguration jobsConfiguration = new JobsConfiguration();
 
+  /* 
+   * E-mail config
+   */
+  @NotNull
+  @JsonProperty
+  private MailConfiguration mail = new MailConfiguration();
+
+  public MailConfiguration getMailConfig() {
+    return mail;
+  }
+
+  public void setMailConfig(final MailConfiguration mailConfiguration) {
+    this.mail = mailConfiguration;
+  }
+
   /**
    * A factory to read database configuration from the configuration file.
    */

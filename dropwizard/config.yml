@@ -71,6 +71,30 @@ mapsApi:
   apiURL: http://maps.googleapis.com/maps/api/geocode/json
   apiKey: <your_key>
 
+# Notification mail settings.
+mail:
+
+   #The host running the SMTP server to use. 
+  hostname: "smtp.gmail.com"
+
+   #The port at which the SMTP server listens on. 
+  port: 587
+
+   #The address used as From for outgoing notification mails sent by the server.
+  systemEmail: "someuser@gmail.com"
+
+   #The username used to access the mail server.
+  username: "someuser"
+
+   #The password used to access the mail server.
+  password: "somepass"
+  
+   #Connect using SSL.
+  ssl: true
+  
+   #Connect using TLS.
+  tls: true
+
 # Logging settings
 logging:
   level: INFO

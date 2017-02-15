@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Sprint1">
+  <test name="SmokeSuite">
+    <classes>
+      <class name="com.ChildWelfareAutomationSuite.Testcases.TC01_LoginFlow"/>
+      <class name="com.ChildWelfareAutomationSuite.Testcases.TC02_disAllowLogin"/>
+    </classes>
+  </test> <!-- SmokeSuite -->
+</suite> <!-- Sprint1 -->
