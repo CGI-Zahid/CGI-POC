@@ -136,7 +136,7 @@ function($scope, $rootScope, $state, uswdsLoadService, registrationService, $tim
     };
     $scope.closeToLogin = function(){
         $scope.user = angular.copy(blankUser);
-        $sessionStorage.clear();
+        //$sessionStorage.clear();
         $state.go('login');
     };
    
