@@ -1,0 +1,16 @@
+{
+   "attributes": {
+        "OBJECTID": 1,
+        "name": "IVAN",
+        "type": "No Real Data Aval",
+        "id": "ID-1",
+        "movement": "NW at 5 ",
+        "wind": "NW @ 70mph",
+        "pubdate": 1487035475000,
+        "link": "www.cnn.com"
+      }
+   ,
+  "geometry": {
+    "x": -10677457.159137897,
+    "y": 4106537.9944933983
+  }}

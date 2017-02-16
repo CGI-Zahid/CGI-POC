@@ -56,7 +56,7 @@ public class JobExecutionService implements Managed{
     	LOGGER.debug("Starting jobs");
     	
     	for(JobParameter jobParam : jobsConfiguration.getJobs()){
-    		LOGGER.debug("Instanciate job : " + jobParam.toString());
+    		LOGGER.debug("Instanciate job : {}", jobParam.toString());
     		
     		APICallerService apiCallerService = aPIServiceFactory.create(client, jobParam.getEventURL(), fireEventDAO);
         	service.scheduleAtFixedRate(jobFactory.create(apiCallerService), jobParam.getDelay(), jobParam.getPeriod(), TimeUnit.valueOf(jobParam.getTimeUnit()));

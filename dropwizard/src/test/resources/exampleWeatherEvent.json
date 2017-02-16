@@ -1,0 +1,57 @@
+    {
+      "attributes": {
+        "objectid": 3,
+        "phenom": "FF",
+        "sig": "W",
+        "warnid": "O.CON.KSTO.FF.W.0003.0213017\n\t7111613.312777",
+        "wfo": "KSTO",
+        "event": "0003",
+        "issuance": "2017-02-13 23:16:13",
+        "expiration": "2017-02-14 19:30:00",
+        "url": "http://forecast.weather.gov/product.php?site=STO&issuedby=STO&product=FFS",
+        "msg_type": "FFS",
+        "prod_type": "Flash Flood Warning",
+        "idp_source": "current_warnings",
+        "idp_subset": "default",
+        "idp_filedate": 1487035475000,
+        "idp_ingestdate": 1487031976000,
+        "idp_current_forecast": null,
+        "idp_time_series": null,
+        "idp_issueddate": null,
+        "idp_validtime": null,
+        "idp_validendtime": null,
+        "idp_fcst_hour": null,
+        "st_area(shape)": 0.0027502021850042118,
+        "st_length(shape)": 0.24712563030892384
+      },
+      "geometry": {
+        "rings": [
+          [
+            [
+              -121.5,
+              38.240001677999999
+            ],
+            [
+              -121.540000916,
+              38.159999846999995
+            ],
+            [
+              -121.56999969499998,
+              38.169998168999996
+            ],
+            [
+              -121.55000305200002,
+              38.200000762999991
+            ],
+            [
+              -121.55000305200002,
+              38.240001677999999
+            ],
+            [
+              -121.5,
+              38.240001677999999
+            ]
+          ]
+        ]
+      }
+    }

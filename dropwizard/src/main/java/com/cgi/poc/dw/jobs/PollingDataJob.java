@@ -32,7 +32,7 @@ public class PollingDataJob implements Runnable{
 		try{
 			apiCallerService.callServiceAPI();
 		}catch(Exception e){
-			LOGGER.error("the job get an error " + e.getMessage());
+			LOGGER.error("the job get an error {}", e.getMessage());
 		}
 	}
 

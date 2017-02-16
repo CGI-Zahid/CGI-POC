@@ -1,0 +1,122 @@
+ {
+      "attributes": {
+        "objectid": 6,
+        "gaugelid": "ABBG1",
+        "location": "Abbeville",
+        "latitude": {
+          "s": 1,
+          "e": 1,
+          "c": [
+            3,
+            1,
+            9,
+            9,
+            6,
+            6,
+            6,
+            6,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ]
+        },
+        "longitude": {
+          "s": -1,
+          "e": 1,
+          "c": [
+            8,
+            3,
+            2,
+            7,
+            9,
+            1,
+            6,
+            7,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "waterbody": "Ocmulgee River",
+        "state": "GA",
+        "observed": "7.01",
+        "obstime": "2017-02-13 16:45:00",
+        "units": "ft",
+        "action": "10.00",
+        "flood": "12.00",
+        "moderate": "14.00",
+        "major": "18.00",
+        "lowthresh": " ",
+        "lowthreshu": "ft",
+        "wfo": "ffc",
+        "hdatum": "NAD83/WGS84",
+        "pedts": "HGIRG",
+        "secvalue": "4.44",
+        "secunit": "kcfs",
+        "url": "https://water.weather.gov/ahps2/hydrograph.php?wfo=ffc&gage=abbg1",
+        "idp_source": "national_shapefile_obs",
+        "idp_subset": "default",
+        "status": "no_flooding",
+        "forecast": null
+      },
+      "geometry": {
+        "x": {
+          "s": -1,
+          "e": 1,
+          "c": [
+            8,
+            3,
+            2,
+            7,
+            9,
+            1,
+            6,
+            6,
+            9,
+            9,
+            9,
+            5,
+            5,
+            7,
+            3,
+            3,
+            3
+          ]
+        },
+        "y": {
+          "s": 1,
+          "e": 1,
+          "c": [
+            3,
+            1,
+            9,
+            9,
+            6,
+            6,
+            6,
+            7,
+            0,
+            0,
+            0,
+            0,
+            8,
+            2,
+            1,
+            4,
+            1
+          ]
+        }
+      }
+    }

@@ -60,20 +60,16 @@ public class FireEventDAO extends AbstractDAO<FireEvent> {
         //contract id, page, page size
         criteria.add(Restrictions.eq("uniquefireidentifier", id));
         FireEvent event = null;
-        try {
-            event = (FireEvent) criteria.uniqueResult();
-        } catch (Exception e) {
-            System.out.println("Error: Exception");
-            System.out.println(e);
-
-        }
+        
+        event = (FireEvent) criteria.uniqueResult();
+         
         return event;
     }
     public FireEvent selectForUpdate(FireEvent event) {
         return ((FireEvent) this.currentSession().load(FireEvent.class, event.getUniquefireidentifier()));
     }
     
-    public FireEvent update(FireEvent event) {
+    public FireEvent save(FireEvent event) {
         FireEvent merge = (FireEvent)  this.currentSession().merge(event);
         return  merge;
     }

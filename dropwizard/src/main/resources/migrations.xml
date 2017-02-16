@@ -47,4 +47,248 @@
             <column name="notification_id" type="integer" />
     </createTable>
     </changeSet>
+    <changeSet id="6" author="Dawna Floyd">
+        <createTable tableName="event_weather">
+            <column name="warnid" type="varchar(64)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="objectid" type="integer" />
+            <column name="geometry" type="json" />
+            <column name="phenom" type="varchar(2)" />
+            <column name="sig" type="varchar(2)" />
+            <column name="wfo" type="varchar(4)" />
+            <column name="event" type="varchar(4)" />
+            <column name="issuance" type="varchar(20)" />
+            <column name="expiration" type="varchar(20)" />
+            <column name="url" type="varchar(128)" />
+            <column name="msg_type" type="varchar(4)" />
+            <column name="prod_type" type="varchar(64)" />
+            <column name="idp_source" type="varchar(50)" />
+            <column name="idp_subset" type="varchar(50)" />
+            <column name="idp_filedate" type="timestamp" />
+            <column name="idp_ingestdate" type="timestamp" />
+            <column name="idp_current_forecast" type="integer" />
+            <column name="idp_time_series" type="integer" />
+            <column name="idp_issueddate" type="timestamp" />
+            <column name="dp_validtime" type="timestamp" />
+            <column name="idp_validtime" type="timestamp" />
+            <column name="idp_fcst_hour" type="integer" />
+            <column name="shape" type="geometry" />
+            <column name="st_area" type="NUMERIC(25,20)" />
+            <column name="st_length" type="NUMERIC(25,20)" />
+            <column name="last_modified" type="timestamp" defaultValueComputed="${now}"/>
+            <column name="notification_id" type="integer" />
+         </createTable>
+    </changeSet>
+    <changeSet id="7" author="Dawna Floyd">
+        <createTable tableName="event_flood">
+            <column name="waterbody" type="varchar(255)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="obstime" type="varchar(26)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="objectid" type="integer" />
+            <column name="geometry" type="json" />
+            <column name="latitude" type="NUMERIC(25,20)" />
+            <column name="longitude" type="NUMERIC(25,20)" />
+            <column name="state" type="varchar(2)" />
+            <column name="idp_source" type="varchar(50)" />
+            <column name="idp_subset" type="varchar(50)" />
+            <column name="shape" type="geometry" />
+            <column name="gaugelid" type="varchar(5)" />
+            <column name="location" type="varchar(90)" />
+            <column name="observed" type="varchar(24)" />
+            <column name="units" type="varchar(5)" />
+            <column name="action" type="varchar(24)" />
+            <column name="flood" type="varchar(24)" />
+            <column name="moderate" type="varchar(24)" />
+            <column name="major" type="varchar(24)" />
+            <column name="lowthresh" type="varchar(24)" />
+            <column name="lowthreshu" type="varchar(5)" />
+            <column name="wfo" type="varchar(5)" />
+            <column name="hdatum" type="varchar(30)" />
+            <column name="pedts" type="varchar(5)" />
+            <column name="secvalue" type="varchar(24)" />
+            <column name="secunit" type="varchar(5)" />
+             <column name="url" type="varchar(128)" />
+            <column name="status" type="varchar(25)" />
+            <column name="forecast" type="varchar(24)" />
+            <column name="last_modified" type="timestamp" defaultValueComputed="${now}"/>
+            <column name="notification_id" type="integer" />
+        </createTable>
+    </changeSet>
+    <changeSet id="8" author="Dawna Floyd">
+        <createTable tableName="event_hurricanes">
+            <column name="id" type="varchar(10)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="pubdate" type="timestamp" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="link" type="varchar(80)" />
+            <column name="geometry" type="json" />
+            <column name="objectid" type="integer" />
+            <column name="shape" type="geometry" />
+            <column name="name" type="varchar(20)" />
+            <column name="type" type="varchar(25)" />
+            <column name="movement" type="varchar(30)" />
+            <column name="wind" type="varchar(10)" />
+            <column name="last_modified" type="timestamp" defaultValueComputed="${now}"/>
+            <column name="notification_id" type="integer" />
+        </createTable>
+    </changeSet>
+    <changeSet id="9" author="Dawna Floyd">
+        <createTable tableName="event_earthQuake">
+            <column name="eqid" type="varchar(50)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="datetime" type="timestamp" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="objectid" type="integer" />
+            <column name="geometry" type="json" />
+            <column name="depth" type="NUMERIC(10,5)" />
+            <column name="latitude" type="NUMERIC(25,20)" />
+            <column name="longitude" type="NUMERIC(25,20)" />
+            <column name="magnitude" type="NUMERIC(5,2)" />
+            <column name="numstations" type="integer" />
+            <column name="region" type="varchar(200)" />
+            <column name="source" type="varchar(50)" />
+            <column name="version" type="varchar(50)" />
+            <column name="shape" type="geometry" />
+            <column name="last_modified" type="timestamp" defaultValueComputed="${now}"/>
+            <column name="notification_id" type="integer" />
+        </createTable>
+    </changeSet>
+    <changeSet id="10" author="Dawna Floyd">
+        <createTable tableName="event_tsunami">
+            <column name="id" type="NUMERIC(10,2)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="geometry" type="json" />
+            <column name="yeah" type="integer" />
+            <column name="month" type="integer" />
+            <column name="day" type="integer" />
+            <column name="hour" type="integer" />
+            <column name="minute" type="integer" />
+            <column name="second" type="integer" />
+            <column name="date_string" type="varchar(13)" />
+            <column name="latitude" type="NUMERIC(25,20)" />
+            <column name="longitude" type="NUMERIC(25,20)" />
+            <column name="location_name" type="varchar(13)" />
+            <column name="area" type="varchar(2)" />
+            <column name="country" type="varchar(50)" />
+            <column name="region_code" type="integer" />
+            <column name="region" type="varchar(50)" />
+            <column name="cause_code" type="integer" />
+            <column name="cause" type="varchar(50)" />
+            <column name="event_validity_code" type="integer" />
+            <column name="event_validity" type="varchar(100)" />
+             <column name="eq_mag_unk" type="NUMERIC(5,2)" />
+             <column name="eq_mag_mb" type="NUMERIC(5,2)" />
+             <column name="eq_mag_ms" type="NUMERIC(5,2)" />
+             <column name="eq_mag_mw" type="NUMERIC(5,2)" />
+             <column name="eq_mag_ml" type="NUMERIC(5,2)" />
+             <column name="eq_mag_mta" type="NUMERIC(5,2)" />
+             <column name="eq_magnatude" type="NUMERIC(5,2)" />
+             <column name="eq_magnatude_rank" type="NUMERIC(5,2)" />
+            <column name="eq_depth" type="integer" />
+             <column name="max_event_runup" type="NUMERIC(5,2)" />
+             <column name="ts_mt_abe" type="NUMERIC(5,2)" />
+             <column name="ts_mt_ii" type="NUMERIC(5,2)" />
+             <column name="ts_intensity" type="NUMERIC(5,2)" />
+             <column name="damage_millions_dollars" type="NUMERIC(10,2)" />
+            <column name="damage_amount_order" type="integer" />
+            <column name="damage_description" type="varchar(40)" />
+            <column name="houses_destroyed" type="integer" />
+            <column name="houses_amount_order" type="integer" />
+            <column name="houses_description" type="varchar(40)" />
+            <column name="deaths" type="integer" />
+            <column name="deaths_amount_order" type="integer" />
+            <column name="deaths_description" type="varchar(40)" />
+            <column name="injuries" type="integer" />
+            <column name="injuries_amount_order" type="integer" />
+            <column name="injuries_description" type="varchar(40)" />
+            <column name="missing" type="integer" />
+            <column name="missing_amount_order" type="integer" />
+            <column name="missing_description" type="varchar(40)" />
+            <column name="comments" type="varchar(400)" />
+            <column name="num_runup" type="integer" />
+             <column name="damage_millions_dollars_total" type="NUMERIC(10,2)" />
+            <column name="damage_amount_order_total" type="integer" />
+            <column name="damage_total_description" type="varchar(40)" />
+            <column name="houses_destroyed_total" type="integer" />
+            <column name="houses_amount_order_total" type="integer" />
+            <column name="houses_total_description" type="varchar(40)" />
+            <column name="deaths_total" type="integer" />
+            <column name="deaths_amount_order_total" type="integer" />
+            <column name="deaths_total_description" type="varchar(40)" />
+            <column name="injuries_total" type="integer" />
+            <column name="injuries_amount_order_total" type="integer" />
+            <column name="injuries_total_description" type="varchar(40)" />
+            <column name="missing_total" type="integer" />
+            <column name="missing_amount_order_total" type="integer" />
+            <column name="missing_total_description" type="varchar(40)" />
+              <column name="objectid" type="integer" />
+            <column name="shape" type="geometry" />
+            <column name="houses_damaged" type="integer" />
+            <column name="houses_damaged_amount_order" type="integer" />
+            <column name="houses_dam_description" type="varchar(40)" />
+            <column name="houses_damaged_total" type="integer" />
+            <column name="houses_dama_amount_order_total" type="integer" />
+            <column name="houses_dam_total_description" type="varchar(40)" />
+            <column name="num_deposits" type="integer" />
+            <column name="url" type="varchar(128)" />
+            <column name="last_modified" type="timestamp" defaultValueComputed="${now}"/>
+            <column name="notification_id" type="integer" />
+        </createTable>
+    </changeSet>
+    <changeSet id="11" author="Dawna Floyd">
+        <createTable tableName="event_volcano">
+            <column name="id" type="varchar(10)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="pubdate" type="timestamp" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="link" type="varchar(80)" />
+            <column name="geometry" type="json" />
+            <column name="objectid" type="integer" />
+            <column name="shape" type="geometry" />
+            <column name="alert" type="varchar(10)" />
+            <column name="color" type="varchar(8)" />
+            <column name="descrpt" type="varchar(160)" />
+            <column name="last_modified" type="timestamp" defaultValueComputed="${now}"/>
+            <column name="notification_id" type="integer" />
+ 
+        </createTable>
+    </changeSet>
+    <changeSet id="12" author="Dawna Floyd">
+        <addColumn tableName="event_weather">
+            <column name="idp_validendtime" type="timestamp" />
+        </addColumn>
+        <dropColumn tableName="event_weather" columnName="dp_validtime"/>
+
+    </changeSet>
+    <changeSet id="13" author="Dawna Floyd">
+    <comment> change from json to text data data. Json data type seems to be loosing precision in x/y coordinates</comment> 
+    <modifyDataType columnName="geometry" newDataType="text" tableName="event_fire"/>
+    <modifyDataType columnName="geometry" newDataType="text" tableName="event_weather"/>
+    <modifyDataType columnName="geometry" newDataType="text" tableName="event_flood"/>
+    <modifyDataType columnName="geometry" newDataType="text" tableName="event_hurricanes"/>
+    <modifyDataType columnName="geometry" newDataType="text" tableName="event_earthQuake"/>
+    <modifyDataType columnName="geometry" newDataType="text" tableName="event_tsunami"/>
+    <modifyDataType columnName="geometry" newDataType="text" tableName="event_volcano"/>
+    
+    </changeSet>
+    <changeSet id="14" author="Dawna Floyd">
+    <modifyDataType columnName="firecause" newDataType="VARCHAR(15)" tableName="event_fire"/>
+    <modifyDataType columnName="iscomplex" newDataType="VARCHAR(5)" tableName="event_fire"/>
+    </changeSet>
+    <changeSet id="15" author="Dawna Floyd">
+    <modifyDataType columnName="id" newDataType="VARCHAR(60)" tableName="event_volcano"/>
+    </changeSet>
+
+
 </databaseChangeLog>

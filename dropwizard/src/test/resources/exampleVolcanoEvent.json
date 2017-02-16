@@ -1,0 +1,15 @@
+    {
+      "attributes": {
+        "OBJECTID": 6,
+        "pubdate": 1486668480000,
+        "link": "https://volcanoes.usgs.gov/vhp/updates.html#hvo",
+        "id": "HVO Mauna Loa YELLOW/ADVISORY",
+        "alert": "Advisory",
+        "color": "Yellow",
+        "descrpt": "Mauna Loa is not erupting. Deformation and seismicity remain above background rates."
+      },
+      "geometry": {
+        "x": -17322203.3234,
+        "y": 2210940.0824000016
+      }
+    }

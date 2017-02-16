@@ -77,9 +77,9 @@ public class APICallerServiceImpl implements APICallerService {
 
 			parsingEventsResponse(eventJson);
 		} catch (IOException e) {
-			LOGGER.error("Unable to parse the result for the url event : " + eventUrl + " error:" + e.getMessage());
+			LOGGER.error("Unable to parse the result for the url event : {} error: {}", eventUrl, e.getMessage());
 		} catch (ParseException e) {
-			LOGGER.error("Unable to parse the result for the url event : " + eventUrl + " error:" + e.getMessage());
+			LOGGER.error("Unable to parse the result for the url event : {} error: {}", eventUrl, e.getMessage());
 		}
 	}
 
@@ -112,7 +112,7 @@ public class APICallerServiceImpl implements APICallerService {
 	            try {
 	            	
 	                // Archive users based on last login date
-	            	fireEventDAO.update(event);
+	            	fireEventDAO.save(event);
 	                transaction.commit();
 	            }
 	            catch (Exception e) {
@@ -124,7 +124,7 @@ public class APICallerServiceImpl implements APICallerService {
 	            ManagedSessionContext.unbind(sessionFactory);
 	        }
 
-			LOGGER.info("Event to save : " + event.toString());
+			LOGGER.info("Event to save : {}", event.toString());
 
 		}
 	}

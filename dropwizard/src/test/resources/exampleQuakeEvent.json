@@ -1,0 +1,19 @@
+{
+    "attributes": {
+      "objectid": 273461806,
+      "datetime": 1440702216000,
+      "depth": null,
+      "eqid": "ci37234359",
+      "latitude": -116.8933333,
+      "longitude": 32.7746667,
+      "magnitude": 1.33,
+      "numstations": 17,
+      "region": "5km NE of Rancho San Diego, California",
+      "source": ",ci,",
+      "version": null
+    },
+    "geometry": {
+      "x": -116.8933333,
+      "y": 32.77466670000007
+    }
+  }

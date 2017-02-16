@@ -139,7 +139,7 @@ public class APICallerServiceTest extends IntegrationTest {
 			apiCallerService.callServiceAPI();
 			fail("Expected ConflictException");
 		} catch (RuntimeException e) {
-			LOGGER.info("the runtime exception catch : " + e.getMessage());
+			LOGGER.info("the runtime exception catch : {}", e.getMessage());
 		}
 	}
 
@@ -152,7 +152,7 @@ public class APICallerServiceTest extends IntegrationTest {
 			apiCallerService.callServiceAPI();
 			fail("Expected ConflictException");
 		} catch (NullPointerException e) {
-			LOGGER.info("the null pointer exception catch : " + e.getMessage());
+			LOGGER.info("the null pointer exception catch : {}", e.getMessage());
 		}
 	}
 }
