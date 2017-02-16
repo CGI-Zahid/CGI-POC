@@ -57,3 +57,22 @@ logging:
 # Swagger settings
 swagger:
   resourcePackage: com.cgi.poc.dw.rest.resource
+  
+#Jobs settings
+scheduler:
+  #number of thread to use to run the jobs
+  thread: 5
+  #Define a job for an event API
+  jobs:
+    # the URL of the API event
+     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query
+       #the delay to start the job after the server start
+       delay: 10
+       #the delay between to running job's
+       period: 60
+       #the time unit to define the delay and the period
+       timeUnit: SECONDS
+#     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
+#       delay: 10
+#       period: 10
+#       timeUnit: SECONDS

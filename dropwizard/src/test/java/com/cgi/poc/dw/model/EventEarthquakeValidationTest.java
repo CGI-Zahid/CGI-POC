@@ -5,17 +5,15 @@
  */
 package com.cgi.poc.dw.model;
 
-import com.cgi.poc.dw.dao.model.EventEarthquake;
 import com.cgi.poc.dw.dao.model.EventEarthquakePK;
 import com.cgi.poc.dw.dao.model.EventEarthquake;
-import com.cgi.poc.dw.helper.IntegrationTest;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,30 +21,17 @@ import org.junit.After;
 import org.junit.Test;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Iterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.testing.ResourceHelpers;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -163,36 +148,36 @@ public class EventEarthquakeValidationTest extends BaseTest {
      * Test of min required fields on model
      */
     @Test
-    public void testExampleFromSource() throws IOException, ParseException, URISyntaxException {
-         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = getClass().getClassLoader();
+    public void testExampleFromSource() throws Exception {
+         ClassLoader classLoader = getClass().getClassLoader();
            File file = new File(ClassLoader.getSystemResource("exampleQuakeEvent.json").toURI());
-         
-            Object obj = parser.parse(new FileReader(file));
-
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject event = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
+             JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode event = node.get("attributes");
+            JsonNode geo = node.get("attributes");
+ 
            EventEarthquake tst = mapper.readValue(event.toString(), EventEarthquake.class);
+            
            
-         assertEquals(tst.getEventEarthquakePK().getEqid(),event.get("eqid"));
-         assertEquals(tst.getEventEarthquakePK().getDatetime().getTime(),event.get("datetime"));
-         assertEquals(tst.getDepth(),event.get("depth"));
-         assertEquals(tst.getLatitude().setScale(20), BigDecimal.valueOf( (double)event.get("latitude")).setScale(20));
-         assertEquals(tst.getLongitude().setScale(20), BigDecimal.valueOf( (double)event.get("longitude")).setScale(20));
+         assertEquals(tst.getEventEarthquakePK().getEqid(),event.get("eqid").asText());
+         assertEquals(tst.getEventEarthquakePK().getDatetime().getTime(),event.get("datetime").asLong());
+         assertNull(tst.getDepth());
+         assertEquals(tst.getLatitude().setScale(20), BigDecimal.valueOf( event.get("latitude").asDouble()).setScale(20));
+         assertEquals(tst.getLongitude().setScale(20), BigDecimal.valueOf( event.get("longitude").asDouble()).setScale(20));
 
-         assertEquals(tst.getObjectid().longValue(),event.get("objectid"));
-         assertEquals(tst.getMagnitude().setScale(2),BigDecimal.valueOf( (double)event.get("magnitude")).setScale(2));
-         assertEquals(tst.getNumstations().longValue(),event.get("numstations"));
-         assertEquals(tst.getRegion(),event.get("region"));
-         assertEquals(tst.getSource(),event.get("source"));
+         assertEquals(tst.getObjectid().longValue(),event.get("objectid").asLong());
+         assertEquals(tst.getMagnitude().setScale(2),BigDecimal.valueOf(  event.get("magnitude").asDouble()).setScale(2));
+         assertEquals(tst.getNumstations().longValue(),event.get("numstations").asLong());
+         assertEquals(tst.getRegion(),event.get("region").asText());
+         assertEquals(tst.getSource(),event.get("source").asText());
+         assertNull(tst.getVersion());
  
          
  
     }
     @Test
-    public void testFieldLengthValidations() throws IOException, ParseException {
+    public void testFieldLengthValidations() throws  Exception {
         EventEarthquakePK eventEarthquakePK = new EventEarthquakePK();
         EventEarthquake event = new EventEarthquake();
         eventEarthquakePK.setEqid("1234");
@@ -202,14 +187,7 @@ public class EventEarthquakeValidationTest extends BaseTest {
         event.setSource("123456789012345678912345678901234567891234567890123456789123456789012345678912345678901234567891234567890123456789");
         event.setVersion("123456789012345678912345678901234567891234567890123456789123456789012345678912345678901234567891234567890123456789");
  
-                
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
-        
-        event.setGeometry(geo.toJSONString());
+        event.setGeometry(createTestGeo());
         
         Set<ConstraintViolation<EventEarthquake>> validate = validator.validate(event);
         

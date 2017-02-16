@@ -6,11 +6,12 @@
 package com.cgi.poc.dw.dao;
 
 import com.cgi.poc.dw.dao.model.EventVolcano;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -23,9 +24,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+ 
 
 
 /**
@@ -68,19 +67,19 @@ public class EventVolcanoDAOTest extends DaoUnitTestBase  {
      * Test of update method, of class EventVolcanoDAO.
      */
     @Test
-    public void testCRUD() throws IOException,   URISyntaxException,    ParseException {
+    public void testCRUD() throws Exception {
          ClassLoader classLoader = getClass().getClassLoader(); 
            File file = new File(ClassLoader.getSystemResource("exampleVolcanoEvent.json").toURI());
          
-            Object obj = parser.parse(new FileReader(file));
-
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject jsonEvent = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
+         
+             JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode jsonEvent = node.get("attributes");
+            JsonNode geo = node.get("attributes");
             
            EventVolcano event = mapper.readValue(jsonEvent.toString(), EventVolcano.class);
-        event.setGeometry(geo.toJSONString());
+        event.setGeometry(geo.toString());
            
         EventVolcano result = eventDAO.save(event);
          flush(); // have to do this.. so that the sql is actually executed.

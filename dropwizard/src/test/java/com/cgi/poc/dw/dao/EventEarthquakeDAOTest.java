@@ -8,7 +8,12 @@ package com.cgi.poc.dw.dao;
 import com.cgi.poc.dw.dao.model.EventEarthquake;
 import com.cgi.poc.dw.dao.model.EventEarthquakePK;
 import com.cgi.poc.dw.dao.model.EventFlood;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,9 +32,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+ 
  
 /**
  *
@@ -74,20 +77,21 @@ public class EventEarthquakeDAOTest extends DaoUnitTestBase  {
      * @throws java.net.URISyntaxException
      */
     @Test
-    public void testCRUD() throws IOException, ParseException, URISyntaxException {
-         ClassLoader classLoader = getClass().getClassLoader();
+    public void testCRUD() throws Exception {
+           ClassLoader classLoader = getClass().getClassLoader();
            File file = new File(ClassLoader.getSystemResource("exampleQuakeEvent.json").toURI());
          
-            Object obj = parser.parse(new FileReader(file));
-
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject jsonEvent = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
+         
+             JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode jsonEvent = node.get("attributes");
+            JsonNode geo = node.get("attributes");
+            
            EventEarthquake event = mapper.readValue(jsonEvent.toString(), EventEarthquake.class);
 
 
-        event.setGeometry(geo.toJSONString());
+        event.setGeometry(geo.toString());
         EventEarthquake result = eventDAO.save(event);
         Set<ConstraintViolation<EventEarthquake>> errors = validator.validate(result);
          flush(); // have to do this.. so that the sql is actually executed.

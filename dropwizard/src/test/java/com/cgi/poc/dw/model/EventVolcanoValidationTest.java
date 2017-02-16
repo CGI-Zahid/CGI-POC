@@ -6,6 +6,8 @@
 package com.cgi.poc.dw.model;
 
 import com.cgi.poc.dw.dao.model.EventVolcano;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -15,13 +17,9 @@ import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 import java.io.FileReader;
-import java.io.IOException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.URISyntaxException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Date;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+ 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -68,14 +66,9 @@ public class EventVolcanoValidationTest extends BaseTest {
         EventVolcano event = new EventVolcano();
         event.setId("SomeId");
         event.setPubdate(new Date());
-
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
+ 
         
-        event.setGeometry(geo.toJSONString());
+        event.setGeometry(createTestGeo());
         Set<ConstraintViolation<EventVolcano>> validate = validator.validate(event);
         assertThat(validate.isEmpty()).isEqualTo(true);
     }
@@ -84,32 +77,30 @@ public class EventVolcanoValidationTest extends BaseTest {
      * Test of min required fields on model
      */
     @Test
-    public void testExampleFromSource() throws IOException, ParseException, URISyntaxException {
-         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = getClass().getClassLoader();
+    public void testExampleFromSource() throws  Exception {
+         ClassLoader classLoader = getClass().getClassLoader();
            File file = new File(ClassLoader.getSystemResource("exampleVolcanoEvent.json").toURI());
          
-            Object obj = parser.parse(new FileReader(file));
-
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject jsonEvent = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
+            JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode jsonEvent = node.get("attributes");
+            JsonNode geo = node.get("attributes");
             
            EventVolcano event = mapper.readValue(jsonEvent.toString(), EventVolcano.class);
 
-         assertEquals(event.getPubdate().getTime(), jsonEvent.get("pubdate"));
-         assertEquals(event.getObjectid().longValue(),jsonEvent.get("OBJECTID"));
-         assertEquals(event.getId(),jsonEvent.get("id"));
-         assertEquals(event.getLink(),jsonEvent.get("link"));
-         assertEquals(event.getAlert(),jsonEvent.get("alert"));
-         assertEquals(event.getColor(),jsonEvent.get("color"));
-         assertEquals(event.getDescrpt(),jsonEvent.get("descrpt"));
+         assertEquals(event.getPubdate().getTime(), jsonEvent.get("pubdate").asLong());
+         assertEquals(event.getObjectid().longValue(),jsonEvent.get("OBJECTID").asLong());
+         assertEquals(event.getId(),jsonEvent.get("id").asText());
+         assertEquals(event.getLink(),jsonEvent.get("link").asText());
+         assertEquals(event.getAlert(),jsonEvent.get("alert").asText());
+         assertEquals(event.getColor(),jsonEvent.get("color").asText());
+         assertEquals(event.getDescrpt(),jsonEvent.get("descrpt").asText());
 
 
     }
     @Test
-    public void testFieldLengthValidations() throws IOException, ParseException {
+    public void testFieldLengthValidations() throws  Exception {
         EventVolcano testEvent = new EventVolcano();
         testEvent.setId("0123456789001234567890012345678900123456789001234567890012345678900123456789001234567890");
         testEvent.setLink("01234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890");
@@ -117,14 +108,9 @@ public class EventVolcanoValidationTest extends BaseTest {
         testEvent.setColor("0123456789001234567890");
         testEvent.setDescrpt("012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890");
         testEvent.setPubdate(new Date());
-
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
  
-        testEvent.setGeometry(geo.toJSONString());
+ 
+        testEvent.setGeometry(createTestGeo());
         Set<ConstraintViolation<EventVolcano>> validate = validator.validate(testEvent);
         assertThat(validate.size()).isEqualTo(5);
         

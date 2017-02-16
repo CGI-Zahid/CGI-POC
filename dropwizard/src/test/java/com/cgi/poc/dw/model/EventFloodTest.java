@@ -5,26 +5,19 @@
  */
 package com.cgi.poc.dw.model;
 
-import com.cgi.poc.dw.dao.model.EventEarthquake;
 import com.cgi.poc.dw.dao.model.EventFlood;
-import com.cgi.poc.dw.dao.model.EventFloodPK;
-import com.cgi.poc.dw.helper.IntegrationTest;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.Set;
-import javax.persistence.Column;
 import javax.validation.ConstraintViolation;
-import javax.validation.constraints.Size;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+ 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -131,57 +124,57 @@ public class EventFloodTest extends BaseTest {
         }
     }
         @Test
-    public void testExampleFromSource() throws IOException, ParseException, URISyntaxException {
-         JSONParser parser = new JSONParser();
+    public void testExampleFromSource() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
            File file = new File(ClassLoader.getSystemResource("exampleFloodEvent.json").toURI());
-         
-            Object obj = parser.parse(new FileReader(file));
 
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject event = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
+            JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode event = node.get("attributes");
+            JsonNode geo = node.get("attributes");
+ 
+
            EventFlood tst = mapper.readValue(event.toString(), EventFlood.class);
            
            
            
-         assertEquals(tst.getWaterbody(),event.get("waterbody"));
-         assertEquals(tst.getObstime(),event.get("obstime"));
-         assertEquals(tst.getObjectid().longValue(),event.get("objectid"));
+         assertEquals(tst.getWaterbody(),event.get("waterbody").asText());
+         assertEquals(tst.getObstime(),event.get("obstime").asText());
+         assertEquals(tst.getObjectid().longValue(),event.get("objectid").asLong());
          // have to hard code this.. b/c the source if event is weird... 
          assertEquals(tst.getLatitude().setScale(20), new BigDecimal("3.1996666999999999" ).setScale(20));
          // have to hard code this.. b/c the source if event is weird... 
          assertEquals(tst.getLongitude().setScale(20), new BigDecimal("-8.3279167000000001").setScale(20));
-         assertEquals(tst.getState(),event.get("state"));
-         assertEquals(tst.getIdpSource(),event.get("idp_source"));
-         assertEquals(tst.getIdpSubset(),event.get("idp_subset"));
-         assertEquals(tst.getShape(),event.get("shape"));
-         assertEquals(tst.getGaugelid(),event.get("gaugelid"));
-         assertEquals(tst.getLocation(),event.get("location"));
-         assertEquals(tst.getObserved(),event.get("observed"));
-         assertEquals(tst.getUnits(),event.get("units"));
-         assertEquals(tst.getAction(),event.get("action"));
-         assertEquals(tst.getFlood(),event.get("flood"));
-         assertEquals(tst.getModerate(),event.get("moderate"));
-         assertEquals(tst.getMajor(),event.get("major"));
-         assertEquals(tst.getLowthresh(),event.get("lowthresh"));
-         assertEquals(tst.getLowthreshu(),event.get("lowthreshu"));
-         assertEquals(tst.getWfo(),event.get("wfo"));
-         assertEquals(tst.getHdatum(),event.get("hdatum"));
-         assertEquals(tst.getPedts(),event.get("pedts"));
-         assertEquals(tst.getSecvalue(),event.get("secvalue"));
-         assertEquals(tst.getSecunit(),event.get("secunit"));
-         assertEquals(tst.getUrl(),event.get("url"));
-         assertEquals(tst.getStatus(),event.get("status"));
-         assertEquals(tst.getForecast(),event.get("forecast"));
+         assertEquals(tst.getState(),event.get("state").asText());
+         assertEquals(tst.getIdpSource(),event.get("idp_source").asText());
+         assertEquals(tst.getIdpSubset(),event.get("idp_subset").asText());
+         assertNull(tst.getShape()); // the atual data coming in doesn't seem to have this field.
+         assertEquals(tst.getGaugelid(),event.get("gaugelid").asText());
+         assertEquals(tst.getLocation(),event.get("location").asText());
+         assertEquals(tst.getObserved(),event.get("observed").asText());
+         assertEquals(tst.getUnits(),event.get("units").asText());
+         assertEquals(tst.getAction(),event.get("action").asText());
+         assertEquals(tst.getFlood(),event.get("flood").asText());
+         assertEquals(tst.getModerate(),event.get("moderate").asText());
+         assertEquals(tst.getMajor(),event.get("major").asText());
+         assertEquals(tst.getLowthresh(),event.get("lowthresh").asText());
+         assertEquals(tst.getLowthreshu(),event.get("lowthreshu").asText());
+         assertEquals(tst.getWfo(),event.get("wfo").asText());
+         assertEquals(tst.getHdatum(),event.get("hdatum").asText());
+         assertEquals(tst.getPedts(),event.get("pedts").asText());
+         assertEquals(tst.getSecvalue(),event.get("secvalue").asText());
+         assertEquals(tst.getSecunit(),event.get("secunit").asText());
+         assertEquals(tst.getUrl(),event.get("url").asText());
+         assertEquals(tst.getStatus(),event.get("status").asText());
+         assertNull(tst.getForecast());
 
          
          
  
     }
     @Test
-    public void testFieldLengthValidations() throws IOException, ParseException {
+    public void testFieldLengthValidations() throws Exception {
         EventFlood testEvent = new EventFlood();
         // 1- 255
         testEvent.setWaterbody("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");        
@@ -208,13 +201,8 @@ public class EventFloodTest extends BaseTest {
         testEvent.setStatus("012345678901234567890123456789");
         testEvent.setForecast("012345678901234567890123456789");
         
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
-        
-        testEvent.setGeometry(geo.toJSONString());
+ 
+        testEvent.setGeometry(createTestGeo());
         
         
         Set<ConstraintViolation<EventFlood>> validate = validator.validate(testEvent);

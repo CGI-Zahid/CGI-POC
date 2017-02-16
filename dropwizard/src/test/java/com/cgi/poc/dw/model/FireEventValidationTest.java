@@ -6,13 +6,11 @@
 package com.cgi.poc.dw.model;
 
 import com.cgi.poc.dw.dao.model.FireEvent;
-import com.cgi.poc.dw.helper.IntegrationTest;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
@@ -21,28 +19,12 @@ import org.junit.After;
 import org.junit.Test;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Iterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.testing.ResourceHelpers;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
-import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  *
@@ -83,18 +65,8 @@ public class FireEventValidationTest extends BaseTest {
     public void testValidFireEventMinValid() {
         FireEvent testEvent = new FireEvent();
         testEvent.setUniquefireidentifier("onlyReqField");
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
-        /*
-        "geometry": {
-           "x": -10677457.159137897,
-           "y": 4106537.9944933983
-         }
-         */
-        testEvent.setGeometry(geo.toJSONString());
+        testEvent.setGeometry(createTestGeo());
+
         Set<ConstraintViolation<FireEvent>> validate = validator.validate(testEvent);
         assertThat(validate.isEmpty()).isEqualTo(true);
     }
@@ -103,31 +75,53 @@ public class FireEventValidationTest extends BaseTest {
      * Test of min required fields on model
      */
     @Test
-    public void testExampleFromSource() throws IOException, ParseException, URISyntaxException {
-         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = getClass().getClassLoader();
+    public void testExampleFromSource() throws Exception {
+         ClassLoader classLoader = getClass().getClassLoader();
            File file = new File(ClassLoader.getSystemResource("exampleFireEvent.json").toURI());
          
-            Object obj = parser.parse(new FileReader(file));
-
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject event = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
+          
+            JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode event = node.get("attributes");
+            JsonNode geo = node.get("attributes");
+            
            FireEvent tst = mapper.readValue(event.toString(), FireEvent.class);
            //tst.setGeometry(geo.toString());  
            
-         assertEquals(tst.getUniquefireidentifier(),event.get("uniquefireidentifier"));
-         assertEquals(tst.getIncidentname(),event.get("incidentname"));
-         assertEquals(tst.getHotlink(),event.get("hotlink"));
-         assertEquals(tst.getStatus(),event.get("status"));
-         assertEquals(tst.getObjectid().longValue(),event.get("objectid"));
-         assertEquals(tst.getReportdatetime().getTime(),event.get("reportdatetime"));
-
+         assertEquals(tst.getUniquefireidentifier(),event.get("uniquefireidentifier").asText());
+         assertEquals(tst.getIncidentname(),event.get("incidentname").asText());
+         assertEquals(tst.getHotlink(),event.get("hotlink").asText());
+         assertEquals(tst.getStatus(),event.get("status").asText());
+         assertEquals(tst.getObjectid().longValue(),event.get("objectid").asLong());
+         assertEquals(tst.getReportdatetime().getTime(),event.get("reportdatetime").asLong());
+         assertEquals(tst.getLatitude().setScale(20), BigDecimal.valueOf( event.get("latitude").asDouble()).setScale(20));
+         assertEquals(tst.getLongitude().setScale(20), BigDecimal.valueOf( event.get("longitude").asDouble()).setScale(20));
+         assertEquals(tst.getAcres().longValue(),event.get("acres").asLong());
+         assertEquals(tst.getGacc(),event.get("gacc").asText());
+         assertEquals(tst.getState(),event.get("state").asText());
+         assertEquals(tst.getIrwinid(),event.get("irwinid").asText());
+         assertEquals(tst.getIscomplex(),event.get("iscomplex").asText());
+         assertEquals(tst.getIscomplex(),event.get("iscomplex").asText());
+         assertNull(tst.getComplexparentirwinid());
+         assertEquals(tst.getFirecause(),event.get("firecause").asText());
+         assertEquals(tst.getReportdatetime().getTime(),event.get("reportdatetime").asLong());
+         assertEquals(tst.getPercentcontained().intValue(),event.get("percentcontained").asInt());
+         assertEquals(tst.getFirediscoverydatetime().getTime(),event.get("firediscoverydatetime").asLong());
+          assertEquals(tst.getPooresponsibleunit(),event.get("pooresponsibleunit").asText());
+         assertEquals(tst.getIrwinmodifiedon().getTime(),event.get("irwinmodifiedon").asLong());
+         assertEquals(tst.getMapsymbol(),event.get("mapsymbol").asText());
+         assertEquals(tst.getDatecurrent().getTime(),event.get("datecurrent").asLong());
+         assertNull(tst.getPooownerunit());
+         assertNull(tst.getOwneragency());
+         assertNull(tst.getFireyear());
+         assertNull(tst.getLocalincidentidentifier());
+         assertNull(tst.getIncidenttypecategory());
+ 
  
     }
     @Test
-    public void testFieldLengthValidations() throws IOException, ParseException {
+    public void testFieldLengthValidations() throws  Exception {
                 FireEvent testEvent = new FireEvent();
         testEvent.setUniquefireidentifier("");
         testEvent.setIncidentname("123456789012345678901234567890");
@@ -143,18 +137,9 @@ public class FireEventValidationTest extends BaseTest {
         testEvent.setOwneragency("123456789012345678901234567890");
         testEvent.setLocalincidentidentifier("123456789012345678901234567890");
         testEvent.setIncidenttypecategory("123456789012345678901234567890");
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
-        /*
-        "geometry": {
-           "x": -10677457.159137897,
-           "y": 4106537.9944933983
-         }
-         */
-        testEvent.setGeometry(geo.toJSONString());
+       
+        
+        testEvent.setGeometry(this.createTestGeo());
         Set<ConstraintViolation<FireEvent>> validate = validator.validate(testEvent);
         assertThat(validate.size()).isEqualTo(14);
         

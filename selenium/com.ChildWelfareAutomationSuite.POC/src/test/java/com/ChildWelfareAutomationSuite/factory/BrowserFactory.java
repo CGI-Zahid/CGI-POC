@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -44,6 +45,14 @@ public class BrowserFactory {
 			//System.setProperty("webdriver.ie.driver", DataProviderFactory.getConfig().getIEPath());
 			driver = new InternetExplorerDriver();
 		}
+		
+		// Invoke Safari Browser
+		else if (browserName.equalsIgnoreCase("safari")) {
+
+			//System.setProperty("webdriver.ie.driver", DataProviderFactory.getConfig().getIEPath());
+			driver = new SafariDriver();
+		}
+
 
 		// Maximize the Window and wait for until the page load form 10 seconds
 		driver.manage().window().maximize();

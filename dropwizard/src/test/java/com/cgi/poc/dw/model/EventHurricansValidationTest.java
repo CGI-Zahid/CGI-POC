@@ -6,7 +6,8 @@
 package com.cgi.poc.dw.model;
 
 import com.cgi.poc.dw.dao.model.EventHurricane;
-import com.cgi.poc.dw.dao.model.EventWeather;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -18,21 +19,11 @@ import org.junit.Test;
 import java.io.FileReader;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.net.URISyntaxException;
 import java.util.Date;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  *
@@ -78,13 +69,9 @@ public class EventHurricansValidationTest extends BaseTest {
         event.setId("SomeId");
         event.setPubdate(new Date());
 
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
+ 
         
-        event.setGeometry(geo.toJSONString());
+        event.setGeometry(createTestGeo());
         Set<ConstraintViolation<EventHurricane>> validate = validator.validate(event);
         assertThat(validate.isEmpty()).isEqualTo(true);
     }
@@ -93,33 +80,30 @@ public class EventHurricansValidationTest extends BaseTest {
      * Test of min required fields on model
      */
     @Test
-    public void testExampleFromSource() throws IOException, ParseException, URISyntaxException {
-         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = getClass().getClassLoader();
+    public void testExampleFromSource() throws Exception {
+         ClassLoader classLoader = getClass().getClassLoader();
            File file = new File(ClassLoader.getSystemResource("exampleHurricanesEvent.json").toURI());
-         
-            Object obj = parser.parse(new FileReader(file));
-
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject jsonEvent = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
-            
+ 
+            JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode jsonEvent = node.get("attributes");
+            JsonNode geo = node.get("attributes");
            EventHurricane event = mapper.readValue(jsonEvent.toString(), EventHurricane.class);
 
-         assertEquals(event.getObjectid().longValue(),jsonEvent.get("OBJECTID"));
-         assertEquals(event.getName(),jsonEvent.get("name"));
-         assertEquals(event.getType(),jsonEvent.get("type"));
-         assertEquals(event.getId(),jsonEvent.get("id"));
-         assertEquals(event.getMovement(),jsonEvent.get("movement"));
-         assertEquals(event.getWind(),jsonEvent.get("wind"));
-         assertEquals(event.getLink(),jsonEvent.get("link"));
-         assertEquals(event.getPubdate().getTime(), jsonEvent.get("pubdate"));
+         assertEquals(event.getObjectid().longValue(),jsonEvent.get("OBJECTID").asLong());
+         assertEquals(event.getName(),jsonEvent.get("name").asText());
+         assertEquals(event.getType(),jsonEvent.get("type").asText());
+         assertEquals(event.getId(),jsonEvent.get("id").asText());
+         assertEquals(event.getMovement(),jsonEvent.get("movement").asText());
+         assertEquals(event.getWind(),jsonEvent.get("wind").asText());
+         assertEquals(event.getLink(),jsonEvent.get("link").asText());
+         assertEquals(event.getPubdate().getTime(), jsonEvent.get("pubdate").asLong());
 
 
     }
     @Test
-    public void testFieldLengthValidations() throws IOException, ParseException {
+    public void testFieldLengthValidations() throws Exception {
         EventHurricane testEvent = new EventHurricane();
         testEvent.setId("0123456789001234567890");
         testEvent.setLink("01234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890");
@@ -129,13 +113,7 @@ public class EventHurricansValidationTest extends BaseTest {
         testEvent.setWind("0123456789001234567890");
         testEvent.setPubdate(new Date());
 
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
- 
-        testEvent.setGeometry(geo.toJSONString());
+        testEvent.setGeometry(createTestGeo());
         Set<ConstraintViolation<EventHurricane>> validate = validator.validate(testEvent);
         assertThat(validate.size()).isEqualTo(6);
         

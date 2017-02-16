@@ -5,6 +5,7 @@
  */
 package com.cgi.poc.dw.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -33,7 +34,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NamedQueries({
     @NamedQuery(name = "EventTsunami.findAll", query = "SELECT e FROM EventTsunami e"),
     @NamedQuery(name = "EventTsunami.findById", query = "SELECT e FROM EventTsunami e WHERE e.id = :id"),
-    @NamedQuery(name = "EventTsunami.findByYeah", query = "SELECT e FROM EventTsunami e WHERE e.yeah = :yeah"),
+    @NamedQuery(name = "EventTsunami.findByYear", query = "SELECT e FROM EventTsunami e WHERE e.year = :year"),
     @NamedQuery(name = "EventTsunami.findByMonth", query = "SELECT e FROM EventTsunami e WHERE e.month = :month"),
     @NamedQuery(name = "EventTsunami.findByDay", query = "SELECT e FROM EventTsunami e WHERE e.day = :day"),
     @NamedQuery(name = "EventTsunami.findByHour", query = "SELECT e FROM EventTsunami e WHERE e.hour = :hour"),
@@ -115,181 +116,330 @@ public class EventTsunami implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
+    @JsonProperty("ID")
     private BigDecimal id;
+    
     @Column(name = "geometry")
     private String geometry;
-    @Column(name = "yeah")
-    private Integer yeah;
+    
+    @Column(name = "year")
+    @JsonProperty("YEAR")
+    private Integer year;
+    
     @Column(name = "month")
+    @JsonProperty("MONTH")
     private Integer month;
+    
     @Column(name = "day")
+    @JsonProperty("DAY")
     private Integer day;
+    
+    @JsonProperty("HOUR")
     @Column(name = "hour")
     private Integer hour;
+    
+    @JsonProperty("MINUTE")
     @Column(name = "minute")
     private Integer minute;
+    
+    @JsonProperty("SECOND")
     @Column(name = "second")
-    private Integer second;
+    private BigDecimal second;
+    
+    @JsonProperty("DATE_STRING")
     @Size(max = 13)
     @Column(name = "date_string")
     private String dateString;
+    
+    @JsonProperty("LATITUDE")
     @Column(name = "latitude")
     private BigDecimal latitude;
+    
+    @JsonProperty("LONGITUDE")
     @Column(name = "longitude")
     private BigDecimal longitude;
+    
+    @JsonProperty("LOCATION_NAME")
     @Size(max = 13)
     @Column(name = "location_name")
     private String locationName;
+    
+    @JsonProperty("AREA")
     @Size(max = 2)
     @Column(name = "area")
     private String area;
+    
+    @JsonProperty("COUNTRY")
     @Size(max = 50)
     @Column(name = "country")
     private String country;
+    
+    @JsonProperty("REGION_CODE")
     @Column(name = "region_code")
     private Integer regionCode;
+    
+    @JsonProperty("REGION")
     @Size(max = 50)
     @Column(name = "region")
     private String region;
+    
+    @JsonProperty("CAUSE_CODE")
     @Column(name = "cause_code")
     private Integer causeCode;
+    
+    @JsonProperty("CAUSE")
     @Size(max = 50)
     @Column(name = "cause")
     private String cause;
+    
+    @JsonProperty("EVENT_VALIDITY_CODE")
     @Column(name = "event_validity_code")
     private Integer eventValidityCode;
+    
+    @JsonProperty("EVENT_VALIDITY")
     @Size(max = 100)
     @Column(name = "event_validity")
     private String eventValidity;
+    
+    @JsonProperty("EQ_MAG_UNK")
     @Column(name = "eq_mag_unk")
     private BigDecimal eqMagUnk;
+    
     @Column(name = "eq_mag_mb")
+    @JsonProperty("EQ_MAG_MB")
     private BigDecimal eqMagMb;
+    
     @Column(name = "eq_mag_ms")
+    @JsonProperty("EQ_MAG_MS")
     private BigDecimal eqMagMs;
+    
     @Column(name = "eq_mag_mw")
+    @JsonProperty("EQ_MAG_MW")
     private BigDecimal eqMagMw;
+    
     @Column(name = "eq_mag_ml")
+    @JsonProperty("EQ_MAG_ML")
     private BigDecimal eqMagMl;
+    
     @Column(name = "eq_mag_mta")
+    @JsonProperty("EQ_MAG_MFA")
     private BigDecimal eqMagMta;
+    
     @Column(name = "eq_magnatude")
+    @JsonProperty("EQ_MAGNITUDE")
     private BigDecimal eqMagnatude;
+    
     @Column(name = "eq_magnatude_rank")
+    @JsonProperty("EQ_MAGNITUDE_RANK")
     private BigDecimal eqMagnatudeRank;
+    
     @Column(name = "eq_depth")
+    @JsonProperty("EQ_DEPTH")
     private Integer eqDepth;
+    
     @Column(name = "max_event_runup")
+    @JsonProperty("MAX_EVENT_RUNUP")
     private BigDecimal maxEventRunup;
-    @Column(name = "ts_mt_abe")
+    
+    @Column(name = "TS_MT_ABE")
+    @JsonProperty("TS_MT_ABE")
     private BigDecimal tsMtAbe;
+    
     @Column(name = "ts_mt_ii")
+    @JsonProperty("TS_MT_II")
     private BigDecimal tsMtIi;
+    
     @Column(name = "ts_intensity")
+    @JsonProperty("TS_INTENSITY")
     private BigDecimal tsIntensity;
+    
     @Column(name = "damage_millions_dollars")
+    @JsonProperty("DAMAGE_MILLIONS_DOLLARS")
     private BigDecimal damageMillionsDollars;
+    
     @Column(name = "damage_amount_order")
+    @JsonProperty("DAMAGE_AMOUNT_ORDER")
     private Integer damageAmountOrder;
+    
+    @JsonProperty("DAMAGE_DESCRIPTION")
     @Size(max = 40)
     @Column(name = "damage_description")
     private String damageDescription;
+    
     @Column(name = "houses_destroyed")
+    @JsonProperty("HOUSES_DESTROYED")
     private Integer housesDestroyed;
+    
     @Column(name = "houses_amount_order")
+    @JsonProperty("HOUSES_AMOUNT_ORDER")
     private Integer housesAmountOrder;
+    
     @Size(max = 40)
     @Column(name = "houses_description")
+    @JsonProperty("HOUSES_DESCRIPTION")
     private String housesDescription;
+    
     @Column(name = "deaths")
+    @JsonProperty("DEATHS")
     private Integer deaths;
+    
     @Column(name = "deaths_amount_order")
+    @JsonProperty("DEATHS_AMOUNT_ORDER")
     private Integer deathsAmountOrder;
+    
     @Size(max = 40)
+    @JsonProperty("DEATHS_DESCRIPTION")
     @Column(name = "deaths_description")
     private String deathsDescription;
+    
     @Column(name = "injuries")
+    @JsonProperty("INJURIES")
     private Integer injuries;
+    
     @Column(name = "injuries_amount_order")
+    @JsonProperty("INJURIES_AMOUNT_ORDER")
     private Integer injuriesAmountOrder;
+    
+    @JsonProperty("INJURIES_DESCRIPTION")
     @Size(max = 40)
     @Column(name = "injuries_description")
     private String injuriesDescription;
+    
+    @JsonProperty("MISSING")
     @Column(name = "missing")
     private Integer missing;
+    
+    @JsonProperty("MISSING_AMOUNT_ORDER")
     @Column(name = "missing_amount_order")
     private Integer missingAmountOrder;
+    
+    @JsonProperty("MISSING_DESCRIPTION")
     @Size(max = 40)
     @Column(name = "missing_description")
     private String missingDescription;
-    @Size(max = 400)
+    
+    @JsonProperty("COMMENTS")
+    @Size(max = 4000)
     @Column(name = "comments")
     private String comments;
+    
+    @JsonProperty("NUM_RUNUP")
     @Column(name = "num_runup")
     private Integer numRunup;
+    
     @Column(name = "damage_millions_dollars_total")
+    @JsonProperty("DAMAGE_MILLIONS_DOLLARS_TOTAL")
     private BigDecimal damageMillionsDollarsTotal;
+    
     @Column(name = "damage_amount_order_total")
+    @JsonProperty("DAMAGE_AMOUNT_ORDER_TOTAL")
     private Integer damageAmountOrderTotal;
+    
     @Size(max = 40)
+    @JsonProperty("DAMAGE_TOTAL_DESCRIPTION")
     @Column(name = "damage_total_description")
     private String damageTotalDescription;
+    
+    @JsonProperty("HOUSES_DESTROYED_TOTAL")
     @Column(name = "houses_destroyed_total")
     private Integer housesDestroyedTotal;
+    
     @Column(name = "houses_amount_order_total")
+    @JsonProperty("HOUSES_AMOUNT_ORDER_TOTAL")
     private Integer housesAmountOrderTotal;
+    
     @Size(max = 40)
+    @JsonProperty("HOUSES_TOTAL_DESCRIPTION")
     @Column(name = "houses_total_description")
     private String housesTotalDescription;
+    
+    @JsonProperty("DEATHS_TOTAL")
     @Column(name = "deaths_total")
     private Integer deathsTotal;
+    
     @Column(name = "deaths_amount_order_total")
+    @JsonProperty("DEATHS_AMOUNT_ORDER_TOTAL")
     private Integer deathsAmountOrderTotal;
+    
     @Size(max = 40)
+    @JsonProperty("DEATHS_TOTAL_DESCRIPTION")
     @Column(name = "deaths_total_description")
     private String deathsTotalDescription;
+    
     @Column(name = "injuries_total")
+    @JsonProperty("INJURIES_TOTAL")
     private Integer injuriesTotal;
+    
     @Column(name = "injuries_amount_order_total")
+    @JsonProperty("INJURIES_AMOUNT_ORDER_TOTAL")
     private Integer injuriesAmountOrderTotal;
+    
     @Size(max = 40)
+    @JsonProperty("INJURIES_TOTAL_DESCRIPTION")
     @Column(name = "injuries_total_description")
     private String injuriesTotalDescription;
+    
+    @JsonProperty("MISSING_TOTAL")
     @Column(name = "missing_total")
     private Integer missingTotal;
+    
+    @JsonProperty("MISSING_AMOUNT_ORDER_TOTAL")
     @Column(name = "missing_amount_order_total")
     private Integer missingAmountOrderTotal;
+    
+    @JsonProperty("MISSING_TOTAL_DESCRIPTION")
     @Size(max = 40)
     @Column(name = "missing_total_description")
     private String missingTotalDescription;
+    
+    @JsonProperty("OBJECTID")
     @Column(name = "objectid")
     private Integer objectid;
+    
     @Lob
     @Column(name = "shape")
     private byte[] shape;
+    
+    @JsonProperty("HOUSES_DAMAGED")
     @Column(name = "houses_damaged")
     private Integer housesDamaged;
+    
+    @JsonProperty("HOUSES_DAMAGED_AMOUNT_ORDER")
     @Column(name = "houses_damaged_amount_order")
     private Integer housesDamagedAmountOrder;
+    
+    @JsonProperty("HOUSES_DAM_DESCRIPTION")
     @Size(max = 40)
     @Column(name = "houses_dam_description")
     private String housesDamDescription;
+    
+    @JsonProperty("HOUSES_DAMAGED_TOTAL")
     @Column(name = "houses_damaged_total")
     private Integer housesDamagedTotal;
+    
     @Column(name = "houses_dama_amount_order_total")
+    @JsonProperty("HOUSES_DAM_AMOUNT_ORDER_TOTAL")
     private Integer housesDamaAmountOrderTotal;
+    
     @Size(max = 40)
+    @JsonProperty("HOUSES_DAM_TOTAL_DESCRIPTION")
     @Column(name = "houses_dam_total_description")
     private String housesDamTotalDescription;
+    
+    @JsonProperty("NUM_DEPOSITS")
     @Column(name = "num_deposits")
     private Integer numDeposits;
+    
+    @JsonProperty("URL")
     @Size(max = 128)
     @Column(name = "url")
     private String url;
+    
     @Column(name = "last_modified")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp 
     private Date lastModified;
+    
     @Column(name = "notification_id")
     private Integer notificationId;
 
@@ -316,12 +466,12 @@ public class EventTsunami implements Serializable {
         this.geometry = geometry;
     }
 
-    public Integer getYeah() {
-        return yeah;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setYeah(Integer yeah) {
-        this.yeah = yeah;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public Integer getMonth() {
@@ -356,11 +506,11 @@ public class EventTsunami implements Serializable {
         this.minute = minute;
     }
 
-    public Integer getSecond() {
+    public BigDecimal getSecond() {
         return second;
     }
 
-    public void setSecond(Integer second) {
+    public void setSecond(BigDecimal second) {
         this.second = second;
     }
 

@@ -6,13 +6,11 @@
 package com.cgi.poc.dw.model;
 
 import com.cgi.poc.dw.dao.model.EventWeather;
-import com.cgi.poc.dw.helper.IntegrationTest;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.io.File;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
@@ -22,22 +20,11 @@ import org.junit.Test;
 import java.io.FileReader;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+ 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 /**
@@ -85,13 +72,8 @@ public class EventWeatherValidationTest extends BaseTest {
         event.setMsgType("FFS");
         event.setProdType("Flash Flood Warning");
 
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
-        
-        event.setGeometry(geo.toJSONString());
+        event.setGeometry(createTestGeo());
+
         Set<ConstraintViolation<EventWeather>> validate = validator.validate(event);
         assertThat(validate.isEmpty()).isEqualTo(true);
     }
@@ -100,61 +82,50 @@ public class EventWeatherValidationTest extends BaseTest {
      * Test of min required fields on model
      */
     @Test
-    public void testExampleFromSource() throws IOException, ParseException, URISyntaxException {
-         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = getClass().getClassLoader();
+    public void testExampleFromSource() throws  Exception {
+         ClassLoader classLoader = getClass().getClassLoader();
            File file = new File(ClassLoader.getSystemResource("exampleWeatherEvent.json").toURI());
          
-            Object obj = parser.parse(new FileReader(file));
-
-           JSONObject jsonObject = (JSONObject) obj;
-           JSONObject event = (JSONObject)jsonObject.get("attributes");
-           JSONObject geo = (JSONObject)jsonObject.get("geometry");
-           ObjectMapper mapper = new ObjectMapper();
+         
+            JsonParser  parser  = jsonFactory.createParser(new FileReader(file));
+	    parser.setCodec(mapper);
+            ObjectNode node = parser.readValueAs(ObjectNode.class);
+            JsonNode event = node.get("attributes");
+            JsonNode geo = node.get("attributes");
+            
            
            EventWeather tst = mapper.readValue(event.toString(), EventWeather.class);
 
-         assertEquals(tst.getObjectid().longValue(),event.get("objectid"));
-         assertEquals(tst.getPhenom(),event.get("phenom"));
-         assertEquals(tst.getSig(),event.get("sig"));
-         assertEquals(tst.getWarnid(),event.get("warnid"));
-         assertEquals(tst.getWfo(),event.get("wfo"));
-         assertEquals(tst.getEvent(),event.get("event"));
-         assertEquals(tst.getIssuance(),event.get("issuance"));
-         assertEquals(tst.getExpiration(),event.get("expiration"));
-         assertEquals(tst.getUrl(),event.get("url"));
-         assertEquals(tst.getMsgType(),event.get("msg_type"));
-         assertEquals(tst.getProdType(),event.get("prod_type"));
-         assertEquals(tst.getIdpSource(),event.get("idp_source"));
-         assertEquals(tst.getIdpSubset(),event.get("idp_subset"));
-         assertEquals(tst.getIdpFiledate().getTime(),event.get("idp_filedate"));
-         assertEquals(tst.getIdpIngestdate().getTime(),event.get("idp_ingestdate"));
-         assertEquals(tst.getIdpCurrentForecast(),event.get("idp_current_forecast"));
-         assertEquals(tst.getIdpTimeSeries(),event.get("idp_time_series"));
-         if (event.get("idp_issueddate") == null){
-             assertNull(tst.getIdpIssueddate());
-         }else
-         {
-             assertEquals(tst.getIdpIssueddate().getTime(),event.get("idp_issueddate"));
-         }
-         if (event.get("idp_validtime") == null){
-             assertNull(tst.getIdpValidtime());
-         }else
-         {
-            assertEquals(tst.getIdpValidtime().getTime(),event.get("idp_validtime"));
-         }
-         if (event.get("idp_validendtime") == null){
-             assertNull(tst.getIdpValidendtime());
-         }else
-         {
-         assertEquals(tst.getIdpValidendtime().getTime(),event.get("idp_validendtime"));
-         }
-         assertEquals(tst.getIdpFcstHour(),event.get("idp_fcst_hour"));
-         assertEquals(tst.getStArea().setScale(20),BigDecimal.valueOf( (double)event.get("st_area(shape)")).setScale(20));
-         assertEquals(tst.getStLength().setScale(20),BigDecimal.valueOf( (double)event.get("st_length(shape)")).setScale(20));
+         assertEquals(tst.getObjectid().longValue(),event.get("objectid").asLong());
+         assertEquals(tst.getPhenom(),event.get("phenom").asText());
+         assertEquals(tst.getSig(),event.get("sig").asText());
+         assertEquals(tst.getWarnid(),event.get("warnid").asText());
+         assertEquals(tst.getWfo(),event.get("wfo").asText());
+         assertEquals(tst.getEvent(),event.get("event").asText());
+         assertEquals(tst.getIssuance(),event.get("issuance").asText());
+         assertEquals(tst.getExpiration(),event.get("expiration").asText());
+         assertEquals(tst.getUrl(),event.get("url").asText());
+         assertEquals(tst.getMsgType(),event.get("msg_type").asText());
+         assertEquals(tst.getProdType(),event.get("prod_type").asText());
+         assertEquals(tst.getIdpSource(),event.get("idp_source").asText());
+         assertEquals(tst.getIdpSubset(),event.get("idp_subset").asText());
+         assertEquals(tst.getIdpFiledate().getTime(),event.get("idp_filedate").asLong());
+         assertEquals(tst.getIdpIngestdate().getTime(),event.get("idp_ingestdate").asLong());
+             assertNull(tst.getIdpTimeSeries());
+             assertNull(tst.getIdpCurrentForecast());
+ 
+         assertNull(tst.getIdpIssueddate());
+         
+         assertNull(tst.getIdpValidtime());
+         
+         assertNull(tst.getIdpValidendtime());
+         assertNull(tst.getIdpFcstHour());
+         
+         assertEquals(tst.getStArea().setScale(20),BigDecimal.valueOf(  event.get("st_area(shape)").asDouble()).setScale(20));
+         assertEquals(tst.getStLength().setScale(20),BigDecimal.valueOf(  event.get("st_length(shape)").asDouble()).setScale(20));
     }
     @Test
-    public void testFieldLengthValidations() throws IOException, ParseException {
+    public void testFieldLengthValidations() throws  Exception {
                 EventWeather testEvent = new EventWeather();
         testEvent.setWarnid("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
         testEvent.setPhenom("12345");
@@ -168,14 +139,9 @@ public class EventWeatherValidationTest extends BaseTest {
         testEvent.setIdpSource("123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890123456789012345678901234567890123456789");
         testEvent.setIdpSubset("123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890123456789012345678901234567890123456789");
  
-        
-        JSONObject geo = new JSONObject();
-        JSONObject ele = new JSONObject();
-        geo.put("geometry", ele);
-        ele.put("x", -10677457.159137897);
-        ele.put("y", 4106537.9944933983);
  
-        testEvent.setGeometry(geo.toJSONString());
+ 
+        testEvent.setGeometry(createTestGeo());
         Set<ConstraintViolation<EventWeather>> validate = validator.validate(testEvent);
         assertThat(validate.size()).isEqualTo(11);
         
