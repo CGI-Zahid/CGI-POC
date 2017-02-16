@@ -7,7 +7,7 @@ server:
   adminConnectors:
   - type: http
     port: 8381
-
+    
 #Jersey client settings
 jerseyClient:
     #The maximum idle time for a connection, once established.
@@ -30,25 +30,25 @@ mapsApi:
 mail:
 
    #The host running the SMTP server to use. 
-  hostname: "smtp.gmail.com"
+  hostname: "127.0.0.1"
 
    #The port at which the SMTP server listens on. 
-  port: 587
+  port: 3025
 
    #The address used as From for outgoing notification mails sent by the server.
-  systemEmail: "someuser@gmail.com"
+  systemEmail: "mysystememail@cgi.com"
 
    #The username used to access the mail server.
-  username: "someuser"
+  username: "myusername"
 
    #The password used to access the mail server.
-  password: "somepass"
+  password: "mypass"
   
    #Connect using SSL.
-  ssl: true
+  ssl: false
   
    #Connect using TLS.
-  tls: true
+  tls: false
 
 logging:
   loggers:
@@ -60,17 +60,11 @@ swagger:
   
 #Jobs settings
 scheduler:
-  #number of thread to use to run the jobs
-  thread: 5
-  #Define a job for an event API
-  jobs:
-    # the URL of the API event
+  thread: 2
+  jobs:    
      - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query
-       #the delay to start the job after the server start
        delay: 10
-       #the delay between to running job's
-       period: 60
-       #the time unit to define the delay and the period
+       period: 10
        timeUnit: SECONDS
 #     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
 #       delay: 10
