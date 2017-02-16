@@ -35,11 +35,11 @@ public class TextMessageServiceImpl implements TextMessageService{
           new PhoneNumber(twilioApiConfiguration.getPhoneNumber()),
           messageToSend).create();
 
-      LOG.info("TextMessage success: " + message.getStatus().toString());
+      LOG.info("TextMessage success: {}", message.getStatus());
 
       return true;
     } catch (Exception exception){
-      LOG.error("TextMessage errror sending to:", sanitizedSendingToNumber, exception);
+      LOG.error("TextMessage errror sending to : {}", sanitizedSendingToNumber, exception);
       return false;
     }
   }
