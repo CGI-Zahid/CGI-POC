@@ -39,19 +39,23 @@ public class UserRegistrationServiceImpl extends BaseServiceImpl implements
   
   private final EmailService emailService;
 
+  private final TextMessageService textMessageService;
+
   //The name of the query param for the 
   private static final String ADDRESS = "address";
   
 
   @Inject
   public UserRegistrationServiceImpl(MapApiConfiguration mapApiConfiguration, UserDao userDao,
-      PasswordHash passwordHash, Validator validator, Client client, EmailService emailService) {
+      PasswordHash passwordHash, Validator validator, Client client, EmailService emailService,
+      TextMessageService textMessageService) {
     super(validator);
     this.userDao = userDao;
     this.passwordHash = passwordHash;
     this.client = client;
     this.mapApiConfiguration = mapApiConfiguration;
     this.emailService = emailService;
+    this.textMessageService = textMessageService;
   }
 
   public Response registerUser(User user) {
@@ -89,7 +93,8 @@ public class UserRegistrationServiceImpl extends BaseServiceImpl implements
       
       //Future TODO enhancement: make the subject and email body configurable
       emailService.send(null, Arrays.asList(user.getEmail()), "Registration confirmation", "Hello there, thank you for registering." );
-      
+      textMessageService.send(user.getPhone(), "MyCAlerts: Thank you for registering.");
+
     } catch (ConstraintViolationException exception) {
       throw exception;
     } catch (Exception exception) {

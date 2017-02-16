@@ -104,3 +104,8 @@ logging:
 # Swagger settings
 swagger:
   resourcePackage: com.cgi.poc.dw.rest.resource
+
+twilio:
+  accountSID: AC911b35928f09f10ffa8e544127a22016
+  authToken: dc093bd56e75d4897a2fac1f374578ca
+  phoneNumber: +19162490778

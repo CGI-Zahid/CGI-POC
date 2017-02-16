@@ -24,6 +24,16 @@ public class CgiPocConfiguration extends Configuration {
     this.mapApiConfiguration = mapApiConfiguration;
   }
 
+  private TwilioApiConfiguration twilioApiConfiguration = new TwilioApiConfiguration();
+
+  public TwilioApiConfiguration getTwilioApiConfiguration() {
+    return twilioApiConfiguration;
+  }
+  @JsonProperty("twilio")
+  public void setTwilioApiConfiguration(TwilioApiConfiguration twilioApiConfiguration) {
+    this.twilioApiConfiguration = twilioApiConfiguration;
+  }
+
   /**
    * Assign swagger bundle configuration.
    */
