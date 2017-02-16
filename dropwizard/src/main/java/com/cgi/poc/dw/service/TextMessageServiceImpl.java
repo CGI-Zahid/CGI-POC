@@ -19,19 +19,10 @@ public class TextMessageServiceImpl implements TextMessageService{
   }
 
   public Boolean send(String sendingToNumber, String messageToSend){
-    //Sanitize number for non numeric and verify length
-    String sanitizedSendingToNumber = "";
-    if(sendingToNumber != null) {
-      sanitizedSendingToNumber = sendingToNumber.replaceAll("[^\\d]", "");
-      if (sanitizedSendingToNumber.length() != 10) {
-        return false;
-      }
-    }
-
     try {
       Twilio.init(twilioApiConfiguration.getAccountSID(), twilioApiConfiguration.getAuthToken());
 
-      Message message = Message.creator(new PhoneNumber(("1" + sanitizedSendingToNumber)),
+      Message message = Message.creator(new PhoneNumber(("1" + sendingToNumber)),
           new PhoneNumber(twilioApiConfiguration.getPhoneNumber()),
           messageToSend).create();
 
@@ -39,7 +30,7 @@ public class TextMessageServiceImpl implements TextMessageService{
 
       return true;
     } catch (Exception exception){
-      LOG.error("TextMessage errror sending to : {}", sanitizedSendingToNumber, exception);
+      LOG.error("TextMessage errror sending to : {}", sendingToNumber, exception);
       return false;
     }
   }
