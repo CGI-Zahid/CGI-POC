@@ -1,30 +1,30 @@
 /**
  * @ngdoc overview
  * @name pocsacApp
- * @description
- * # pocsacApp
- *
+ * @description # pocsacApp
+ * 
  * Login Controller.
  */
 
 'use strict';
 
 cgiWebApp // jshint ignore:line
-  .controller('loginController', ['$scope', 'Authenticator', '$timeout', '$sessionStorage',
+.controller('loginController', [ '$scope', '$rootScope', '$state','Authenticator', 'uswdsLoadService','$timeout', '$sessionStorage',
 
-  function $($scope, Authenticator, $timeout, $sessionStorage) {
+function ($scope, $rootScope, $state, Authenticator, uswdsLoadService, $timeout, $sessionStorage) {
 
+    //change to directive
     $scope.popUp = function(code, message, duration) {
-      if (code === 'error') {
-        model.errorNotif = true;
-        model.errorMessage = message;
-      } else if (code === 'success') {
-        model.successNotif = true;
-        model.successMessage = message;
-      }
-      $timeout(function() {
-          $scope.closeAlert(code);
-      }, duration);
+        if (code === 'error') {
+            model.errorNotif = true;
+            model.errorMessage = message;
+        } else if (code === 'success') {
+            model.successNotif = true;
+            model.successMessage = message;
+        }
+        $timeout(function() {
+            $scope.closeAlert(code);
+        }, duration);
     };
 
     var model = this;
@@ -34,59 +34,65 @@ cgiWebApp // jshint ignore:line
     model.errorMessage = 'GENERIC.MESSAGE.ERROR.SERVER';
     model.successMessage = 'GENERIC.MESSAGE.SUCCESS';
 
-
     $scope.user = {
-      username: '',
-      password: ''
+        username : '',
+        password : ''
     };
 
+       
+    $scope.submitForm = function(isValid) {
+        if (isValid) {
 
-    model.submitForm = function(isValid) {
-      if (isValid) {
+            var dataObject = {
+                email : $scope.user.username,
+                password : $scope.user.password
+            };
 
-        var dataObject = {
-          email: $scope.user.username,
-          password: $scope.user.password
-        };
+            // call to the authenticate service
+            Authenticator.authenticate(dataObject).then(function(response) {
+                if (response.status === 200) {
+                    model.errorNotif = false;
 
-        //call to the authenticate service
-        Authenticator.authenticate(dataObject).then(function(response) {
-          if (response.status === 200) {
-            model.errorNotif = false;
+                    model.successNotif = true;
+                    model.successMessage = 'LOGIN.MESSAGE.LOGGEDIN';
+                    $sessionStorage.put('jwt', response.data.authToken);
+                    $state.go('profile');
 
-            //                                          $scope.$parent.USER = data.user;
-            //                                          $scope.$parent.template.url = '';
-            model.successNotif = true;
-            model.successMessage = 'LOGIN.MESSAGE.LOGGEDIN';
-          //                                            $scope.$parent.navigate('INDEX');
-            $sessionStorage.put('jwt',response.data.authToken);
+                } else if (response.status === 401) {
+                    $scope.popUp('error', 'LOGIN.MESSAGE.INVALID', POP_UP_DURATION); // jshint ignore:line
+                } else {
+                    $scope.popUp('error', 'GENERIC.MESSAGE.ERROR.SERVER', POP_UP_DURATION); // jshint ignore:line
+                }
 
-          } else if (response.status === 401) {
-            $scope.popUp('error', 'LOGIN.MESSAGE.UNVALID', POP_UP_DURATION); // jshint ignore:line
-          } else {
-            $scope.popUp('error', 'GENERIC.MESSAGE.ERROR.SERVER', POP_UP_DURATION); // jshint ignore:line
-          }
+                //$scope.authForm.$setPristine();
+                //$scope.authForm.$setUntouched();
 
-          $scope.authForm.$setPristine();
-          $scope.authForm.$setUntouched();
+            });
 
-        });
-
-        // Making the fields empty
-        $scope.user.username = '';
-        $scope.user.password = '';
-      }
+            // Making the fields empty
+            $scope.user.username = '';
+            $scope.user.password = '';
+        }
+    };
+    
+    $scope.toggleRegistrationModal = function(){
+      $rootScope.toggleRegistration = true;  
+      $state.go('profile');
     };
 
-    $scope.closeAlert = function(code){
-        if (code === 'error'){
+    $scope.closeAlert = function(code) {
+        if (code === 'error') {
             model.errorNotif = false;
             model.errorMessage = '';
-        }
-        else{
+        } else {
             model.successNotif = false;
             model.successMessage = '';
         }
     };
-
-  }]);
+    var init = function(){
+        $rootScope.toggleRegistration = false;
+        uswdsLoadService.triggerEvent(document, 'DOMContentLoaded');
+    };
+    
+    init();
+} ]);
