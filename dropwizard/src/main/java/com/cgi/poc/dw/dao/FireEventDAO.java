@@ -5,15 +5,19 @@
  */
 package com.cgi.poc.dw.dao;
 
-import com.cgi.poc.dw.dao.model.FireEvent;
-import com.google.common.collect.ImmutableMap;
-import io.dropwizard.hibernate.AbstractDAO;
-import org.slf4j.Logger;
+import java.util.logging.Logger;
+
 import javax.validation.Validator;
+
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.LoggerFactory;
+
+import com.cgi.poc.dw.dao.model.FireEvent;
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
+
+import io.dropwizard.hibernate.AbstractDAO;
 
 /**
  *
@@ -21,11 +25,18 @@ import org.slf4j.LoggerFactory;
  */
 public class FireEventDAO extends AbstractDAO<FireEvent> {
 
-  private final static Logger LOG = LoggerFactory.getLogger(FireEventDAO.class);
+    private static final Logger logger = Logger.getLogger(FireEventDAO.class.getName());
 
     private int pageNumber = 0;
     private int pageSize = 0;
     Validator validator;
+    
+    @Inject
+    public FireEventDAO(SessionFactory factory) {
+        super(factory);
+
+    }
+    
     /**
      * These are the fields we allow searching on.
      */
@@ -59,7 +70,7 @@ public class FireEventDAO extends AbstractDAO<FireEvent> {
     }
     
     public FireEvent save(FireEvent event) {
-        FireEvent merge = (FireEvent)  currentSession().merge(event);
+        FireEvent merge = (FireEvent)  this.currentSession().merge(event);
         return  merge;
     }
 

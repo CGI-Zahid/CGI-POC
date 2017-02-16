@@ -41,4 +41,3 @@ CREATE TABLE user_notification (
   PRIMARY KEY (user_id, notification_id),
   FOREIGN KEY (user_id) REFERENCES user (id),
 );
-

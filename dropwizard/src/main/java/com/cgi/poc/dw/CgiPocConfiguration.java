@@ -32,6 +32,9 @@ public class CgiPocConfiguration extends Configuration {
 
   /* CORS */
   private CorsConfiguration corsConfiguration = new CorsConfiguration();
+  
+  /* JOB PARAMETER */
+  private JobsConfiguration jobsConfiguration = new JobsConfiguration();
 
   /* 
    * E-mail config
@@ -75,7 +78,23 @@ public class CgiPocConfiguration extends Configuration {
   public void setCorsConfiguration(CorsConfiguration corsConfiguration) {
     this.corsConfiguration = corsConfiguration;
   }
+  
+  /**
+	 * @return the jobsConfiguration
+	 */
+	@JsonProperty("scheduler")
+	public JobsConfiguration getJobsConfiguration() {
+		return jobsConfiguration;
+	}
 
+	/**
+	 * @param jobsConfiguration
+	 *            the jobsConfiguration to set
+	 */
+	public void setJobsConfiguration(JobsConfiguration jobsConfiguration) {
+		this.jobsConfiguration = jobsConfiguration;
+	}
+  
   /**
    * Obtain database connection parameters from the configuration file.
    *

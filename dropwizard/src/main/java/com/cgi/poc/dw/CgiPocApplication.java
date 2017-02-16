@@ -1,5 +1,30 @@
 package com.cgi.poc.dw;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.logging.Level;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.validation.Validator;
+import javax.ws.rs.client.Client;
+
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.hibernate.SessionFactory;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.cgi.poc.dw.api.service.APICallerService;
+import com.cgi.poc.dw.api.service.APIServiceFactory;
+import com.cgi.poc.dw.api.service.impl.APICallerServiceImpl;
 import com.cgi.poc.dw.auth.DBAuthenticator;
 import com.cgi.poc.dw.auth.JwtAuthFilter;
 import com.cgi.poc.dw.auth.UserRoleAuthorizer;
@@ -11,24 +36,21 @@ import com.cgi.poc.dw.auth.service.JwtReaderServiceImpl;
 import com.cgi.poc.dw.auth.service.KeyBuilderServiceImpl;
 import com.cgi.poc.dw.auth.service.PasswordHash;
 import com.cgi.poc.dw.auth.service.PasswordHashImpl;
-import com.cgi.poc.dw.dao.model.EventEarthquake;
-import com.cgi.poc.dw.dao.model.EventFlood;
-import com.cgi.poc.dw.dao.model.EventHurricane;
-import com.cgi.poc.dw.dao.model.EventTsunami;
-import com.cgi.poc.dw.dao.model.EventVolcano;
-import com.cgi.poc.dw.dao.model.EventWeather;
 import com.cgi.poc.dw.dao.model.FireEvent;
 import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.dao.model.UserNotification;
-import com.cgi.poc.dw.service.EmailService;
-import com.cgi.poc.dw.service.EmailServiceImpl;
+import com.cgi.poc.dw.jobs.JobExecutionService;
+import com.cgi.poc.dw.jobs.JobFactory;
+import com.cgi.poc.dw.jobs.PollingDataJob;
 import com.cgi.poc.dw.rest.resource.LoginResource;
 import com.cgi.poc.dw.rest.resource.UserRegistrationResource;
-import com.cgi.poc.dw.sockets.AlertEndpoint;
+import com.cgi.poc.dw.service.EmailService;
+import com.cgi.poc.dw.service.EmailServiceImpl;
 import com.cgi.poc.dw.service.LoginService;
 import com.cgi.poc.dw.service.LoginServiceImpl;
 import com.cgi.poc.dw.service.UserRegistrationService;
 import com.cgi.poc.dw.service.UserRegistrationServiceImpl;
+import com.cgi.poc.dw.sockets.AlertEndpoint;
 import com.cgi.poc.dw.util.CustomConstraintViolationExceptionMapper;
 import com.cgi.poc.dw.util.CustomSQLConstraintViolationException;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -38,6 +60,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -52,242 +76,227 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.logging.Level;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.validation.Validator;
-import javax.ws.rs.client.Client;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.glassfish.jersey.logging.LoggingFeature;
-import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import org.hibernate.SessionFactory;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main Dropwizard Application class.
  */
 public class CgiPocApplication extends Application<CgiPocConfiguration> {
 
-  private final static Logger LOG = LoggerFactory.getLogger(CgiPocApplication.class);
+	private final static Logger LOG = LoggerFactory.getLogger(CgiPocApplication.class);
 
-  private final HibernateBundle<CgiPocConfiguration> hibernateBundle
-            = new HibernateBundle<CgiPocConfiguration>(User.class,UserNotification.class,
-            FireEvent.class, EventEarthquake.class, EventWeather.class,EventFlood.class,
-            EventHurricane.class, EventTsunami.class,EventVolcano.class ) {
-    @Override
-    public DataSourceFactory getDataSourceFactory(CgiPocConfiguration configuration) {
-      return configuration.getDataSourceFactory();
-    }
-  };
+	private final HibernateBundle<CgiPocConfiguration> hibernateBundle = new HibernateBundle<CgiPocConfiguration>(
+			User.class, UserNotification.class, FireEvent.class) {
+		@Override
+		public DataSourceFactory getDataSourceFactory(CgiPocConfiguration configuration) {
+			return configuration.getDataSourceFactory();
+		}
+	};
 
-  /**
-   * Application's main method.
-   */
-  public static void main(final String[] args) throws Exception {
-    new CgiPocApplication().run(args);
-  }
+	/**
+	 * Application's main method.
+	 */
+	public static void main(final String[] args) throws Exception {
+		new CgiPocApplication().run(args);
+	}
 
-  /**
-   * Method returns application name.
-   */
-  @Override
-  public String getName() {
-    return "CGI-POC-DW";
-  }
+	/**
+	 * Method returns application name.
+	 */
+	@Override
+	public String getName() {
+		return "CGI-POC-DW";
+	}
 
-  /**
-   * Initializations.
-   */
-  @Override
-  public void initialize(final Bootstrap<CgiPocConfiguration> bootstrap) {
-    /**
-     * Adding migrations bundle.
-     */
-    bootstrap.addBundle(
-        new MigrationsBundle<CgiPocConfiguration>() {
-          @Override
-          public DataSourceFactory getDataSourceFactory(
-              CgiPocConfiguration configuration) {
-            return configuration.getDataSourceFactory();
-          }
-        });
-    /**
-     * Adding Swagger bundle.
-     */
-    bootstrap.addBundle(new SwaggerBundle<CgiPocConfiguration>() {
-      @Override
-      protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(
-          CgiPocConfiguration configuration) {
-        return configuration.swaggerBundleConfiguration;
-      }
-    });
+	/**
+	 * Initializations.
+	 */
+	@Override
+	public void initialize(final Bootstrap<CgiPocConfiguration> bootstrap) {
+		/**
+		 * Adding migrations bundle.
+		 */
+		bootstrap.addBundle(new MigrationsBundle<CgiPocConfiguration>() {
+			@Override
+			public DataSourceFactory getDataSourceFactory(CgiPocConfiguration configuration) {
+				return configuration.getDataSourceFactory();
+			}
+		});
+		/**
+		 * Adding Swagger bundle.
+		 */
+		bootstrap.addBundle(new SwaggerBundle<CgiPocConfiguration>() {
+			@Override
+			protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(CgiPocConfiguration configuration) {
+				return configuration.swaggerBundleConfiguration;
+			}
+		});
 
-    /**
-     * Adding Websocket bundle.
-     */
-    bootstrap.addBundle(new WebsocketBundle(AlertEndpoint.class));
+		/**
+		 * Adding Websocket bundle.
+		 */
+		bootstrap.addBundle(new WebsocketBundle(AlertEndpoint.class));
 
-    bootstrap.setConfigurationSourceProvider(
-        new SubstitutingSourceProvider(
-            bootstrap.getConfigurationSourceProvider(),
-            new EnvironmentVariableSubstitutor(false)
-        )
-    );
+		bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
+				bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
 
-    bootstrap.addBundle(hibernateBundle);
-    bootstrap.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    // want to ensure that dates are stored in UTC
-    TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
-    System.setProperty("user.timezone", "Etc/UTC");
+		bootstrap.addBundle(hibernateBundle);
+		bootstrap.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		// want to ensure that dates are stored in UTC
+		TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
+		System.setProperty("user.timezone", "Etc/UTC");
 
-  }
+	}
 
-  @Override
-  public void run(final CgiPocConfiguration configuration, final Environment environment)
-      throws NoSuchAlgorithmException {
+	@Override
+	public void run(final CgiPocConfiguration configuration, final Environment environment)
+			throws NoSuchAlgorithmException {
 
-    // logging requests & responses
-    environment.jersey().register(new LoggingFeature(java.util.logging.Logger.getLogger("inbound"),
-        Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, 8192));
+		// logging requests & responses
+		environment.jersey().register(new LoggingFeature(java.util.logging.Logger.getLogger("inbound"), Level.INFO,
+				LoggingFeature.Verbosity.PAYLOAD_ANY, 8192));
 
-    Keys keys = new KeyBuilderServiceImpl().createKeys(configuration);
+		Keys keys = new KeyBuilderServiceImpl().createKeys(configuration);
 
-    // guice injectorctor = createInjector(configuration, environment, keys);
-    // resource r
-    Injector injector = createInjector(configuration, environment, keys);
+		// guice injectorctor = createInjector(configuration, environment,
+		// keys);
+		// resource r
+		Injector injector = createInjector(configuration, environment, keys);
 
-    registerResource(environment, injector, UserRegistrationResource.class);
-    registerResource(environment, injector, LoginResource.class);
-    registerResource(environment, injector, CustomConstraintViolationExceptionMapper.class);
-    registerResource(environment, injector, CustomSQLConstraintViolationException.class);
+		registerResource(environment, injector, UserRegistrationResource.class);
+		registerResource(environment, injector, LoginResource.class);
+		registerResource(environment, injector, CustomConstraintViolationExceptionMapper.class);
+		registerResource(environment, injector, CustomSQLConstraintViolationException.class);
 
-    environment.jersey().property(ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED, true);
+		environment.jersey().property(ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED, true);
 
-    // CORS support
-    configureCors(environment, configuration.getCorsConfiguration());
-    // authentication
-    registerAuthentication(environment, injector, keys);
+		// CORS support
+		configureCors(environment, configuration.getCorsConfiguration());
+		// authentication
+		registerAuthentication(environment, injector, keys);
 
-    LOG.debug("Application started");
-  }
+		/**
+		 * Adding Job Scheduler
+		 */
+		environment.lifecycle().manage(injector.getInstance(JobExecutionService.class));
 
-  private void configureCors(Environment environment, CorsConfiguration corsConfiguration) {
-    LOG.info("Configuring CORS filter");
+		LOG.debug("Application started");
+	}
 
-    FilterRegistration.Dynamic filter = environment.servlets()
-        .addFilter("CORS", CrossOriginFilter.class);
-    filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+	private void configureCors(Environment environment, CorsConfiguration corsConfiguration) {
+		LOG.info("Configuring CORS filter");
 
-    // if no list of allowed domains is provided, set for all domains
-    if (corsConfiguration == null || Strings.isNullOrEmpty(corsConfiguration.getAllowedDomains())) {
-      filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
-    } else {
-      filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM,
-          corsConfiguration.getAllowedDomains());
-    }
+		FilterRegistration.Dynamic filter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+		filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
-    filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM,
-        getCrossOriginAllowedHeaders(corsConfiguration));
-    filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM,
-        "GET,PUT,POST,PATCH,DELETE,OPTIONS");
+		// if no list of allowed domains is provided, set for all domains
+		if (corsConfiguration == null || Strings.isNullOrEmpty(corsConfiguration.getAllowedDomains())) {
+			filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+		} else {
+			filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, corsConfiguration.getAllowedDomains());
+		}
 
-    // MUST be set to true for cross-origin Cookie auth to work
-    filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true");
-  }
+		filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM,
+				getCrossOriginAllowedHeaders(corsConfiguration));
+		filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,POST,PATCH,DELETE,OPTIONS");
 
-  private String getCrossOriginAllowedHeaders(CorsConfiguration corsConfiguration) {
-    List<String> allowedList = corsConfiguration.getAllowedHeaders();
-    if (allowedList == null || allowedList.isEmpty()) {
-      allowedList = new ArrayList<>();
-      allowedList.add("Authorization");
-    }
-    return String.join(",", allowedList);
-  }
+		// MUST be set to true for cross-origin Cookie auth to work
+		filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true");
+	}
 
-  private void registerResource(Environment env, Injector injector, Class<?> theClass) {
-    env.jersey().register(injector.getInstance(theClass));
-  }
+	private String getCrossOriginAllowedHeaders(CorsConfiguration corsConfiguration) {
+		List<String> allowedList = corsConfiguration.getAllowedHeaders();
+		if (allowedList == null || allowedList.isEmpty()) {
+			allowedList = new ArrayList<>();
+			allowedList.add("Authorization");
+		}
+		return String.join(",", allowedList);
+	}
 
-  private void registerAuthentication(Environment env, Injector injector, Keys keys) {
+	private void registerResource(Environment env, Injector injector, Class<?> theClass) {
+		env.jersey().register(injector.getInstance(theClass));
+	}
 
-    final JwtConsumer consumer = new JwtConsumerBuilder()
-        .setRequireExpirationTime() // the JWT must have an expiration time
-        .setMaxFutureValidityInMinutes(60) // but the  expiration time can't be too crazy
-        .setAllowedClockSkewInSeconds(
-            30) // allow some leeway in validating time based claims to account for clock skew
-        .setRequireSubject() // the JWT must have a subject claim
-        .setVerificationKey(keys.getSignatureKey()) // verify the signature with the public key
-        .setRelaxVerificationKeyValidation() // relaxes key length requirement
-        .build(); // create the JwtConsumer instance
+	private void registerAuthentication(Environment env, Injector injector, Keys keys) {
 
-    env.jersey().register(RolesAllowedDynamicFeature.class);
-    final JwtAuthFilter<User> tokenAuthFilter =
-        new JwtAuthFilter.Builder<User>()
-            .setJwtConsumer(consumer)
-            .setRealm("realm")
-            .setPrefix("Bearer")
-            .setAuthorizer(injector.getInstance(UserRoleAuthorizer.class))
-            .setAuthenticator(injector.getInstance(DBAuthenticator.class))
-            .buildAuthFilter();
+		final JwtConsumer consumer = new JwtConsumerBuilder().setRequireExpirationTime() // the
+																							// JWT
+																							// must
+																							// have
+																							// an
+																							// expiration
+																							// time
+				.setMaxFutureValidityInMinutes(60) // but the expiration time
+													// can't be too crazy
+				.setAllowedClockSkewInSeconds(30) // allow some leeway in
+													// validating time based
+													// claims to account for
+													// clock skew
+				.setRequireSubject() // the JWT must have a subject claim
+				.setVerificationKey(keys.getSignatureKey()) // verify the
+															// signature with
+															// the public key
+				.setRelaxVerificationKeyValidation() // relaxes key length
+														// requirement
+				.build(); // create the JwtConsumer instance
 
-    env.jersey().register(new AuthDynamicFeature(tokenAuthFilter));
-    env.jersey().register(new AuthValueFactoryProvider.Binder<User>(User.class));
-  }
+		env.jersey().register(RolesAllowedDynamicFeature.class);
+		final JwtAuthFilter<User> tokenAuthFilter = new JwtAuthFilter.Builder<User>().setJwtConsumer(consumer)
+				.setRealm("realm").setPrefix("Bearer").setAuthorizer(injector.getInstance(UserRoleAuthorizer.class))
+				.setAuthenticator(injector.getInstance(DBAuthenticator.class)).buildAuthFilter();
 
-  private Injector createInjector(CgiPocConfiguration conf, Environment env, Keys keys)
-      throws NoSuchAlgorithmException {
-    Injector injector = Guice.createInjector(new AbstractModule() {
-      @Override
-      protected void configure() {
-        // keys
-        bind(Keys.class).toInstance(keys);
+		env.jersey().register(new AuthDynamicFeature(tokenAuthFilter));
+		env.jersey().register(new AuthValueFactoryProvider.Binder<User>(User.class));
+	}
 
-        // services
-        bind(Validator.class).toInstance(env.getValidator());
-        bind(JwtReaderService.class).to(JwtReaderServiceImpl.class).asEagerSingleton();
-        bind(JwtBuilderService.class).to(JwtBuilderServiceImpl.class).asEagerSingleton();
-        bind(PasswordHash.class).to(PasswordHashImpl.class).asEagerSingleton();
-        bind(LoginService.class).to(LoginServiceImpl.class).asEagerSingleton();
-        bind(EmailService.class).to(EmailServiceImpl.class).asEagerSingleton();
-        bind(UserRegistrationService.class).to(UserRegistrationServiceImpl.class).asEagerSingleton();
-        bind(MapApiConfiguration.class).toInstance(conf.getMapApiConfiguration());
-        bind(MailConfiguration.class).toInstance(conf.getMailConfig());
+	private Injector createInjector(CgiPocConfiguration conf, Environment env, Keys keys)
+			throws NoSuchAlgorithmException {
+		Injector injector = Guice.createInjector(new AbstractModule() {
+			@Override
+			protected void configure() {
+				// keys
+				bind(Keys.class).toInstance(keys);
 
-        //Create Jersey client.
-        final Client client = new JerseyClientBuilder(env)
-            .using(conf.getJerseyClientConfiguration())
-            .build(getName());
-        bind(Client.class).toInstance(client);
-      }
+				// scheduler
+				final Client client = new JerseyClientBuilder(env).build("EventsRESTClient");
+				bind(JobsConfiguration.class).toInstance(conf.getJobsConfiguration());
+				install(new FactoryModuleBuilder().implement(APICallerService.class, APICallerServiceImpl.class)
+						.build(APIServiceFactory.class));
+				install(new FactoryModuleBuilder().implement(Runnable.class, PollingDataJob.class)
+						.build(JobFactory.class));
+				bind(Client.class).toInstance(client);
 
-      @Singleton
-      @Provides
-      public SessionFactory provideSessionFactory() {
+				// services
+				bind(Validator.class).toInstance(env.getValidator());
+				bind(JwtReaderService.class).to(JwtReaderServiceImpl.class).asEagerSingleton();
+				bind(JwtBuilderService.class).to(JwtBuilderServiceImpl.class).asEagerSingleton();
+				bind(PasswordHash.class).to(PasswordHashImpl.class).asEagerSingleton();
+				bind(LoginService.class).to(LoginServiceImpl.class).asEagerSingleton();
+				bind(EmailService.class).to(EmailServiceImpl.class).asEagerSingleton();
+				bind(UserRegistrationService.class).to(UserRegistrationServiceImpl.class).asEagerSingleton();
+				bind(MapApiConfiguration.class).toInstance(conf.getMapApiConfiguration());
+				bind(MailConfiguration.class).toInstance(conf.getMailConfig());
 
-        SessionFactory sf = hibernateBundle.getSessionFactory();
-        if (sf == null) {
-          try {
-            hibernateBundle.run(conf, env);
-            return hibernateBundle.getSessionFactory();
-          } catch (Exception e) {
-                LOG.error("Unable to run hibernatebundle");
-          }
-        } else {
-          return sf;
-        }
-        return null;
-      }
+			}
 
-    });
-    return injector;
-  }
+			@Singleton
+			@Provides
+			public SessionFactory provideSessionFactory() {
+
+				SessionFactory sf = hibernateBundle.getSessionFactory();
+				if (sf == null) {
+					try {
+						hibernateBundle.run(conf, env);
+						return hibernateBundle.getSessionFactory();
+					} catch (Exception e) {
+						LOG.error("Unable to run hibernatebundle");
+					}
+				} else {
+					return sf;
+				}
+				return null;
+			}
+
+		});
+		return injector;
+	}
 }

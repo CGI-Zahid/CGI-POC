@@ -51,87 +51,16 @@ logging:
 # Swagger settings
 swagger:
   resourcePackage: com.cgi.poc.dw.rest.resource
-jwtSignatureSecret: o5KnhuFU8q8bo6qPxG2Z75q3yLlNiVCSOUd0vqbv6X8E8QLUSbP6Uxn7hn2678NZ3sQ1ZKy9ih7jAHXu
-
-#API settings
-#API URL
-apiURL: http://maps.googleapis.com/maps/api/geocode/json
-#API key
-apiKey: <your_key>
-
-# Database settings.
-database:
-
-    # the name of your JDBC driver
-    driverClass: com.mysql.jdbc.Driver
-
-    # the username
-    user: ${MYSQL_ROOT_USERNAME}
-
-    # the password
-    password: ${MYSQL_ROOT_PASSWORD}
-
-    # the JDBC URL
-    url: jdbc:mysql://${MYSQL_HOSTNAME}:${MYSQL_PORT}/${MYSQL_DB_NAME}?createDatabaseIfNotExist=true
-
-    # The initial size of the connection pool.
-    initialSize: 2
-
-    # The minimum size of the connection pool.
-    minSize : 2
-
-    # The maximum size of the connection pool.
-    maxSize : 8
-
-# Enable HTTPS
-server:
-    applicationConnectors:
-        - type: http
-          port: 8080
-        - type: https
-          port: 8443
-          keyStorePath: development.keystore
-          keyStorePassword: p@ssw0rd
-          validateCerts: false
-          validatePeers: false
-
-#Jersey client settings
-jerseyClient:
-    #The maximum idle time for a connection, once established.
-    timeout: 512ms
-    #The size of the work queue of the pool used for asynchronous requests.
-    #Additional threads will be spawn only if the queue is reached its maximum size.
-    workQueueSize: 16
-# CORS settings
-#   A list of comma-separated domains that the service will allow cross-origin access from.  If the Origin matches one
-#     of the domains in the list the application will generate a matching Access-Control-Allow-Origin header in the response.
-#     If the Origin header does not match, the application will not send the A-C-A-O header back to the client.
-#   Uses Jetty's CrossOriginFilter, so partial regex is supported:
-#     i.e. https?://*.cgi.[a-z]{3}   -> supports http/https with any subdomain and any 3 character top-level domain for the host "cgi"
-#   c.f. https://www.eclipse.org/jetty/documentation/9.3.x/cross-origin-filter.html
-# IMPORTANT NOTE: if there is no * character in the expression, the filter processes it as a raw string, NOT as a regex
-cors:
-  allowedDomains: https?://*.cgi.[a-z]{3},https?://*.cgi.[a-z]{3}:[0-9]{4},http://localhost:9000,http://localhost:8000,https?://(192.168).*.*:[0-9]{4},https?://(10.1).*.*:[0-9]{4}
-  allowedHeaders:
-   - Accept
-   - Authorization
-   - Content-Length
-   - Content-Type
-   - Content-Disposition
-   - Cookie
-   - Origin
-   - Referer
-   - x-amz-date
-   - x-api-key
-   - x-requested-by
-   - x-requested-with
-
-# Logging settings
-logging:
-  level: INFO
-  loggers:
-    com.cgi: DEBUG
-
-# Swagger settings
-swagger:
-  resourcePackage: com.cgi.poc.dw.rest.resource
+  
+#Jobs settings
+scheduler:
+  thread: 2
+  jobs:    
+     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query
+       delay: 10
+       period: 10
+       timeUnit: SECONDS
+#     - eventURL: https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/1/query
+#       delay: 10
+#       period: 10
+#       timeUnit: SECONDS
