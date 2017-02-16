@@ -30,7 +30,6 @@ public class TextMessageServiceImpl implements TextMessageService{
 
     try {
       Twilio.init(twilioApiConfiguration.getAccountSID(), twilioApiConfiguration.getAuthToken());
-      ;
 
       Message message = Message.creator(new PhoneNumber(("1" + sanitizedSendingToNumber)),
           new PhoneNumber(twilioApiConfiguration.getPhoneNumber()),
