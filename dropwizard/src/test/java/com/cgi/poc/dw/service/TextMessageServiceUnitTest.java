@@ -27,7 +27,7 @@ public class TextMessageServiceUnitTest {
 
     Boolean rt = underTest.send(null, "Test");
 
-    assertEquals("Trying null phone number text message should return false.",false,rt);
+    assertEquals("Trying null phone number text message should return true.",true,rt);
   }
 
   @Test
