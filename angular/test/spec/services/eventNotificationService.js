@@ -1,14 +1,14 @@
 'use strict';
 
 describe('EventSerivce', function() {
-  var eventService;
+  var eventNotificationService;
   var $httpBackend;
   var urls;
 
   beforeEach(module('cgi-web-app'));
 
-  beforeEach(inject(function(_EventSerivce_, _urls_, _$httpBackend_) {
-    eventService = _EventSerivce_;
+  beforeEach(inject(function(_EventNotificationService_, _urls_, _$httpBackend_) {
+    eventNotificationService = _EventNotificationService_;
     urls = _urls_;
     $httpBackend = _$httpBackend_;
   }));
@@ -19,7 +19,7 @@ describe('EventSerivce', function() {
       $httpBackend.expectPOST('http://localhost:8080/notification', notification)
         .respond(200, {});
 
-      eventService.publish(credentials);
+      eventNotificationService.publish(credentials);
       $httpBackend.flush();
 
       $httpBackend.verifyNoOutstandingExpectation();
@@ -31,7 +31,7 @@ describe('EventSerivce', function() {
       $httpBackend.expectPOST(urls.BASE + '/notification', notification)
         .respond(200, {});
 
-      eventService.publish(credentials);
+      eventNotificationService.publish(credentials);
       $httpBackend.flush();
 
       $httpBackend.verifyNoOutstandingExpectation();
