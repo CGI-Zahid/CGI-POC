@@ -32,6 +32,8 @@ cgiWebApp.controller('eventController',
       }
     } else if (response.status === 401 && response.data) {
       $scope.apiErrors.push(response.data);
+    } else {
+      $scope.apiErrors.push('Server error occurred. Please try again later.');
     }
   };
 

@@ -127,6 +127,16 @@ describe('eventController', function() {
       expect($scope.apiErrors[0]).toBe('Credentials are required to access this resource.');
     });
 
+    it('should default to generic error message', function() {
+      var response = {
+        status: -1,
+        statusText: '',
+        data: null
+      };
+      $scope.processApiErrors(response);
+      expect($scope.apiErrors[0]).toBe('Server error occurred. Please try again later.');
+    });
+
     it('should ignore other pieces of data', function() {
       var response = {
         status: 404,
