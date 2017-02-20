@@ -1,55 +1,64 @@
-<div>
-  <h1>Publish New Notification</h1>
-  <hr />
-  <form class="usa-form-large" name="notificationForm" ng-submit="publishEvent()">
-    <fieldset>
-      <div ng-class="{ 'usa-input-error': notificationForm.notificationType.$touched && notificationForm.notificationType.$invalid }">
-        <label class="usa-input-required">Notification Type</label>
-        <div ng-messages="notificationForm.notificationType.$error" ng-if="notificationForm.notificationType.$touched">
-          <span ng-message="required" class="usa-input-error-message" role="alert"
-            translate="NOTIFICATION.MESSAGE.INVALID.NOTIFICATIONTYPEREQUIRED"></span>
+<div class="modal-content usa-content usa-form-large">
+  <div class="usa-grid">
+    <h3 translate="NOTIFICATION.FORMLABEL"></h3>
+    <hr />
+    <form class="usa-form-large" name="notificationForm" ng-submit="publishEvent()">
+      <fieldset>
+        <div ng-class="{ 'usa-input-error': notificationForm.notificationType.$touched && notificationForm.notificationType.$invalid }">
+          <label class="usa-input-required" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE"></label>
+          <div ng-messages="notificationForm.notificationType.$error" ng-if="notificationForm.notificationType.$touched">
+            <span ng-message="required" class="usa-input-error-message" role="alert"
+              translate="NOTIFICATION.MESSAGE.INVALID.NOTIFICATIONTYPEREQUIRED"></span>
+          </div>
+          <fieldset class="usa-fieldset-inputs usa-sans">
+            <legend class="usa-sr-only" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE"></legend>
+            <ul id="notificationType" name="notificationType" class="usa-unstyled-list" >
+              <li>
+                <input id="emergency" type="radio" checked name="notification-type" value="emergency" ng-model="notification.notificationType">
+                <label for="emergency" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE.EMERGENCY"></label>
+              </li>
+              <li>
+                <input id="nonEmergency" type="radio" name="notification-type" value="nonEmergency" ng-model="notification.notificationType">
+                <label for="nonEmergency" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE.NONEMERGENCY"></label>
+              </li>
+            </ul>
+          </fieldset>
         </div>
-        <fieldset class="usa-fieldset-inputs usa-sans">
-          <legend class="usa-sr-only">Notification Type</legend>
-          <ul id="notificationType" name="notificationType" class="usa-unstyled-list" >
-            <li>
-              <input id="emergency" type="radio" checked name="notification-type" value="emergency" ng-model="notification.notificationType">
-              <label for="emergency">Emergency</label>
-            </li>
-            <li>
-              <input id="nonEmergency" type="radio" name="notification-type" value="nonEmergency" ng-model="notification.notificationType">
-              <label for="nonEmergency">Non-emergency</label>
-            </li>
-          </ul>
-        </fieldset>
-      </div>
 
-      <div ng-class="{ 'usa-input-error': notificationForm.zipCodes.$touched && notificationForm.zipCodes.$invalid }">
-        <label for="zipCodes" class="usa-input-required"
-          translate="NOTIFICATION.LABEL.ZIPCODES"></label>
-        <div ng-messages="notificationForm.zipCodes.$error" ng-if="notificationForm.zipCodes.$touched">
-          <span ng-message="required" class="usa-input-error-message" role="alert"
-            translate="NOTIFICATION.MESSAGE.INVALID.ZIPCODESREQUIRED"></span>
+        <div ng-class="{ 'usa-input-error': notificationForm.zipCodes.$touched && notificationForm.zipCodes.$invalid }">
+          <label for="zipCodes" class="usa-input-required"
+            translate="NOTIFICATION.LABEL.ZIPCODES"></label>
+          <div ng-messages="notificationForm.zipCodes.$error" ng-if="notificationForm.zipCodes.$touched">
+            <span ng-message="required" class="usa-input-error-message" role="alert"
+              translate="NOTIFICATION.MESSAGE.INVALID.ZIPCODESREQUIRED"></span>
+          </div>
+          <input id="zipCodes" name="zipCodes" type="zipCodes" ng-model="notification.zipCodes" ng-required="true"
+            placeholder="XXXXX, XXXXX, XXXXX" />
+          <div translate="NOTIFICATION.LABEL.ZIPCODES.INFO"></div>
         </div>
-        <input id="zipCodes" name="zipCodes" type="zipCodes" ng-model="notification.zipCodes" ng-required="true"
-          placeholder="{{ 'NOTIFICATION.LABEL.ZIPCODES' | translate }}" />
-        <div translate="NOTIFICATION.LABEL.ZIPCODES.INFO"></div>
-      </div>
 
-      <div ng-class="{ 'usa-input-error': notificationForm.message.$touched && notificationForm.message.$invalid }">
-        <label for="message" class="usa-input-required"
-          translate="NOTIFICATION.LABEL.MESSAGE"></label>
-        <div ng-messages="notificationForm.message.$error" ng-if="notificationForm.message.$touched">
-          <span ng-message="required" class="usa-input-error-message" role="alert"
-            translate="NOTIFICATION.MESSAGE.INVALID.MESSAGEREQUIRED"></span>
-          <span ng-message="maxLength" class="usa-input-error-message" role="alert"
-            translate="NOTIFICATION.MESSAGE.INVALID.MESSAGETOOLONG"></span>
+        <div ng-class="{ 'usa-input-error': notificationForm.message.$touched && notificationForm.message.$invalid }">
+          <label for="message" class="usa-input-required"
+            translate="NOTIFICATION.LABEL.MESSAGE"></label>
+          <div ng-messages="notificationForm.message.$error" ng-if="notificationForm.message.$touched">
+            <span ng-message="required" class="usa-input-error-message" role="alert"
+              translate="NOTIFICATION.MESSAGE.INVALID.MESSAGEREQUIRED"></span>
+            <span ng-message="maxLength" class="usa-input-error-message" role="alert"
+              translate="NOTIFICATION.MESSAGE.INVALID.MESSAGETOOLONG"></span>
+          </div>
+          <textarea id="message" name="message" rows="4" ng-model="notification.message" ng-required="true"
+            placeholder="{{ 'NOTIFICATION.LABEL.MESSAGE' | translate }}"></textarea>
+          <div class="notificationMessageInfo">({{ notification.messageCharsRemaining }} characters remaining)</div>
         </div>
-        <textarea id="message" name="message" rows="4" ng-model="notification.message" ng-required="true"
-          placeholder="{{ 'NOTIFICATION.LABEL.MESSAGE' | translate }}" />
-        <span>({{ notification.messageRemaining }})</span>
-      </div>
 
-    </fieldset>
-  </form>
+      </fieldset>
+
+      <div class="usa-form-large">
+        <button type="submit" class="usa-width-one-half usa-button-gray"
+          translate="BUTTON.CANCEL" ui-sref="login"></button>
+        <button type="submit" class="usa-width-one-half usa-button-primary"
+          translate="BUTTON.SEND" ng-disabled="!notificationForm.$dirty"></button>
+      </div>
+    </form>
+  </div>
 </div>

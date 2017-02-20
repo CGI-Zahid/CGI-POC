@@ -60,7 +60,7 @@ $sceDelegateProvider.resourceUrlWhitelist([
     url: '/publish',
     views: {
       'pageContent': {
-        templateUrl: 'publish.html',
+        templateUrl: '/views/publish.html',
         controller: 'eventController'
       }
     }

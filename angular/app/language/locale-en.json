@@ -53,5 +53,14 @@
   "CONFIRMATION.BUTTON.NO" : "NO",
   "HEADER.USER.APPNAME" : "ApplicationName",
   "HEADER.USER.MANAGEPROFILE" : "Manage Profile",
-  "HEADER.USER.LOGOUT" : "Logout"
+  "HEADER.USER.LOGOUT" : "Logout",
+  "NOTIFICATION.FORMLABEL" : "Publish New Notification",
+  "NOTIFICATION.LABEL.NOTIFICATIONTYPE" : "Notification Type",
+  "NOTIFICATION.LABEL.NOTIFICATIONTYPE.EMERGENCY" : "Emergency",
+  "NOTIFICATION.LABEL.NOTIFICATIONTYPE.NONEMERGENCY" : "Non-emergency",
+  "NOTIFICATION.LABEL.ZIPCODES" : "Zip code(s)",
+  "NOTIFICATION.LABEL.ZIPCODES.INFO" : "Enter one or more zip codes to issue this notification to. Multiple zip codes should be separted by commas.",
+  "NOTIFICATION.LABEL.MESSAGE" : "Notification Text",
+  "BUTTON.CANCEL" : "CANCEL",
+  "BUTTON.SEND" : "SEND"
 }
