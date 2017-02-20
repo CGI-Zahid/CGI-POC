@@ -33,11 +33,6 @@ cgiWebApp.controller('eventController',
     }
   };
 
-  $scope.notificationTypeTouched = function(notificationForm) {
-    return notificationForm.emergency.$touched ||
-      notificationForm.nonEmergency.$touched;
-  };
-
   $scope.publishEvent = function() {
     $scope.generateZipCodes();
 

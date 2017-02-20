@@ -48,44 +48,6 @@ describe('eventController', function() {
     });
   });
 
-  describe('notificationTypeTouched', function() {
-    it('is touched if the notificationType.emergency control is touched', function() {
-      var notificationForm = {
-        emergency: {
-          $touched: true
-        },
-        nonEmergency: {
-          $touched: false
-        }
-      };
-      expect($scope.notificationTypeTouched(notificationForm)).toBe(true);
-    });
-
-    it('is touched if the notificationType.nonEmergency control is touched', function() {
-      var notificationForm = {
-        emergency: {
-          $touched: false
-        },
-        nonEmergency: {
-          $touched: true
-        }
-      };
-      expect($scope.notificationTypeTouched(notificationForm)).toBe(true);
-    });
-
-    it('is NOT touched if the none of the controls are touched', function() {
-      var notificationForm = {
-        emergency: {
-          $touched: false
-        },
-        nonEmergency: {
-          $touched: false
-        }
-      };
-      expect($scope.notificationTypeTouched(notificationForm)).toBe(false);
-    });
-  });
-
   describe('publishEvent', function() {
     it('should call the EventNotificationService.publish', function() {
       $scope.publishEvent();

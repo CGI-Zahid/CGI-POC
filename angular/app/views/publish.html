@@ -17,9 +17,9 @@
     <hr />
     <form class="usa-form-large" name="notificationForm" ng-submit="publishEvent()">
       <fieldset>
-        <div ng-class="{ 'usa-input-error': notificationForm.notificationType.$touched && notificationForm.notificationType.$invalid }">
+        <div class="usa-input-error">
           <label class="usa-input-required" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE"></label>
-          <div ng-messages="notificationForm.notificationType.$error" ng-if="notificationForm.notificationType.$touched">
+          <div ng-messages="notificationForm.notificationType.$error">
             <span ng-message="required" class="usa-input-error-message" role="alert"
               translate="NOTIFICATION.MESSAGE.INVALID.NOTIFICATIONTYPEREQUIRED"></span>
           </div>
