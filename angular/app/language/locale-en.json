@@ -67,5 +67,6 @@
   "NOTIFICATION.MESSAGE.INVALID.ZIPCODESREQUIRED" : "You must enter at least one valid zip code",
   "NOTIFICATION.MESSAGE.INVALID.ZIPCODESINVALID" : "You must enter a properly formatted zip code",
   "NOTIFICATION.MESSAGE.INVALID.MESSAGEREQUIRED" : "You must enter notification text",
-  "NOTIFICATION.MESSAGE.INVALID.MESSAGETOOLONG" : "You must enter 135 characters or less"
+  "NOTIFICATION.MESSAGE.INVALID.MESSAGETOOLONG" : "You must enter 135 characters or less",
+  "HEADER.USER.PUBLISHADHOCNOTIFICATION" : "Publish New Notification"
 }
