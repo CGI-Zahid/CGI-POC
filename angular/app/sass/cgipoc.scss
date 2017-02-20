@@ -41,8 +41,22 @@ body{
     margin-left:auto;
     margin-right:auto;
 }
-.headerZone{
-    background:white;
+
+.headerZone {
+  background: #003466;
+
+}
+.usa-nav-secondary-links a {
+      color:white!important;
+}
+.contentZone{
+    padding-bottom: 10em;
+}
+.event{
+    border: 5px;
+    border-color: black;
+    border-style: double;
+    padding:0px!important;
 }
 .footerZone{
     position:fixed;

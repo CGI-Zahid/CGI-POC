@@ -1,31 +1,54 @@
 <div class="usa-content">
   <div class="usa-grid">
-    <div class="usa-width-one-third scrollable-section" >
+      <div class="usa-grid">
+          <div class="usa-width-one-third"  >
+              <select  id="eventTypeFilter" name="eventTypeFilter"   ng-model="eventTypeFilter"  class="form-control"  
+                       ng-options="eventType.id as eventType.name  for eventType in  eventTypes" ng-change="changeFilters()" >
 
-      <table class="usa-table-borderless">
+              </select>
+          </div>
+          <div class="usa-width-one-third"  >
+              <select  id="eventTimeFilter" name="eventTimeFilter"   ng-model="eventTimeFilter"  class="form-control"  
+                       ng-options="eventTime.id as eventTime.name  for eventTime in  eventTimeFrames" ng-change="changeFilters()" >
 
-    <tbody>
-      <tr ng-repeat="item in model.notifications track by $index">
+              </select>
+          </div>
+          <div class="usa-width-one-third"  >
+           <input id="zipSearch" name="zipSearch" ng-model="zipSearch"
+                       placeholder="search by zip code" maxlength="30" class="form-control " ng-change="changeFilters()" >
+          </div>
+      </div>
+       
+      <div class="usa-width-one-third scrollable-section" >
+      <div class="event usa-grid" ng-repeat="item in model.filterredNotifications track by $index">
+          <div class="usa-width-one-twelfth"  >
+               <img class="" src="/images/logo_mycalerts_header.png" alt="Logo image" />
+          </div>
+          <div class="usa-width-two-thirds"  >
+             <h5 class="usa-heading-alt">{{item.type}}</h5>
+             <span>{{item.generationDate |  date:'MM-dd-yyyy  hh:mm:ss a'}}</span>
+             <span><span ng-repeat="z in item.zipcodes ">{{z}}{{$last ? '' : ', '}}</span></span>
+          </div>
+          <div class="usa-width-one-twelfth"  >
+               <img ng-click="loadEventDetails()" class="" src="/uswds-0.14.0/img/alerts/info.png" alt="Logo image" />
+               <img ng-click="loadMap()" class="" src="/uswds-0.14.0/img/arrow-right.png" alt="Logo image" />
+          </div>
+      
+      </div>
 
-        <td>
-          {{item.type}}
-          <p>{{item.description}}</p>
-          <p> <span ng-repeat="z in item.zipcodes">{{z}}&nbsp;</span> </p>
-        </td>
-
-      </tr>
-
-    </tbody>
-  </table>
-
-    </div>
+     </div>
     <div class="usa-width-one-half">
+        <p>{{embeddedLine}}</p>
     <p>
-      <img  src="https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=1200x800&maptype=roadmap
-&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318
-&markers=color:red%7Clabel:C%7C40.718217,-73.998284
-&key=AIzaSyBYXRLv8Mnknfx_pOLJW-3PVNP2TIO4oK0" />
-
+      <iframe width="300" height="170" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
+          src="{{embeddedLine}}">
+                  
+      </iframe>
+        <br />
+        <small>
+            <a href="https://maps.google.com/maps?q='+data.lat+','+data.lon+'&hl=es;z=14&amp;output=embed" style="color:#0000FF;text-align:left" 
+               target="_blank">See map bigger</a>
+        </small>
     </p>
     </div>
   </div>

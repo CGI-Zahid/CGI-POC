@@ -6,7 +6,14 @@ cgiWebApp.constant('urls', {
   // have to be change depending of the environment
   BASE: 'http://localhost:8080',
   WS_BASE: 'ws://localhost:8080'
-}).config([ '$translateProvider', '$urlRouterProvider', '$stateProvider', function($translateProvider, $urlRouterProvider, $stateProvider) {
+}).config([ '$translateProvider', '$urlRouterProvider', '$stateProvider','$sceDelegateProvider', function($translateProvider, $urlRouterProvider, $stateProvider,$sceDelegateProvider) {
+$sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // Allow loading from our assets domain.  Notice the difference between * and **.
+    'https://maps.google.com/**'
+  ]);
+
 
   $translateProvider.useStaticFilesLoader({
     prefix : 'language/locale-', // path to translations files
@@ -50,4 +57,14 @@ cgiWebApp.constant('urls', {
       }
     }
   });
-}]);
+}])
+.run(['$sessionStorage', '$http',   function ($sessionStorage, $http ) { 
+
+    var authToken = $sessionStorage.get('jwt');
+        // Setup api access token
+        $http.defaults.headers.common['Content-Type'] = 'application/json';
+        $http.defaults.headers.common.Authorization =  'Bearer ' + authToken;
+        //Caching will be set by the nginx, so lets take advantage of that.
+        //$http.defaults.headers.common['Cache-Control'] = 'no-cache';
+    }]);
+

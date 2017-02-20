@@ -37,7 +37,7 @@ cgiWebApp.filter('eventTime', function ( ) {
             angular.forEach(data,function(value){
             // we want to return the parent and all children for any gsn entry 
             // that matches.
-            if (value.date >= compareDate) {
+            if (value.generationDate >= compareDate) {
                filteredData.push(value);   
                 
             }
