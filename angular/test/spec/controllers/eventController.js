@@ -117,6 +117,16 @@ describe('eventController', function() {
       expect($scope.apiErrors[2]).toBe('Please do not be blank');
     });
 
+    it('should construct the apiErrors for unauthorized', function() {
+      var response = {
+        status: 401,
+        statusText: 'Unauthorized',
+        data: 'Credentials are required to access this resource.'
+      };
+      $scope.processApiErrors(response);
+      expect($scope.apiErrors[0]).toBe('Credentials are required to access this resource.');
+    });
+
     it('should ignore other pieces of data', function() {
       var response = {
         status: 404,

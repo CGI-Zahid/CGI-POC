@@ -30,6 +30,8 @@ cgiWebApp.controller('eventController',
           $scope.apiErrors.push(response.data.errors[i].message);
         }
       }
+    } else if (response.status === 401 && response.data) {
+      $scope.apiErrors.push(response.data);
     }
   };
 
