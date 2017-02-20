@@ -56,9 +56,17 @@ $sceDelegateProvider.resourceUrlWhitelist([
         controller: 'ProfileController'
       }
     }
+  }).state('publish', {
+    url: '/publish',
+    views: {
+      'pageContent': {
+        templateUrl: 'publish.html',
+        controller: 'eventController'
+      }
+    }
   });
 }])
-.run(['$sessionStorage', '$http',   function ($sessionStorage, $http ) { 
+.run(['$sessionStorage', '$http',   function ($sessionStorage, $http ) {
 
     var authToken = $sessionStorage.get('jwt');
         // Setup api access token
@@ -67,4 +75,3 @@ $sceDelegateProvider.resourceUrlWhitelist([
         //Caching will be set by the nginx, so lets take advantage of that.
         //$http.defaults.headers.common['Cache-Control'] = 'no-cache';
     }]);
-
