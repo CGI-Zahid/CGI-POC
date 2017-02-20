@@ -292,6 +292,7 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
         bind(EventWeatherAPICallerServiceImpl.class);        
         bind(APICallerService.class).annotatedWith(Names.named("fireService")).to(FireEventAPICallerServiceImpl.class);
         bind(APICallerService.class).annotatedWith(Names.named("weatherService")).to(FireEventAPICallerServiceImpl.class);
+        bind(SearchUserService.class).to(SearchUserServiceImpl.class).asEagerSingleton();
         //Create Jersey client.
         final Client client = new JerseyClientBuilder(env)
             .using(conf.getJerseyClientConfiguration())

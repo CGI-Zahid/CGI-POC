@@ -6,11 +6,12 @@
 package com.cgi.poc.dw.api.service.impl;
 
 import com.cgi.poc.dw.dao.EventFloodDAO;
- import com.cgi.poc.dw.dao.model.EventFlood;
+import com.cgi.poc.dw.dao.model.EventFlood;
+import com.cgi.poc.dw.service.SearchUserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
- import java.io.IOException;
+import java.io.IOException;
 import javax.ws.rs.client.Client;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,12 +28,14 @@ public class EventFloodAPICallerServiceImpl extends APICallerServiceImpl {
     private static final Logger LOG = LoggerFactory.getLogger(EventFloodAPICallerServiceImpl.class);
 
     private EventFloodDAO eventDAO;
+    private SearchUserService searchUserService;
 
     @Inject
-    public EventFloodAPICallerServiceImpl(String eventUrl, Client client, EventFloodDAO weatherEventDAO, SessionFactory sessionFactory) {
+    public EventFloodAPICallerServiceImpl(String eventUrl, Client client, EventFloodDAO weatherEventDAO,
+          SessionFactory sessionFactory, SearchUserService searchUserService) {
         super(eventUrl, client, sessionFactory);
-                eventDAO = weatherEventDAO;
-
+        eventDAO = weatherEventDAO;
+        this.searchUserService = searchUserService;
     }
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {

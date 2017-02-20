@@ -5,13 +5,21 @@
  */
 package com.cgi.poc.dw.api.service.impl;
 
+import com.cgi.poc.dw.api.service.data.GeoCoordinates;
 import com.cgi.poc.dw.dao.FireEventDAO;
 import com.cgi.poc.dw.dao.model.FireEvent;
+import com.cgi.poc.dw.dao.model.User;
+import com.cgi.poc.dw.service.SearchUserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import java.io.IOException;
-  import javax.ws.rs.client.Client;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import javax.ws.rs.client.Client;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -29,11 +37,18 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
     private static final Logger LOG = LoggerFactory.getLogger(FireEventAPICallerServiceImpl.class);
 
     private FireEventDAO eventDAO;
+    private SearchUserService searchUserService;
+    private FireEvent eventCompare;
+    private FireEvent eventCompareChanged;
+    private Date eventCompareDate;
+    private Date eventCompareChangedDate;
 
     @Inject
-    public FireEventAPICallerServiceImpl(String eventUrl, Client client, FireEventDAO fireEventDAO, SessionFactory sessionFactory) {
+    public FireEventAPICallerServiceImpl(String eventUrl, Client client, FireEventDAO fireEventDAO,
+          SessionFactory sessionFactory, SearchUserService searchUserService) {
         super(eventUrl, client, sessionFactory);
         eventDAO = fireEventDAO;
+        this.searchUserService = searchUserService;
     }
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {
@@ -45,6 +60,16 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
 
             event.setGeometry(geoJson.toString());
             ManagedSessionContext.bind(session);
+
+            Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            try {
+                eventCompare = (eventDAO).findById(event.getUniquefireidentifier());
+                eventCompareDate = eventCompare.getLastModified();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             Transaction transaction = session.beginTransaction();
             try {
                 LOG.info("Event to save : {}", event.toString());
@@ -53,6 +78,30 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
+                throw new RuntimeException(e);
+            }
+
+            try {
+                eventCompareChanged = (eventDAO).findById(event.getUniquefireidentifier());
+                eventCompareChangedDate = eventCompareChanged.getLastModified();
+
+                LOG.info(formatter.format(eventCompareDate));
+                LOG.info(formatter.format(eventCompareChangedDate));
+
+                if(eventCompareDate.compareTo(eventCompareChangedDate) != 0){
+                    LOG.info("Process event for notifications");
+
+                    GeoCoordinates geo = new GeoCoordinates();
+                    geo.setLatitude(event.getLatitude().doubleValue());
+                    geo.setLongitude(event.getLongitude().doubleValue());
+
+                    List<User> users = searchUserService.search(Arrays.asList(geo),50.00);
+
+                    LOG.info("Send notifications to : {}", users.toString());
+                }else{
+                    LOG.info("Event last modified not changed");
+                }
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } catch (IOException ex) {

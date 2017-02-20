@@ -40,7 +40,7 @@ public abstract class APICallerServiceImpl implements APICallerService {
     protected SessionFactory sessionFactory;
 
     @Inject
-	public APICallerServiceImpl( String eventUrl,  Client client, 
+	public APICallerServiceImpl( String eventUrl,  Client client,
                 SessionFactory sessionFactory) {
         this.eventUrl = eventUrl;
         this.client = client;
