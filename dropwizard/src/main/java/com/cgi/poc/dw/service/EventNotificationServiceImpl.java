@@ -33,7 +33,14 @@ public class EventNotificationServiceImpl extends BaseServiceImpl implements Eve
         Response.ResponseBuilder respBuilder = Response.noContent().status(Response.Status.OK);
         respBuilder.header("X-Total-Count", Integer.valueOf(resultList.size()).toString());
         return respBuilder.entity(resultList).build();
+    }
 
+  @Override
+    public Response retrieveNotificationsForUser(User user) {
+        List<EventNotification> resultList = eventNotificationDAO.retrieveAllForUser(user);
+        Response.ResponseBuilder respBuilder = Response.noContent().status(Response.Status.OK);
+        respBuilder.header("X-Total-Count", Integer.valueOf(resultList.size()).toString());
+        return respBuilder.entity(resultList).build();
     }
 
   @Override

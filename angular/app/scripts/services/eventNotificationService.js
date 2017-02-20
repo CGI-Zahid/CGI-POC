@@ -12,8 +12,12 @@ cgiWebApp.service('EventNotificationService',
   ['$http', 'urls',
   function($http, urls) {
 
-  this.notifications = function() {
-    var endpoint = urls.BASE + '/notification';
+  this.allNotifications = function() {
+    var endpoint = urls.BASE + '/notification/admin';
     return $http.get(endpoint);
   };
+  this.userNotifications = function() {
+    var endpoint = urls.BASE + '/notification/user';
+    return $http.get(endpoint);
+  };  
 }]);

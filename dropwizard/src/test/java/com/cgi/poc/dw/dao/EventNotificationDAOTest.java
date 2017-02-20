@@ -100,28 +100,46 @@ public class EventNotificationDAOTest extends DaoUnitTestBase  {
         
         List<EventNotification> resultList= eventDAO.retrieveAll( );        
         EventNotification result2  = resultList.get(0);    
-        assertEquals(result.getId(),result.getId());
-        assertEquals(result.getType(),result.getType());
-        assertEquals(result.getUrl1(),result.getUrl1());
-        assertEquals(result.getUrl2(),result.getUrl2());
-        assertEquals(result.getDescription(),result.getDescription());
-        assertEquals(result.getUserId(),result.getUserId());
-        assertEquals(result.getCitizensAffected(),result.getCitizensAffected());
-        assertEquals(result.getEventNotificationZipcodes(),result.getEventNotificationZipcodes());
-        assertEquals(result.getGenerationDate(),result.getGenerationDate());
+        assertEquals(result2.getId(),result.getId());
+        assertEquals(result2.getType(),result.getType());
+        assertEquals(result2.getUrl1(),result.getUrl1());
+        assertEquals(result2.getUrl2(),result.getUrl2());
+        assertEquals(result2.getDescription(),result.getDescription());
+        assertEquals(result2.getUserId(),result.getUserId());
+        assertEquals(result2.getCitizensAffected(),result.getCitizensAffected());
+        assertEquals(result2.getEventNotificationZipcodes(),result.getEventNotificationZipcodes());
+        assertEquals(result2.getGenerationDate(),result.getGenerationDate());
+
+        List<EventNotification> resultList2= eventDAO.retrieveAllForUser(tmpUser);
+        EventNotification result3  = resultList2.get(0);    
+        assertEquals(result3.getId(),result.getId());
+        assertEquals(result3.getType(),result.getType());
+        assertEquals(result3.getUrl1(),result.getUrl1());
+        assertEquals(result3.getUrl2(),result.getUrl2());
+        assertEquals(result3.getDescription(),result.getDescription());
+        assertEquals(result3.getUserId(),result.getUserId());
+        assertEquals(result3.getCitizensAffected(),result.getCitizensAffected());
+        assertEquals(result3.getEventNotificationZipcodes(),result.getEventNotificationZipcodes());
+        assertEquals(result3.getGenerationDate(),result.getGenerationDate());
          
     }
     @Test
     public void retriveAllGetsNothing() {
-        System.out.println("update");
         EventNotification event = new EventNotification();
         List<EventNotification> resultList = eventDAO.retrieveAll( );   
          flush(); // have to do this.. so that the sql is actually executed.
          assertThat(resultList.size()).isEqualTo(0);
     }
     @Test
+    public void retriveForUserGetsNothing() {
+        User tmpUser = new User();
+        tmpUser.setId(Long.valueOf(555));
+        List<EventNotification> resultList = eventDAO.retrieveAllForUser(tmpUser);   
+         flush(); // have to do this.. so that the sql is actually executed.
+         assertThat(resultList.size()).isEqualTo(0);
+    }
+    @Test
     public void invalidInsert() {
-        System.out.println("update");
         EventNotification event = new EventNotification();
         boolean bExceptionCaught = false;
         try {

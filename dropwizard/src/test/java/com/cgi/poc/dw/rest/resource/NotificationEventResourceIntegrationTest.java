@@ -148,7 +148,7 @@ public class NotificationEventResourceIntegrationTest extends IntegrationTest {
     IntegrationTestHelper.deleteAllEventNotfications();
     Client client = new JerseyClientBuilder().build();
     Response response = client.
-        target(String.format(url, RULE.getLocalPort())).
+        target(String.format(url+"/admin", RULE.getLocalPort())).
         request().
         header("Authorization", "Bearer " + authToken).
         get();
@@ -178,7 +178,7 @@ public class NotificationEventResourceIntegrationTest extends IntegrationTest {
       String authToken = IntegrationTestHelper.getAuthToken("admin100@cgi.com", "adminpw", RULE);
       Client client = new JerseyClientBuilder().build();
       Response response = client.
-              target(String.format(url, RULE.getLocalPort())).
+              target(String.format(url+"/admin", RULE.getLocalPort())).
               request().
               header("Authorization", "Bearer " + authToken).
         get();

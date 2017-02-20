@@ -8,4 +8,5 @@ public interface EventNotificationService {
 
   Response publishNotification(User user, EventNotification eventNotification);
   Response retrieveAllNotifications(User user);
+  Response retrieveNotificationsForUser(User user);
 }

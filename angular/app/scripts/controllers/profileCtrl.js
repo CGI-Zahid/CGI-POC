@@ -101,7 +101,7 @@ cgiWebApp.controller('ProfileController',
     //putting this on scope so I can test
     $scope.toSend = toPost;
 
-    toCall(toPost).then(function(response) {
+    toCall(toPost).then(function() {
       if (beforeNavFunc) {
         beforeNavFunc(toPost);
       }

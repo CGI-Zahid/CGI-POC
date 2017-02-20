@@ -66,6 +66,8 @@ public class EventNotificationResource {
 
   
   @GET
+  @Path("/admin")
+  @RolesAllowed("ADMIN")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Retrieve event notifications",
@@ -79,9 +81,33 @@ public class EventNotificationResource {
       @ApiImplicitParam(name = "Authorization", required = true, dataType = "string", paramType = "header")
   })
   @UnitOfWork
-  @Timed(name = "EventNotification.getNotificationse")
-  public Response getNotificationse(@Auth User principal) {
+  @Timed(name = "EventNotification.getNotifications")
+  public Response getNotifications(@Auth User principal) {
       Response response = notificationService.retrieveAllNotifications(principal);
+      if (!response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL)) {
+          throw new WebApplicationException(response);
+      }
+      return response;
+ }
+  @GET
+  @RolesAllowed("RESIDENT")
+  @Path("/user")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @ApiOperation(value = "Retrieve event notifications",
+      notes = "Allows retrieval of event notifications.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Success"),
+      @ApiResponse(code = 401, message = "Authentication failed."),
+      @ApiResponse(code = 500, message = "System Error")
+  })
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = "Authorization", required = true, dataType = "string", paramType = "header")
+  })
+  @UnitOfWork
+  @Timed(name = "EventNotification.getNotifications")
+  public Response getNotificationsForUser(@Auth User principal) {
+      Response response = notificationService.retrieveNotificationsForUser(principal);
       if (!response.getStatusInfo().getFamily().equals(Response.Status.Family.SUCCESSFUL)) {
           throw new WebApplicationException(response);
       }
