@@ -28,14 +28,12 @@ public class EventFloodAPICallerServiceImpl extends APICallerServiceImpl {
     private static final Logger LOG = LoggerFactory.getLogger(EventFloodAPICallerServiceImpl.class);
 
     private EventFloodDAO eventDAO;
-    private SearchUserService searchUserService;
 
     @Inject
     public EventFloodAPICallerServiceImpl(String eventUrl, Client client, EventFloodDAO weatherEventDAO,
-          SessionFactory sessionFactory, SearchUserService searchUserService) {
+          SessionFactory sessionFactory) {
         super(eventUrl, client, sessionFactory);
         eventDAO = weatherEventDAO;
-        this.searchUserService = searchUserService;
     }
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {

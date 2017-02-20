@@ -8,8 +8,12 @@ package com.cgi.poc.dw.api.service.impl;
 import com.cgi.poc.dw.api.service.data.GeoCoordinates;
 import com.cgi.poc.dw.dao.FireEventDAO;
 import com.cgi.poc.dw.dao.model.FireEvent;
+import com.cgi.poc.dw.dao.model.NotificationType;
 import com.cgi.poc.dw.dao.model.User;
+import com.cgi.poc.dw.dao.model.UserNotificationType;
+import com.cgi.poc.dw.service.EmailService;
 import com.cgi.poc.dw.service.SearchUserService;
+import com.cgi.poc.dw.service.TextMessageService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -38,6 +42,8 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
 
     private FireEventDAO eventDAO;
     private SearchUserService searchUserService;
+    private TextMessageService textMessageService;
+    private EmailService emailService;
     private FireEvent eventCompare;
     private FireEvent eventCompareChanged;
     private Date eventCompareDate;
@@ -45,10 +51,13 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
 
     @Inject
     public FireEventAPICallerServiceImpl(String eventUrl, Client client, FireEventDAO fireEventDAO,
-          SessionFactory sessionFactory, SearchUserService searchUserService) {
+          SessionFactory sessionFactory, SearchUserService searchUserService, TextMessageService textMessageService,
+          EmailService emailService) {
         super(eventUrl, client, sessionFactory);
         eventDAO = fireEventDAO;
         this.searchUserService = searchUserService;
+        this.textMessageService = textMessageService;
+        this.emailService = emailService;
     }
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {
@@ -67,7 +76,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 eventCompare = (eventDAO).findById(event.getUniquefireidentifier());
                 eventCompareDate = eventCompare.getLastModified();
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                LOG.error("Unable to calculate eventCompareDate : error: {}", e.getMessage());
             }
 
             Transaction transaction = session.beginTransaction();
@@ -78,7 +87,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
-                throw new RuntimeException(e);
+                LOG.error("Unable to save event : error: {}", e.getMessage());
             }
 
             try {
@@ -98,11 +107,23 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                     List<User> users = searchUserService.search(Arrays.asList(geo),50.00);
 
                     LOG.info("Send notifications to : {}", users.toString());
+
+                    for (User user : users) {
+                        for (UserNotificationType userNotification : user.getNotificationType()){
+                            if(userNotification.getNotificationId() == NotificationType.SMS.ordinal()){
+                                textMessageService.send(user.getPhone(), "Emergency alert: "
+                                    +"FireEvent in your area. Please log in at <our site> for more information.");
+                            }else if(userNotification.getNotificationId() == NotificationType.EMAIL.ordinal()){
+                                emailService.send("MyCAlerts", Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: FireEvent",
+                                    "Emergency alert: FireEvent in your area. Please log in at <our site> for more information.");
+                            }
+                        }
+                    }
                 }else{
                     LOG.info("Event last modified not changed");
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                LOG.error("Unable to process event for automated alerts : error: {}", e.getMessage());
             }
         } catch (IOException ex) {
             LOG.error("Unable to parse the result for the fire event : error: {}", ex.getMessage());
@@ -112,6 +133,5 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
         }
 
     }
-
 
 }

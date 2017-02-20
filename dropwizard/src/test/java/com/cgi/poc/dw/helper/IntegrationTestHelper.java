@@ -131,7 +131,7 @@ public class IntegrationTestHelper {
       ex.printStackTrace();
     }
   }
-  
+
   public static String getAuthToken(String email, String password,
       DropwizardAppRule<CgiPocConfiguration> RULE) {
     Client client = new JerseyClientBuilder().build();
