@@ -19,7 +19,7 @@ describe('EventSerivce', function() {
       $httpBackend.expectPOST('http://localhost:8080/notification', notification)
         .respond(200, {});
 
-      eventNotificationService.publish(credentials);
+      eventNotificationService.publish(notification);
       $httpBackend.flush();
 
       $httpBackend.verifyNoOutstandingExpectation();
@@ -31,7 +31,7 @@ describe('EventSerivce', function() {
       $httpBackend.expectPOST(urls.BASE + '/notification', notification)
         .respond(200, {});
 
-      eventNotificationService.publish(credentials);
+      eventNotificationService.publish(notification);
       $httpBackend.flush();
 
       $httpBackend.verifyNoOutstandingExpectation();

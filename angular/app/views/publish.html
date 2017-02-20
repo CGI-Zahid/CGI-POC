@@ -1,4 +1,17 @@
 <div class="modal-content usa-content usa-form-large">
+  <div class="usa-grid registration-alert">
+    <div class="usa-alert usa-alert-error" role="alert" ng-if="apiErrors.length > 0">
+      <div class="usa-alert-body">
+        <h3 class="usa-alert-heading">Error</h3>
+        <ul>
+          <li ng-repeat="apiError in apiErrors">
+            {{ apiError }}
+          </li>
+        </ul>
+        <p class="usa-alert-text" translate="{{model.errorMessage}}"></p>
+      </div>
+    </div>
+  </div>
   <div class="usa-grid">
     <h3 translate="NOTIFICATION.FORMLABEL"></h3>
     <hr />
@@ -12,13 +25,15 @@
           </div>
           <fieldset class="usa-fieldset-inputs usa-sans">
             <legend class="usa-sr-only" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE"></legend>
-            <ul id="notificationType" name="notificationType" class="usa-unstyled-list" >
+            <ul class="usa-unstyled-list" >
               <li>
-                <input id="emergency" type="radio" checked name="notification-type" value="emergency" ng-model="notification.notificationType">
+                <input id="emergency" name="notificationType" type="radio"
+                  value="ADMIN_E" ng-model="notification.notificationType" ng-required="true">
                 <label for="emergency" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE.EMERGENCY"></label>
               </li>
               <li>
-                <input id="nonEmergency" type="radio" name="notification-type" value="nonEmergency" ng-model="notification.notificationType">
+                <input id="nonEmergency" name="notificationType" type="radio"
+                  value="ADMIN_I" ng-model="notification.notificationType" ng-required="true">
                 <label for="nonEmergency" translate="NOTIFICATION.LABEL.NOTIFICATIONTYPE.NONEMERGENCY"></label>
               </li>
             </ul>
@@ -31,9 +46,11 @@
           <div ng-messages="notificationForm.zipCodes.$error" ng-if="notificationForm.zipCodes.$touched">
             <span ng-message="required" class="usa-input-error-message" role="alert"
               translate="NOTIFICATION.MESSAGE.INVALID.ZIPCODESREQUIRED"></span>
+            <span ng-message="pattern" class="usa-input-error-message" role="alert"
+              translate="NOTIFICATION.MESSAGE.INVALID.ZIPCODESINVALID"></span>
           </div>
           <input id="zipCodes" name="zipCodes" type="zipCodes" ng-model="notification.zipCodes" ng-required="true"
-            placeholder="XXXXX, XXXXX, XXXXX" />
+            placeholder="XXXXX, XXXXX, XXXXX" ng-pattern="regexZipCodes" />
           <div translate="NOTIFICATION.LABEL.ZIPCODES.INFO"></div>
         </div>
 
@@ -48,7 +65,7 @@
           </div>
           <textarea id="message" name="message" rows="4" ng-model="notification.message" ng-required="true"
             placeholder="{{ 'NOTIFICATION.LABEL.MESSAGE' | translate }}"></textarea>
-          <div class="notificationMessageInfo">({{ notification.messageCharsRemaining }} characters remaining)</div>
+          <div class="notificationMessageInfo">({{ notification.messageMaxLength - notification.message.length }} characters remaining)</div>
         </div>
 
       </fieldset>

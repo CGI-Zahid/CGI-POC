@@ -62,5 +62,10 @@
   "NOTIFICATION.LABEL.ZIPCODES.INFO" : "Enter one or more zip codes to issue this notification to. Multiple zip codes should be separted by commas.",
   "NOTIFICATION.LABEL.MESSAGE" : "Notification Text",
   "BUTTON.CANCEL" : "CANCEL",
-  "BUTTON.SEND" : "SEND"
+  "BUTTON.SEND" : "SEND",
+  "NOTIFICATION.MESSAGE.INVALID.NOTIFICATIONTYPEREQUIRED" : "You must select a notification type",
+  "NOTIFICATION.MESSAGE.INVALID.ZIPCODESREQUIRED" : "You must enter at least one valid zip code",
+  "NOTIFICATION.MESSAGE.INVALID.ZIPCODESINVALID" : "You must enter a properly formatted zip code",
+  "NOTIFICATION.MESSAGE.INVALID.MESSAGEREQUIRED" : "You must enter notification text",
+  "NOTIFICATION.MESSAGE.INVALID.MESSAGETOOLONG" : "You must enter 135 characters or less"
 }

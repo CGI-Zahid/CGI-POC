@@ -1,14 +1,61 @@
 'use strict';
 
 cgiWebApp.controller('eventController',
-  ['$scope', '$sessionStorage', '$state',
-  function ($scope, $sessionStorage, $state) {
+  ['$scope', '$sessionStorage', '$state', 'EventNotificationService',
+  function ($scope, $sessionStorage, $state, EventNotificationService) {
 
-  $scope.notification = {
-    messageCharsRemaining: 135
+  $scope.init = function() {
+    $scope.apiErrors = [];
+
+    $scope.notification = {
+      messageMaxLength: 135,
+      notificationType: '',
+      zipCodes: '',
+      zipCodesSplit: [],
+      message: ''
+    };
+
+    $scope.regexZipCodes = /^\d{5}(?:\s*,\s*\d{5})*$/;
+  };
+
+  $scope.generateZipCodes = function() {
+    $scope.notification.zipCodesSplit = $scope.notification.zipCodes.match(/\d{5}/g);
+  };
+
+  $scope.processApiErrors = function(response) {
+    $scope.apiErrors = [];
+    if (response.data && response.data.errors) {
+      for (var i = 0; i < response.data.errors.length; i++) {
+        if (response.data.errors[i].message) {
+          $scope.apiErrors.push(response.data.errors[i].message);
+        }
+      }
+    }
+  };
+
+  $scope.notificationTypeTouched = function(notificationForm) {
+    return notificationForm.emergency.$touched ||
+      notificationForm.nonEmergency.$touched;
   };
 
   $scope.publishEvent = function() {
-    $sessionStorage.put('state', $state.current.name);
+    $scope.generateZipCodes();
+
+    var toPost = {
+      notificationType: $scope.notification.notificationType,
+      zipcodes: $scope.notification.zipCodesSplit,
+      message: $scope.notification.message
+    };
+
+    //putting this on scope so I can test
+    $scope.toSend = toPost;
+
+    EventNotificationService.publish(toPost).then(function() {
+      $state.go('landing');
+    }).catch(function(response) {
+      $scope.processApiErrors(response);
+    });
   };
+
+  $scope.init();
 }]);
