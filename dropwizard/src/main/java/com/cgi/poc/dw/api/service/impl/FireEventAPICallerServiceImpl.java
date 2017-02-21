@@ -45,9 +45,9 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
     private TextMessageService textMessageService;
     private EmailService emailService;
     private FireEvent eventCompare;
-    private FireEvent eventCompareChanged;
+    private FireEvent retEvent;
     private Date eventCompareDate;
-    private Date eventCompareChangedDate;
+    private Date retEventDate;
 
     @Inject
     public FireEventAPICallerServiceImpl(String eventUrl, Client client, FireEventDAO fireEventDAO,
@@ -83,7 +83,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
             try {
                 LOG.info("Event to save : {}", event.toString());
                 // Archive users based on last login date
-                ((FireEventDAO) eventDAO).save(event);
+                retEvent = ((FireEventDAO) eventDAO).save(event);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
@@ -91,13 +91,12 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
             }
 
             try {
-                eventCompareChanged = (eventDAO).findById(event.getUniquefireidentifier());
-                eventCompareChangedDate = eventCompareChanged.getLastModified();
+                retEventDate = retEvent.getLastModified();
 
                 LOG.info(formatter.format(eventCompareDate));
-                LOG.info(formatter.format(eventCompareChangedDate));
+                LOG.info(formatter.format(retEventDate));
 
-                if(eventCompareDate.compareTo(eventCompareChangedDate) != 0){
+                if(eventCompareDate.compareTo(retEventDate) != 0){
                     LOG.info("Process event for notifications");
 
                     GeoCoordinates geo = new GeoCoordinates();
@@ -112,10 +111,10 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                         for (UserNotificationType userNotification : user.getNotificationType()){
                             if(userNotification.getNotificationId() == NotificationType.SMS.ordinal()){
                                 textMessageService.send(user.getPhone(), "Emergency alert: "
-                                    +"FireEvent in your area. Please log in at <our site> for more information.");
+                                    +"Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
                             }else if(userNotification.getNotificationId() == NotificationType.EMAIL.ordinal()){
-                                emailService.send("MyCAlerts", Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: FireEvent",
-                                    "Emergency alert: FireEvent in your area. Please log in at <our site> for more information.");
+                                emailService.send(null, Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: FireEvent",
+                                    "Emergency alert: Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
                             }
                         }
                     }
