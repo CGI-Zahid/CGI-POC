@@ -5,7 +5,7 @@ import com.cgi.poc.dw.dao.model.EventNotification;
 import com.cgi.poc.dw.dao.model.EventNotificationZipcode;
 import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.util.ErrorInfo;
-import com.cgi.poc.dw.util.GeneralErrors;
+import com.cgi.poc.dw.util.ErrorInfoHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import javax.validation.ConstraintViolationException;
@@ -58,18 +58,9 @@ public class EventNotificationServiceImpl extends BaseServiceImpl implements Eve
       throw exception;
     } catch (Exception exception) {
       LOG.error("Unable to publish a notification for user {}.", user.getEmail(), exception);
-      ErrorInfo errRet = getInternalErrorInfo(exception, GeneralErrors.UNKNOWN_EXCEPTION);
+      ErrorInfo errRet = ErrorInfoHelper.getUnknownExceptionErrorMessage(exception);
       return Response.noContent().status(Status.INTERNAL_SERVER_ERROR).entity(errRet).build();
     }
     return Response.ok().entity(eventNotification).build();
-  }
-
-  private ErrorInfo getInternalErrorInfo(Exception exception, GeneralErrors generalErrors) {
-    ErrorInfo errRet = new ErrorInfo();
-    String message = generalErrors.getMessage();
-    String errorString = message.replace("REPLACE1", exception.getClass().getCanonicalName())
-        .replace("REPLACE2", exception.getMessage());
-    errRet.addError(generalErrors.getCode(), errorString);
-    return errRet;
   }
 }

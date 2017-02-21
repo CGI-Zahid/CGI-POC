@@ -16,8 +16,14 @@ cgiWebApp.service('EventNotificationService',
     var endpoint = urls.BASE + '/notification/admin';
     return $http.get(endpoint);
   };
+
   this.userNotifications = function() {
     var endpoint = urls.BASE + '/notification/user';
     return $http.get(endpoint);
-  };  
+  };
+
+  this.publish = function(notification) {
+    var endpoint = urls.BASE + '/notification';
+    return $http.post(endpoint, notification);
+  };
 }]);

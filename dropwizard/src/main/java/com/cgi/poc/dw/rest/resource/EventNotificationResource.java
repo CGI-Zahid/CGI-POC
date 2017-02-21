@@ -2,6 +2,7 @@ package com.cgi.poc.dw.rest.resource;
 
 import com.cgi.poc.dw.dao.model.EventNotification;
 import com.cgi.poc.dw.dao.model.User;
+import com.cgi.poc.dw.service.EventNotificationService;
 import com.codahale.metrics.annotation.Timed;
 import com.google.inject.Inject;
 import io.dropwizard.auth.Auth;
