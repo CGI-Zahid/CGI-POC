@@ -7,7 +7,6 @@ package com.cgi.poc.dw.api.service.impl;
 
 import com.cgi.poc.dw.dao.EventFloodDAO;
 import com.cgi.poc.dw.dao.model.EventFlood;
-import com.cgi.poc.dw.service.SearchUserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;

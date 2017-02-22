@@ -16,6 +16,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -40,6 +42,18 @@ import io.swagger.annotations.ApiModelProperty;
 @Entity
 @Table(name = "user")
 @XmlRootElement
+@NamedNativeQueries({
+    @NamedNativeQuery(name = "getGeoWithinRadius", query = "SELECT "
+        + "  *, ( "
+        + "    3959 * acos ( "
+        + "      cos ( radians( :lat) ) "
+        + "      * cos( radians( latitude ) ) "
+        + "      * cos( radians( longitude ) - radians( :lng ) ) "
+        + "      + sin ( radians( :lat ) ) "
+        + "      * sin( radians( latitude ) ) "
+        + "    ) "
+        + "  ) AS distance FROM `user` HAVING distance < :radius ORDER BY distance",
+        resultClass = User.class)})
 public class User implements Serializable, Principal {
 
 	private static final long serialVersionUID = 1L;

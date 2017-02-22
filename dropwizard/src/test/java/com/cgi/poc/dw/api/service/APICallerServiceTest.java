@@ -7,8 +7,8 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
+import com.cgi.poc.dw.dao.UserDao;
 import com.cgi.poc.dw.service.EmailService;
-import com.cgi.poc.dw.service.SearchUserService;
 import com.cgi.poc.dw.service.TextMessageService;
 import java.util.Random;
 
@@ -29,7 +29,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cgi.poc.dw.api.service.impl.APICallerServiceImpl;
 import com.cgi.poc.dw.dao.FireEventDAO;
 import com.cgi.poc.dw.dao.HibernateUtil;
 import com.cgi.poc.dw.helper.IntegrationTest;
@@ -59,11 +58,11 @@ public class APICallerServiceTest extends IntegrationTest {
 	private TextMessageService textMessageService;
 
 	@Mock
-	private SearchUserService searchUserService;
+	private EmailService emailService;
 
 	@Mock
-	private EmailService emailService;
-	
+	private UserDao userDao;
+
 	private Logger LOGGER = LoggerFactory.getLogger(APICallerServiceTest.class);
 
 	private Client client;
@@ -110,7 +109,7 @@ public class APICallerServiceTest extends IntegrationTest {
 
 		FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 				"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
-				sessionFactory, searchUserService, textMessageService, emailService);
+				sessionFactory, textMessageService, emailService, userDao);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -120,8 +119,8 @@ public class APICallerServiceTest extends IntegrationTest {
 		// Check log level is correct
 		assertThat(loggingEvent.getLevel(), equalTo(Level.INFO));
 		// Check the message being logged is correct
-		if (!loggingEvent.getFormattedMessage().contains("Send notifications to : []")){
-		   assertThat(loggingEvent.getFormattedMessage(), containsString("Send notifications to : []"));
+		if (!loggingEvent.getFormattedMessage().contains("Event")){
+		   assertThat(loggingEvent.getFormattedMessage(), containsString("Event"));
 		}
 	}
 
@@ -129,7 +128,7 @@ public class APICallerServiceTest extends IntegrationTest {
 	public void callServiceAPI_ParseException() {
 
 		FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl("http://www.google.com", client, fireEventDAO,
-				sessionFactory, searchUserService, textMessageService, emailService);
+				sessionFactory, textMessageService, emailService, userDao);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -147,7 +146,7 @@ public class APICallerServiceTest extends IntegrationTest {
 	public void callServiceAPI_IOException() {
 		FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 				"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
-				sessionFactory, searchUserService, textMessageService, emailService);
+				sessionFactory, textMessageService, emailService, userDao);
 		apiCallerService.callServiceAPI();
 	}
 
@@ -156,7 +155,7 @@ public class APICallerServiceTest extends IntegrationTest {
 		try {
 			FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 					"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, null,
-					sessionFactory, searchUserService, textMessageService, emailService);
+					sessionFactory, textMessageService, emailService, userDao);
 			apiCallerService.callServiceAPI();
 
 			final LoggingEvent loggingEvent = logCaptor.getValue();
@@ -171,7 +170,7 @@ public class APICallerServiceTest extends IntegrationTest {
 		try {
 			FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 					"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
-					null, searchUserService, textMessageService, emailService);
+					null, textMessageService, emailService, userDao);
 			apiCallerService.callServiceAPI();
 			fail("Expected ConflictException");
 		} catch (NullPointerException e) {

@@ -1,10 +1,13 @@
 package com.cgi.poc.dw.dao;
 
+import com.cgi.poc.dw.api.service.data.GeoCoordinates;
 import com.cgi.poc.dw.dao.model.User;
 import com.google.inject.Inject;
 import io.dropwizard.hibernate.AbstractDAO;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
@@ -55,5 +58,23 @@ public class UserDao extends AbstractDAO<User> {
 
   public void flush() {
     this.currentSession().flush();
+  }
+
+  public List<User> getGeoWithinRadius(List<GeoCoordinates> geo, Double radius) {
+
+    List<User> users = new ArrayList<User>();
+
+    for (GeoCoordinates g : geo) {
+       Query query = currentSession().getNamedQuery("getGeoWithinRadius")
+          .setString("lat", g.getLatitude().toString())
+          .setString("lng", g.getLongitude().toString())
+          .setString("radius", radius.toString());
+      List<User> user = query.list();
+
+      if (!users.contains(user)) {
+        users.addAll(user);
+      }
+    }
+    return users;
   }
 }
