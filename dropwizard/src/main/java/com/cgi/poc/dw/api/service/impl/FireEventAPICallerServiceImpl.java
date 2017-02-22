@@ -73,7 +73,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
             event.setGeometry(geoJson.toString());
             ManagedSessionContext.bind(session);
 
-            eventCompare = (eventDAO).findById(event.getUniquefireidentifier());
+            eventCompare = eventDAO.findById(event.getUniquefireidentifier());
 
             Transaction transaction = session.beginTransaction();
             try {
