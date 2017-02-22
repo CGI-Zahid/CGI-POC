@@ -84,7 +84,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
             }
 
             try {
-                if(retEvent.getLastModified() == null){
+                if(retEvent.getLastModified() != null){
                     LOG.info("Event for notifications");
 
                     GeoCoordinates geo = new GeoCoordinates();
