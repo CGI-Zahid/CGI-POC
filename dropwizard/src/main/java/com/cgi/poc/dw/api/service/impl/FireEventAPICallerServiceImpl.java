@@ -63,7 +63,6 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {
         ObjectMapper mapper = new ObjectMapper();
-        FireEvent eventCompare = new FireEvent();
         FireEvent retEvent = new FireEvent();
 
         Session session = sessionFactory.openSession();
@@ -73,28 +72,19 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
             event.setGeometry(geoJson.toString());
             ManagedSessionContext.bind(session);
 
-            eventCompare = eventDAO.findById(event.getUniquefireidentifier());
-
             Transaction transaction = session.beginTransaction();
             try {
                 LOG.info("Event to save : {}", event.toString());
                 // Archive users based on last login date
                 retEvent = ((FireEventDAO) eventDAO).save(event);
-                session.flush();
-                session.clear();
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
                 LOG.error("Unable to save event : error: {}", e.getMessage());
             }
 
-            boolean bSendNotice = eventCompare == null ? true:false;
-            if(!bSendNotice){
-                bSendNotice = eventCompare.getLastModified().compareTo(retEvent.getLastModified()) == 0 ? false : true;
-            }
-
             try {
-                if(bSendNotice){
+                if(retEvent.getLastModified() == null){
                     LOG.info("Event for notifications");
 
                     GeoCoordinates geo = new GeoCoordinates();
@@ -126,7 +116,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                             eventNotification.setGenerationDate(new Date());
                             eventNotification.setGeometry(event.getGeometry());
                             eventNotification.setUrl1(event.getHotlink());
-                            eventNotification.setType("AUTOMATED");
+                            eventNotification.setType("Fire");
                             eventNotification.setUserId(userDao.getAdminUser());
                             eventNotification.setId(Long.valueOf(0));
 
