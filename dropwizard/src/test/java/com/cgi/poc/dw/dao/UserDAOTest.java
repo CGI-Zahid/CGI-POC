@@ -71,6 +71,7 @@ public class UserDAOTest extends DaoUnitTestBase{
     List<User> users = userDao.getGeoWithinRadius(geoCoordinates, radius);
 
     assertEquals(1, users.size());
+    assertEquals("test@test.com", users.get(0).getEmail());
   }
 
   @Test
