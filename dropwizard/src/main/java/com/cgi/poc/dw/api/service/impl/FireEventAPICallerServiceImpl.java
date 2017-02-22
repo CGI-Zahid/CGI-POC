@@ -98,18 +98,6 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
 
                             LOG.info("Send notifications to : {}", users.toString());
 
-                            for (User user : users) {
-                                for (UserNotificationType userNotification : user.getNotificationType()){
-                                    if(userNotification.getNotificationId() == NotificationType.SMS.ordinal()){
-                                        textMessageService.send(user.getPhone(), "Emergency alert: "
-                                            +"Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
-                                    }else if(userNotification.getNotificationId() == NotificationType.EMAIL.ordinal()){
-                                        emailService.send(null, Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: FireEvent",
-                                            "Emergency alert: Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
-                                    }
-                                }
-                            }
-
                             EventNotification eventNotification = new EventNotification();
                             eventNotification.setCitizensAffected(users.size());
                             eventNotification.setDescription("Emergency alert: Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
@@ -128,6 +116,17 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                             eventNotification.setEventNotificationZipcodes(eventNotificationZipcode);
 
                             eventNotificationDAO.save(eventNotification);
+
+                            for (User user : users) {
+                                for (UserNotificationType userNotification : user.getNotificationType()){
+                                    if(userNotification.getNotificationId() == NotificationType.SMS.ordinal()){
+                                        textMessageService.send(user.getPhone(), eventNotification.getDescription());
+                                    }else if(userNotification.getNotificationId() == NotificationType.EMAIL.ordinal()){
+                                        emailService.send(null, Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: Fire near " + event.getIncidentname(),
+                                            eventNotification.getDescription());
+                                    }
+                                }
+                            }
                         }
                     }catch (Exception e) {
                         LOG.error("Failing during saving event : error: {}", e.getMessage());
