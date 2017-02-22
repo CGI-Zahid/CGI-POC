@@ -7,6 +7,7 @@ package com.cgi.poc.dw.api.service.impl;
 
 import com.cgi.poc.dw.api.service.APIServiceFactory;
 import com.cgi.poc.dw.dao.EventFloodDAO;
+import com.cgi.poc.dw.dao.EventNotificationDAO;
 import com.cgi.poc.dw.dao.UserDao;
 import com.cgi.poc.dw.service.EmailService;
 import com.cgi.poc.dw.service.TextMessageService;
@@ -25,19 +26,21 @@ public class APIServiceFactoryImpl implements APIServiceFactory{
        private final TextMessageService textMessageService;
        private final EmailService emailService;
        private final UserDao userDao;
+       private final EventNotificationDAO eventNotificationDAO;
 
     @Inject
     APIServiceFactoryImpl (SessionFactory factory, TextMessageService textMessageService,
-      EmailService emailService, UserDao userDao){
+      EmailService emailService, UserDao userDao, EventNotificationDAO eventNotificationDAO){
         sessionFactory = factory;
         this.textMessageService = textMessageService;
         this.emailService = emailService;
         this.userDao = userDao;
+        this.eventNotificationDAO = eventNotificationDAO;
     }
     
     @Override
     public FireEventAPICallerServiceImpl create(Client client, String eventUrl, FireEventDAO eventDAO) {
-        return new FireEventAPICallerServiceImpl ( eventUrl, client,eventDAO, sessionFactory, textMessageService, emailService, userDao);
+        return new FireEventAPICallerServiceImpl ( eventUrl, client,eventDAO, sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
     }
     @Override
     public EventWeatherAPICallerServiceImpl create(Client client, String eventUrl, EventWeatherDAO eventDAO) {

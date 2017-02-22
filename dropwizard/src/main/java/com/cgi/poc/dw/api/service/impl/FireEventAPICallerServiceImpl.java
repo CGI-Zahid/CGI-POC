@@ -6,8 +6,11 @@
 package com.cgi.poc.dw.api.service.impl;
 
 import com.cgi.poc.dw.api.service.data.GeoCoordinates;
+import com.cgi.poc.dw.dao.EventNotificationDAO;
 import com.cgi.poc.dw.dao.FireEventDAO;
 import com.cgi.poc.dw.dao.UserDao;
+import com.cgi.poc.dw.dao.model.EventNotification;
+import com.cgi.poc.dw.dao.model.EventNotificationZipcode;
 import com.cgi.poc.dw.dao.model.FireEvent;
 import com.cgi.poc.dw.dao.model.NotificationType;
 import com.cgi.poc.dw.dao.model.User;
@@ -18,11 +21,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import java.io.IOException;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.client.Client;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -48,16 +51,18 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
     private Date eventCompareDate;
     private Date retEventDate;
     private UserDao userDao;
+    private EventNotificationDAO eventNotificationDAO;
 
     @Inject
     public FireEventAPICallerServiceImpl(String eventUrl, Client client, FireEventDAO fireEventDAO,
           SessionFactory sessionFactory, TextMessageService textMessageService,
-          EmailService emailService, UserDao userDao) {
+          EmailService emailService, UserDao userDao, EventNotificationDAO eventNotificationDAO) {
         super(eventUrl, client, sessionFactory);
         eventDAO = fireEventDAO;
         this.textMessageService = textMessageService;
         this.emailService = emailService;
         this.userDao = userDao;
+        this.eventNotificationDAO = eventNotificationDAO;
     }
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {
@@ -82,8 +87,8 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 LOG.info("Event to save : {}", event.toString());
                 // Archive users based on last login date
                 retEvent = ((FireEventDAO) eventDAO).save(event);
-                retEventDate = retEvent.getLastModified();
                 transaction.commit();
+                retEventDate = retEvent.getLastModified();
             } catch (Exception e) {
                 transaction.rollback();
                 LOG.error("Unable to save event : error: {}", e.getMessage());
@@ -111,6 +116,29 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                                     "Emergency alert: Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
                             }
                         }
+                    }
+
+                    EventNotification eventNotification = new EventNotification();
+                    eventNotification.setCitizensAffected(users.size());
+                    eventNotification.setDescription("Emergency alert: Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
+                    eventNotification.setGenerationDate(new Date());
+                    eventNotification.setGeometry(event.getGeometry());
+                    eventNotification.setUrl1(event.getHotlink());
+                    eventNotification.setType("AUTOMATED");
+                    eventNotification.setUserId(userDao.getAdminUser());
+                    eventNotification.setId(Long.valueOf(0));
+
+                    EventNotificationZipcode zipcode = new EventNotificationZipcode();
+                    zipcode.setZipCode("00000");
+                    Set<EventNotificationZipcode> eventNotificationZipcode = new HashSet<>();
+                    eventNotificationZipcode.add(zipcode);
+
+                    eventNotification.setEventNotificationZipcodes(eventNotificationZipcode);
+
+                    try {
+                        eventNotificationDAO.save(eventNotification);
+                    }catch (Exception e) {
+                        LOG.error("Failing during saving event : error: {}", e.getMessage());
                     }
                 }else{
                     LOG.info("Event last modified not changed");

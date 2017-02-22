@@ -44,6 +44,19 @@ public class UserDao extends AbstractDAO<User> {
     return retUser;
   }
 
+  public User getAdminUser() {
+    Criteria criteria = this.criteria();
+    criteria.add(Restrictions.eq("role", "ADMIN"));
+    User retUser = null;
+    try {
+      retUser = (User) criteria.uniqueResult();
+    } catch (Exception e) {
+      System.out.println("Error: Exception");
+      System.out.println(e);
+    }
+    return retUser;
+  }
+
   public User save(User usr) {
     usr = this.persist(usr);
 

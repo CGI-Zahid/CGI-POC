@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
+import com.cgi.poc.dw.dao.EventNotificationDAO;
 import com.cgi.poc.dw.dao.UserDao;
 import com.cgi.poc.dw.service.EmailService;
 import com.cgi.poc.dw.service.TextMessageService;
@@ -63,6 +64,9 @@ public class APICallerServiceTest extends IntegrationTest {
 	@Mock
 	private UserDao userDao;
 
+	@Mock
+	private EventNotificationDAO eventNotificationDAO;
+
 	private Logger LOGGER = LoggerFactory.getLogger(APICallerServiceTest.class);
 
 	private Client client;
@@ -109,7 +113,7 @@ public class APICallerServiceTest extends IntegrationTest {
 
 		FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 				"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
-				sessionFactory, textMessageService, emailService, userDao);
+				sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -128,7 +132,7 @@ public class APICallerServiceTest extends IntegrationTest {
 	public void callServiceAPI_ParseException() {
 
 		FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl("http://www.google.com", client, fireEventDAO,
-				sessionFactory, textMessageService, emailService, userDao);
+				sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -146,7 +150,7 @@ public class APICallerServiceTest extends IntegrationTest {
 	public void callServiceAPI_IOException() {
 		FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 				"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
-				sessionFactory, textMessageService, emailService, userDao);
+				sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 	}
 
@@ -155,7 +159,7 @@ public class APICallerServiceTest extends IntegrationTest {
 		try {
 			FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 					"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, null,
-					sessionFactory, textMessageService, emailService, userDao);
+					sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 			apiCallerService.callServiceAPI();
 
 			final LoggingEvent loggingEvent = logCaptor.getValue();
@@ -170,7 +174,7 @@ public class APICallerServiceTest extends IntegrationTest {
 		try {
 			FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
 					"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
-					null, textMessageService, emailService, userDao);
+					null, textMessageService, emailService, userDao, eventNotificationDAO);
 			apiCallerService.callServiceAPI();
 			fail("Expected ConflictException");
 		} catch (NullPointerException e) {
