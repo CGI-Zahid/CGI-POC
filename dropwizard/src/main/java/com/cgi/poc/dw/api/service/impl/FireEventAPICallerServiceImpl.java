@@ -80,6 +80,8 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 LOG.info("Event to save : {}", event.toString());
                 // Archive users based on last login date
                 retEvent = ((FireEventDAO) eventDAO).save(event);
+                session.flush();
+                session.clear();
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
@@ -88,12 +90,12 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
 
             boolean bSendNotice = eventCompare == null ? true:false;
             if(!bSendNotice){
-                bSendNotice = eventCompare.getLastModified().compareTo(retEvent.getLastModified())== 0 ? false:true;
+                bSendNotice = eventCompare.getLastModified().compareTo(retEvent.getLastModified()) == 0 ? false : true;
             }
 
             try {
                 if(bSendNotice){
-                    LOG.info("Process event for notifications");
+                    LOG.info("Event for notifications");
 
                     GeoCoordinates geo = new GeoCoordinates();
                     geo.setLatitude(event.getLatitude().doubleValue());
