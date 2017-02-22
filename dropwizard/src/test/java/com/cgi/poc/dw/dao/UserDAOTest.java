@@ -54,6 +54,10 @@ public class UserDAOTest extends DaoUnitTestBase{
     user.setRole(Role.RESIDENT.name());
     user.setPhone("1234567890");
     user.setZipCode("98765");
+    user.setCity("Sacramento");
+    user.setState("California");
+    user.setRequiredStreet("required street");
+    user.setOptionalStreet("optional street");
     user.setLatitude(10.5);
     user.setLongitude(20.0);
 

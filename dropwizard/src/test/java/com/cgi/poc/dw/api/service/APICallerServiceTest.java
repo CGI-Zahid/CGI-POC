@@ -123,8 +123,8 @@ public class APICallerServiceTest extends IntegrationTest {
 		// Check log level is correct
 		assertThat(loggingEvent.getLevel(), equalTo(Level.INFO));
 		// Check the message being logged is correct
-		if (!loggingEvent.getFormattedMessage().contains("Process event for notifications")){
-		   assertThat(loggingEvent.getFormattedMessage(), containsString("Process event for notifications"));
+		if (!loggingEvent.getFormattedMessage().contains("Event")){
+		   assertThat(loggingEvent.getFormattedMessage(), containsString("Event"));
 		}
 	}
 
