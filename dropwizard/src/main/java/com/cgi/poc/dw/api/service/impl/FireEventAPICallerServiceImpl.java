@@ -86,9 +86,9 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 LOG.error("Unable to save event : error: {}", e.getMessage());
             }
 
-            boolean bSendNotice = eventCompare == null ? true:false; 
-            if(!bSendNotice){ 
-                bSendNotice = eventCompare.getLastModified().compareTo(retEvent.getLastModified())== 0 ? false:true; 
+            boolean bSendNotice = eventCompare == null ? true:false;
+            if(!bSendNotice){
+                bSendNotice = eventCompare.getLastModified().compareTo(retEvent.getLastModified())== 0 ? false:true;
             }
 
             try {
