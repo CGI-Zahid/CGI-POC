@@ -73,11 +73,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
             event.setGeometry(geoJson.toString());
             ManagedSessionContext.bind(session);
 
-            try {
-                eventCompare = (eventDAO).findById(event.getUniquefireidentifier());
-            } catch (Exception e) {
-                LOG.error("Unable to calculate eventCompareDate : error: {}", e.getMessage());
-            }
+            eventCompare = (eventDAO).findById(event.getUniquefireidentifier());
 
             Transaction transaction = session.beginTransaction();
             try {
@@ -90,13 +86,13 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 LOG.error("Unable to save event : error: {}", e.getMessage());
             }
 
-            Integer compareEvents = 0;
-            if(eventCompare.getLastModified() != null && retEvent.getLastModified() != null){
-                compareEvents = eventCompare.getLastModified().compareTo(retEvent.getLastModified());
+            boolean bSendNotice = eventCompare == null ? true:false; 
+            if(!bSendNotice){ 
+                bSendNotice = eventCompare.getLastModified().compareTo(retEvent.getLastModified())== 0 ? false:true; 
             }
 
             try {
-                if(eventCompare.getLastModified() == null ||  compareEvents != 0){
+                if(bSendNotice){
                     LOG.info("Process event for notifications");
 
                     GeoCoordinates geo = new GeoCoordinates();
