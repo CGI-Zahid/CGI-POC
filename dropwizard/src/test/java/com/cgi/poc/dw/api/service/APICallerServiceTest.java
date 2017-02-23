@@ -169,18 +169,15 @@ public class APICallerServiceTest extends IntegrationTest {
 		}
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void callServiceAPI_NullPointerException() {
-		try {
-			FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
-					"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
-					null, textMessageService, emailService, userDao, eventNotificationDAO);
-			apiCallerService.callServiceAPI();
-			fail("Expected ConflictException");
-		} catch (NullPointerException e) {
-			LOGGER.info("the null pointer exception catch : {}", e.getMessage());
-		}
+		FireEventAPICallerServiceImpl apiCallerService = new FireEventAPICallerServiceImpl(
+				"https://wildfire.cr.usgs.gov/arcgis/rest/services/geomac_dyn/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, fireEventDAO,
+				null, textMessageService, emailService, userDao, eventNotificationDAO);
+		apiCallerService.callServiceAPI();
+		fail("Expected ConflictException");
 	}
+
 	@Test
 	public void callWeatherServiceAPI_Success() {
 
