@@ -13,8 +13,10 @@
 'use strict';
 
 cgiWebApp.controller('landingController',
-  ['$scope','$filter','$timeout','EventNotificationService' ,'uiGmapGoogleMapApi','$sessionStorage',
-  function ($scope,$filter,$timeout,EventNotificationService,uiGmapGoogleMapApi,$sessionStorage ) {
+
+  ['$scope','$filter','$timeout','EventNotificationService','uiGmapGoogleMapApi' , 'Localizator', '$geolocation', '$sessionStorage',
+  function ($scope,$filter,$timeout,EventNotificationService, uiGmapGoogleMapApi, Localizator, $geolocation, $sessionStorage) {
+    
   $scope.apiErrors = [];
   $scope.map = undefined;
   $scope.googleMaps = undefined;
@@ -163,6 +165,28 @@ cgiWebApp.controller('landingController',
                     });
                     $scope.map.fitBounds(bounds);      
     };
+    
+    //get the localization of the user and save it in his profile
+    $scope.saveLocalization = function(){
+
+        if($scope.isLoggedIn()){
+            $geolocation.watchPosition({
+                timeout: 60000,
+                maximumAge: 250,
+                enableHighAccuracy: true
+            });
+            
+            if($geolocation.position.error === undefined || $geolocation.position.error === null){
+                $scope.coords = $geolocation.position.coords;
+                Localizator.localize($scope.coords).then(function(response) {
+                    console.log(response.data);
+                  });
+            }else{
+                console.log($geolocation.position.error);
+                $scope.error = $geolocation.position.error;
+            }
+        }
+    };
 
     
     $scope.loadMap = function (selectedEvent) {
@@ -189,4 +213,7 @@ cgiWebApp.controller('landingController',
         }, 0, false);
     };
     $scope.initLoad();
+    
+    $scope.saveLocalization();
+
 }]);

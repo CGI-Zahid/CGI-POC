@@ -6,6 +6,8 @@ import javax.ws.rs.core.Response;
 public interface UserService {
 
   Response registerUser(User userDto);
+  
+  Response setLocalization(User user);
 
-	Response updateUser(User userDto);
+  Response updateUser(User userDto);
 }

@@ -161,4 +161,19 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		return response;
 	}
 	
+	  /**
+	   * Set the geo localization coordinates for a user.
+	   * 
+	   * @param email the user email
+	   * @param latitude the geo localization latitude
+	   * @param longitude the geo localization longitude
+	   * @return response the status response 
+	   */
+	  public Response setLocalization(User user){
+		  			  
+		  userDao.save(user);
+
+		  return Response.ok().build();
+	  }
+	
 }

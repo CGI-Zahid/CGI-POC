@@ -10,7 +10,6 @@
          <property name="now" value="now()" dbms="mysql"/>
 
   <include file="sql/user_profile.sql"/>
-  <include file="sql/test-data.sql"/>
     <changeSet id="5" author="Dawna Floyd">
         <createTable tableName="event_fire">
             <column name="uniquefireidentifier" type="varchar(36)" >
@@ -294,7 +293,7 @@
        <modifyDataType columnName="comments" newDataType="VARCHAR(4000)" tableName="event_tsunami"/>
        <modifyDataType columnName="second" newDataType="NUMERIC(4,2)" tableName="event_tsunami"/>
     </changeSet>
-  
+
   <changeSet id="17" author="Valon Sejdini">
     <createTable tableName="event_notification">
       <column name="id"  type="bigint" autoIncrement="true">
@@ -335,6 +334,7 @@
       referencedTableName="event_notification"
       referencedColumnNames="id"/>
   </changeSet>
+
   <changeSet id="19" author="Danwa Floyd">
       <dropColumn  columnName="isEmergency" tableName="event_notification"/>
       <addColumn tableName="event_notification">
@@ -382,5 +382,20 @@
             </column>
         </addColumn>
     </changeSet>
+
+  	<changeSet id="21" author="Vincent Baylly">
+		<addColumn tableName="user">
+		    <column name="geo_loc_latitude" type="DECIMAL(10, 8)" defaultValue="0.0">
+		    <constraints nullable="true"/>
+		    </column>
+		</addColumn>
+		<addColumn tableName="user">
+		    <column name="geo_loc_longitude" type="DECIMAL(10, 8)" defaultValue="0.0">
+		    <constraints nullable="true"/>
+		    </column>
+		</addColumn>
+	</changeSet>
+	
+	<include file="sql/test-data.sql"/>
 
 </databaseChangeLog>

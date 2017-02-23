@@ -167,7 +167,7 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
     notificationType.add(selNot);
     user.setNotificationType(notificationType);
 
-    client.target(String.format("http://localhost:%d/register", RULE.getLocalPort())).request()
+    client.target(String.format("http://localhost:%d/user", RULE.getLocalPort())).request()
         .post(Entity.json(user));
     // login user
     LoginUserDto loginUserDto = new LoginUserDto();

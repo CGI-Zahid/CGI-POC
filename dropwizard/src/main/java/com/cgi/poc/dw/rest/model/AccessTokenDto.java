@@ -2,6 +2,7 @@ package com.cgi.poc.dw.rest.model;
 
 
 import com.cgi.poc.dw.auth.model.Role;
+import com.cgi.poc.dw.dao.model.User;
 
 public class AccessTokenDto {
 
@@ -31,4 +32,5 @@ public class AccessTokenDto {
   public void setRole(Role role) {
     this.role = role;
   }
+
 }

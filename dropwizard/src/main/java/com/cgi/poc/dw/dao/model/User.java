@@ -153,7 +153,13 @@ public class User implements Serializable, Principal {
 	@Column(name = "longitude")
 	@JsonIgnore
 	private Double longitude;
+	
+	  @Column(name = "geo_loc_latitude")
+	  private Double geoLocLatitude;
 
+	  @Column(name = "geo_loc_longitude")
+	  private Double geoLocLongitude;
+	
 	@OneToMany(mappedBy = "userId", fetch = FetchType.EAGER, orphanRemoval = true)
 	@NotNull
 	@Cascade({ org.hibernate.annotations.CascadeType.ALL })
@@ -264,7 +270,23 @@ public class User implements Serializable, Principal {
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
+	
+	public Double getGeoLocLatitude() {
+		return geoLocLatitude;
+	}
 
+	public void setGeoLocLatitude(Double geoLocLatitude) {
+		this.geoLocLatitude = geoLocLatitude;
+	}
+
+	public Double getGeoLocLongitude() {
+		return geoLocLongitude;
+	}
+
+	public void setGeoLocLongitude(Double geoLocLongitude) {
+		this.geoLocLongitude = geoLocLongitude;
+	}
+		  
 	public Set<UserNotificationType> getNotificationType() {
 		return notificationType;
 	}

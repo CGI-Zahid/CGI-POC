@@ -1,5 +1,27 @@
 package com.cgi.poc.dw;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.logging.Level;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.validation.Validator;
+import javax.ws.rs.client.Client;
+
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.hibernate.SessionFactory;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cgi.poc.dw.api.service.APICallerService;
 import com.cgi.poc.dw.api.service.APIServiceFactory;
 import com.cgi.poc.dw.api.service.impl.APIServiceFactoryImpl;
@@ -27,22 +49,24 @@ import com.cgi.poc.dw.dao.model.EventWeather;
 import com.cgi.poc.dw.dao.model.FireEvent;
 import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.dao.model.UserNotificationType;
-import com.cgi.poc.dw.rest.resource.EventNotificationResource;
 import com.cgi.poc.dw.jobs.JobExecutionService;
 import com.cgi.poc.dw.jobs.JobFactory;
 import com.cgi.poc.dw.jobs.JobFactoryImpl;
-import com.cgi.poc.dw.service.EmailService;
-import com.cgi.poc.dw.service.EmailServiceImpl;
+import com.cgi.poc.dw.rest.resource.EventNotificationResource;
 import com.cgi.poc.dw.rest.resource.LoginResource;
 import com.cgi.poc.dw.rest.resource.UserResource;
-import com.cgi.poc.dw.service.TextMessageService;
-import com.cgi.poc.dw.service.TextMessageServiceImpl;
-import com.cgi.poc.dw.sockets.AlertEndpoint;
+import com.cgi.poc.dw.service.EmailService;
+import com.cgi.poc.dw.service.EmailServiceImpl;
+import com.cgi.poc.dw.service.EventNotificationService;
 import com.cgi.poc.dw.service.EventNotificationServiceImpl;
 import com.cgi.poc.dw.service.LoginService;
 import com.cgi.poc.dw.service.LoginServiceImpl;
+import com.cgi.poc.dw.service.TextMessageService;
+import com.cgi.poc.dw.service.TextMessageServiceImpl;
 import com.cgi.poc.dw.service.UserService;
 import com.cgi.poc.dw.service.UserServiceImpl;
+import com.cgi.poc.dw.sockets.AlertEndpoint;
+
 import com.cgi.poc.dw.util.CustomConstraintViolationExceptionMapper;
 import com.cgi.poc.dw.util.CustomSQLConstraintViolationException;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -53,6 +77,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
+
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -67,26 +92,6 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.websockets.WebsocketBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.logging.Level;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.validation.Validator;
-import javax.ws.rs.client.Client;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.glassfish.jersey.logging.LoggingFeature;
-import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
-import org.hibernate.SessionFactory;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.cgi.poc.dw.service.EventNotificationService;
 
 /**
  * Main Dropwizard Application class.
@@ -180,8 +185,8 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
 
     Injector injector = createInjector(configuration, environment, keys);
 
-    registerResource(environment, injector, EventNotificationResource.class);
     registerResource(environment, injector, UserResource.class);
+    registerResource(environment, injector, EventNotificationResource.class);
     registerResource(environment, injector, LoginResource.class);
     registerResource(environment, injector, CustomConstraintViolationExceptionMapper.class);
     registerResource(environment, injector, CustomSQLConstraintViolationException.class);

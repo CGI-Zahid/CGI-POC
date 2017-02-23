@@ -31,6 +31,7 @@ module.exports = function(config) {
       'bower_components/angular-websocket/dist/angular-websocket.js',
       'bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'bower_components/angular-sessionstorage/angular-sessionstorage.js',
+      'bower_components/ngGeolocation/ngGeolocation.js',
       'bower_components/angular-simple-logger/dist/angular-simple-logger.js',
       'bower_components/lodash/lodash.js',
       'bower_components/markerclustererplus/src/markerclusterer.js',

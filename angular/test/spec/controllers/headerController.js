@@ -20,17 +20,6 @@ describe('headerController', function() {
     });
   }));
 
-  describe('isLoggedIn', function() {
-    it('should consider those with authToken to be logged in', function() {
-      spyOn($sessionStorage, 'get').and.returnValue('the jwt token');
-      expect($scope.isLoggedIn()).toBe(true);
-    });
-
-    it('should consider those without authToken to be logged out', function() {
-      spyOn($sessionStorage, 'get').and.returnValue(null);
-      expect($scope.isLoggedIn()).toBe(false);
-    });
-  });
   describe('isAdminUser', function() {
     it('true if seesion value is ADMIN ', function() {
       spyOn($sessionStorage, 'get').and.returnValue('ADMIN');

@@ -11,6 +11,7 @@
     "angular-websocket": "^2.0.0",
     "angular-translate-loader-static-files": "^2.13.1",
     "angular-sessionstorage": "^1.1.5",
+    "ngGeolocation": "^0.0.8",
     "angular-google-maps": "^2.4.1"
   },
   "devDependencies": {

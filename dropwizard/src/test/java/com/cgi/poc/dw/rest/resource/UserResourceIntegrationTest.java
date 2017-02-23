@@ -16,6 +16,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,6 +37,7 @@ import com.cgi.poc.dw.dao.model.User;
 import com.cgi.poc.dw.dao.model.UserNotificationType;
 import com.cgi.poc.dw.helper.IntegrationTest;
 import com.cgi.poc.dw.helper.IntegrationTestHelper;
+import com.cgi.poc.dw.rest.model.LocalizationDto;
 import com.cgi.poc.dw.util.Error;
 import com.cgi.poc.dw.util.ErrorInfo;
 import com.cgi.poc.dw.util.GeneralErrors;
@@ -46,7 +48,9 @@ import com.icegreen.greenmail.util.ServerSetup;
 public class UserResourceIntegrationTest extends IntegrationTest {
 
   private static final String url = "http://localhost:%d/user";
-
+  
+  private static final String url_localizer = "http://localhost:%d/user/geoLocation";
+  
   private User tstUser;
 
   private GreenMail smtpServer;
@@ -486,4 +490,23 @@ public class UserResourceIntegrationTest extends IntegrationTest {
       assertThat(error.getMessage()).isEqualTo(expectedErrorString);
     }
   }
+  
+	@Test
+	public void setLocalization_Success() throws SQLException{
+		
+		String authToken = IntegrationTestHelper.getAuthToken("resident@cgi.com", "!QAZ1qaz", RULE);
+		
+		LocalizationDto localizationDto = new LocalizationDto();
+		localizationDto.setLatitude(0.0);
+		localizationDto.setLongitude(0.0);
+		
+		Client client = new JerseyClientBuilder().build();
+		Response response = client.
+				target(String.format(url_localizer, RULE.getLocalPort())).
+				request().
+				header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).
+				put(Entity.json(localizationDto));
+		Assert.assertEquals(200, response.getStatus());
+
+	}
 }

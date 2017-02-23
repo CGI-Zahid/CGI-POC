@@ -1,6 +1,6 @@
 'use strict';
 
-var cgiWebApp = angular.module('cgi-web-app', [ 'pascalprecht.translate','ngSessionStorage', 'ui.router', 'ngWebSocket', 'ngMessages','uiGmapgoogle-maps' ]);
+var cgiWebApp = angular.module('cgi-web-app', [ 'pascalprecht.translate','ngSessionStorage', 'ui.router', 'ngWebSocket', 'ngMessages','uiGmapgoogle-maps', 'ngGeolocation' ]);
 
 cgiWebApp.constant('urls', {
   // have to be change depending of the environment
@@ -81,6 +81,10 @@ $sceDelegateProvider.resourceUrlWhitelist([
         $http.defaults.headers.common.Authorization =  'Bearer ' + authToken;
         //Caching will be set by the nginx, so lets take advantage of that.
         //$http.defaults.headers.common['Cache-Control'] = 'no-cache';
+        
+        $rootScope.isLoggedIn = function(){
+            return $sessionStorage.get('jwt') !== null ;
+          };
 
         // redirect to login page if not logged in and trying to access a restricted page
         $rootScope.$on('$locationChangeStart', function (event, next, current) { // jshint ignore:line

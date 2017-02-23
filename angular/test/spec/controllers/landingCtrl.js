@@ -7,23 +7,31 @@ describe('landingController', function() {
   var $state;
   var $q;
   var deferred;
+  var $geolocation;
 
   beforeEach(module('cgi-web-app'));
-    beforeEach(inject(function(_$rootScope_, _$controller_, _EventNotificationService_, _$state_, _$q_) {
+
+    beforeEach(inject(function(_$rootScope_, _$controller_, _EventNotificationService_, _$state_, _$q_,_uiGmapGoogleMapApi_, _$geolocation_) {
 
     $q = _$q_;
     $scope = _$rootScope_.$new();
     notificationService = _EventNotificationService_;
     $state = _$state_;
+    $geolocation = _$geolocation_;
 
     deferred = _$q_.defer();
     spyOn(notificationService, 'allNotifications').and.returnValue(deferred.promise);
     spyOn(notificationService, 'userNotifications').and.returnValue(deferred.promise);
-
-
+    
+    $geolocation.position = { coords: { latitude: 36.149674, longitude: -86.813347 } };
+    
+    spyOn($geolocation, 'watchPosition');
+    spyOn($scope, 'isLoggedIn').and.returnValue(true);
+    
     landingController = _$controller_('landingController', {
       $scope: $scope,
-      ProfileService: notificationService
+      ProfileService: notificationService,
+      $geolocation : $geolocation
     });
   }));
   it('initializes the apiErrors', function() {
@@ -100,6 +108,15 @@ describe('landingController', function() {
       expect($scope.currentSelectedEvent).toBe(selectedEvent);
       expect($scope.showMapOrDetails).toBe('MAP');
  });
+ 
+ it('call the geo localization', function() {
+     
+     $scope.saveLocalization();
+     
+     expect($scope.coords.latitude).toBe(36.149674);
+     expect($scope.coords.longitude).toBe(-86.813347 );
+     expect($scope.error).toBe(undefined);
+ });
 
  it('converts inbound data strings to objects', function() {
     var apiData = [
@@ -136,7 +153,6 @@ describe('landingController', function() {
       expect($scope.model.notifications.length).toBe(1);
       expect($scope.model.notifications[0].geometry).toEqual(geometryObj);
       expect($scope.model.notifications[0].generationDate).toEqual(expectDate);
+
  });
-    
-  
 });

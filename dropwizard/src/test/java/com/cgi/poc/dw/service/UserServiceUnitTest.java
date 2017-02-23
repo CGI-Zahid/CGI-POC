@@ -381,6 +381,18 @@ public class UserServiceUnitTest {
     assertEquals(new Double(38.5824933), actualUser.getLatitude());
     assertEquals(new Double(-121.4941738), actualUser.getLongitude());
   }
+  
+	@Test
+	public void localizerUser_Success() throws Exception {
+
+		user.setGeoLocLatitude(38.5824933);
+		user.setGeoLocLongitude(-121.4941738);
+
+		Response actual = underTest.setLocalization(user);
+
+		assertEquals(200, actual.getStatus());
+	}
+
   @Test
 	public void updateUser_UpdateUserWithValidInput() throws Exception {
 
@@ -507,6 +519,7 @@ public class UserServiceUnitTest {
 		assertEquals(200, actual.getStatus());
 		assertEquals(new Double(38.5824933), actualUser.getLatitude());
 		assertEquals(new Double(-121.4941738), actualUser.getLongitude());
+
 	}
 
 }
