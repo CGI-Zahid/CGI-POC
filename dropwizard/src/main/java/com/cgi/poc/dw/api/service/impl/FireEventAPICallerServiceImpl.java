@@ -83,59 +83,56 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                 LOG.error("Unable to save event : error: {}", e.getMessage());
             }
 
-            try {
-                if(retEvent.getLastModified() != null){
-                    LOG.info("Event for notifications");
 
-                    GeoCoordinates geo = new GeoCoordinates();
-                    geo.setLatitude(event.getLatitude().doubleValue());
-                    geo.setLongitude(event.getLongitude().doubleValue());
+            if(retEvent.getLastModified() != null){
+                LOG.info("Event for notifications");
 
-                    List<User> users = userDao.getGeoWithinRadius(Arrays.asList(geo), 50.00);
+                GeoCoordinates geo = new GeoCoordinates();
+                geo.setLatitude(event.getLatitude().doubleValue());
+                geo.setLongitude(event.getLongitude().doubleValue());
 
-                    if (users.size() > 0) {
+                List<User> users = userDao.getGeoWithinRadius(Arrays.asList(geo), 50.00);
 
-                        LOG.info("Send notifications to : {}", users.toString());
+                if (users.size() > 0) {
 
-                        /*
-                        * TODO
-                        *   additional subtask for refactoring eventNotification
-                        *   removing not null requirements for zipcode
-                        * */
-                        EventNotification eventNotification = new EventNotification();
-                        eventNotification.setCitizensAffected(users.size());
-                        eventNotification.setDescription("Emergency alert: Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
-                        eventNotification.setGenerationDate(new Date());
-                        eventNotification.setGeometry(event.getGeometry());
-                        eventNotification.setUrl1(event.getHotlink());
-                        eventNotification.setType("Fire");
-                        eventNotification.setUserId(userDao.getAdminUser());
+                    LOG.info("Send notifications to : {}", users.toString());
 
-                        EventNotificationZipcode zipcode = new EventNotificationZipcode();
-                        zipcode.setZipCode("00000");
-                        Set<EventNotificationZipcode> eventNotificationZipcode = new HashSet<>();
-                        eventNotificationZipcode.add(zipcode);
+                    /*
+                    * TODO
+                    *   additional subtask for refactoring eventNotification
+                    *   removing not null requirements for zipcode
+                    * */
+                    EventNotification eventNotification = new EventNotification();
+                    eventNotification.setCitizensAffected(users.size());
+                    eventNotification.setDescription("Emergency alert: Fire near "+event.getIncidentname()+" in your area. Please log in at <our site> for more information.");
+                    eventNotification.setGenerationDate(new Date());
+                    eventNotification.setGeometry(event.getGeometry());
+                    eventNotification.setUrl1(event.getHotlink());
+                    eventNotification.setType("Fire");
+                    eventNotification.setUserId(userDao.getAdminUser());
 
-                        eventNotification.setEventNotificationZipcodes(eventNotificationZipcode);
+                    EventNotificationZipcode zipcode = new EventNotificationZipcode();
+                    zipcode.setZipCode("00000");
+                    Set<EventNotificationZipcode> eventNotificationZipcode = new HashSet<>();
+                    eventNotificationZipcode.add(zipcode);
 
-                        eventNotificationDAO.save(eventNotification);
+                    eventNotification.setEventNotificationZipcodes(eventNotificationZipcode);
 
-                        for (User user : users) {
-                            for (UserNotificationType userNotification : user.getNotificationType()){
-                                if(userNotification.getNotificationId() == NotificationType.SMS.ordinal()){
-                                    textMessageService.send(user.getPhone(), eventNotification.getDescription());
-                                }else if(userNotification.getNotificationId() == NotificationType.EMAIL.ordinal()){
-                                    emailService.send(null, Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: Fire near " + event.getIncidentname(),
-                                        eventNotification.getDescription());
-                                }
+                    eventNotificationDAO.save(eventNotification);
+
+                    for (User user : users) {
+                        for (UserNotificationType userNotification : user.getNotificationType()){
+                            if(userNotification.getNotificationId() == NotificationType.SMS.ordinal()){
+                                textMessageService.send(user.getPhone(), eventNotification.getDescription());
+                            }else if(userNotification.getNotificationId() == NotificationType.EMAIL.ordinal()){
+                                emailService.send(null, Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: Fire near " + event.getIncidentname(),
+                                    eventNotification.getDescription());
                             }
                         }
                     }
-                }else{
-                    LOG.debug("Event last modified not changed");
                 }
-            } catch (Exception e) {
-                LOG.error("Unable to process event for automated alerts : error: {}", e.getMessage());
+            }else{
+                LOG.debug("Event last modified not changed");
             }
         } catch (IOException ex) {
             LOG.error("Unable to parse the result for the fire event : error: {}", ex.getMessage());
