@@ -106,6 +106,7 @@ public class LoginResourceIntegrationTest extends IntegrationTest {
     user.setAddress1("required street");
     user.setAddress2("optional street");
     user.setEmailNotification(true);
+    user.setSmsNotification(false);
 
     Response newUserResponse = client.target(String.format("http://localhost:%d/user", RULE.getLocalPort())).request()
         .post(Entity.json(user));

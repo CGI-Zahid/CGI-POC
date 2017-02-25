@@ -66,7 +66,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 			// Future TODO enhancement: make the subject and email body configurable
 			emailService.send(null, Arrays.asList(user.getEmail()), "Registration confirmation",
 					"Hello there, thank you for registering.");
-			textMessageService.send(user.getPhone(), "MyCAlerts: Thank you for registering.");
+			if(user.getSmsNotification()) {
+				textMessageService.send(user.getPhone(), "MyCAlerts: Thank you for registering.");
+			}
 		}
 	}
 	
