@@ -3,6 +3,9 @@ package com.cgi.poc.dw.dao;
 import com.cgi.poc.dw.api.service.data.GeoCoordinates;
 import com.cgi.poc.dw.auth.model.Role;
 import com.cgi.poc.dw.dao.model.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +69,37 @@ public class UserDAOTest extends DaoUnitTestBase{
     geoCoordinates = Arrays.asList(geo);
 
     List<User> users = userDao.getGeoWithinRadius(geoCoordinates, radius);
+
+    assertEquals(0, users.size());
+  }
+
+  @Test
+  public void userIsWithinRadiusJSON() throws IOException {
+    User user = createUser();
+    userDao.save(user);
+
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode geo = mapper.readTree("{\"rings\":[[[20.00,10.00],[-97.1600111522097,30.470004589592428]]]}");
+
+    Double radius = 50.00;
+
+    List<User> users = userDao.getGeoWithinRadius(geo, radius);
+
+    assertEquals(1, users.size());
+    assertEquals("test@test.com", users.get(0).getEmail());
+  }
+
+  @Test
+  public void userIsOutsideRadiusJSON() throws IOException {
+    User user = createUser();
+    userDao.save(user);
+
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode geo = mapper.readTree("{\"rings\":[[[20.00,15.00],[-97.1600111522097,30.470004589592428]]]}");
+
+    Double radius = 50.00;
+
+    List<User> users = userDao.getGeoWithinRadius(geo, radius);
 
     assertEquals(0, users.size());
   }

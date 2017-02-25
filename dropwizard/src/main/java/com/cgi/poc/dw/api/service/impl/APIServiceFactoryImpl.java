@@ -44,11 +44,11 @@ public class APIServiceFactoryImpl implements APIServiceFactory{
     }
     @Override
     public EventWeatherAPICallerServiceImpl create(Client client, String eventUrl, EventWeatherDAO eventDAO) {
-        return new EventWeatherAPICallerServiceImpl ( eventUrl, client,eventDAO, sessionFactory);
+        return new EventWeatherAPICallerServiceImpl ( eventUrl, client,eventDAO, sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
     }
     @Override
     public EventFloodAPICallerServiceImpl create(Client client, String eventUrl, EventFloodDAO eventDAO) {
-        return new EventFloodAPICallerServiceImpl ( eventUrl, client,eventDAO, sessionFactory);
+        return new EventFloodAPICallerServiceImpl ( eventUrl, client,eventDAO, sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
     }
     
 }

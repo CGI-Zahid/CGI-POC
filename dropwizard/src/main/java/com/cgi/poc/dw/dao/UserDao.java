@@ -2,6 +2,7 @@ package com.cgi.poc.dw.dao;
 
 import com.cgi.poc.dw.api.service.data.GeoCoordinates;
 import com.cgi.poc.dw.dao.model.User;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import io.dropwizard.hibernate.AbstractDAO;
 import java.util.ArrayList;
@@ -87,6 +88,29 @@ public class UserDao extends AbstractDAO<User> {
       for (User user : users) {
         if (!affectedUsers.contains(user)) {
           affectedUsers.add(user);
+        }
+      }
+    }
+
+    return affectedUsers;
+  }
+
+  public List<User> getGeoWithinRadius(JsonNode eventGeometry, Double radius) {
+
+    List<User> affectedUsers = new ArrayList<User>();
+
+    for (JsonNode rings : eventGeometry.path("rings")) {
+      for (JsonNode ring : rings) {
+        Query query = currentSession().getNamedQuery("getGeoWithinRadius")
+            .setString("lat", ring.get(1).toString())
+            .setString("lng", ring.get(0).toString())
+            .setString("radius", radius.toString());
+        List<User> users = query.list();
+
+        for (User user : users) {
+          if (!affectedUsers.contains(user)) {
+            affectedUsers.add(user);
+          }
         }
       }
     }

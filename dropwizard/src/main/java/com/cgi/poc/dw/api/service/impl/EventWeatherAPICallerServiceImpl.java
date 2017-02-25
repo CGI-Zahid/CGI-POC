@@ -5,14 +5,23 @@
  */
 package com.cgi.poc.dw.api.service.impl;
 
- import com.cgi.poc.dw.dao.EventWeatherDAO;
+import com.cgi.poc.dw.dao.EventNotificationDAO;
+import com.cgi.poc.dw.dao.EventWeatherDAO;
+import com.cgi.poc.dw.dao.UserDao;
+import com.cgi.poc.dw.dao.model.EventNotification;
+import com.cgi.poc.dw.dao.model.EventNotificationUser;
 import com.cgi.poc.dw.dao.model.EventWeather;
- import com.cgi.poc.dw.dao.model.FireEvent;
+import com.cgi.poc.dw.dao.model.User;
+import com.cgi.poc.dw.service.EmailService;
+import com.cgi.poc.dw.service.TextMessageService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
- import java.io.IOException;
- import javax.ws.rs.client.Client;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import javax.ws.rs.client.Client;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -29,16 +38,27 @@ public class EventWeatherAPICallerServiceImpl extends APICallerServiceImpl {
     private static final Logger LOG = LoggerFactory.getLogger(EventWeatherAPICallerServiceImpl.class);
 
     private EventWeatherDAO eventDAO;
+    private TextMessageService textMessageService;
+    private EmailService emailService;
+    private UserDao userDao;
+    private EventNotificationDAO eventNotificationDAO;
 
     @Inject
-    public EventWeatherAPICallerServiceImpl(String eventUrl, Client client, EventWeatherDAO weatherEventDAO, SessionFactory sessionFactory) {
+    public EventWeatherAPICallerServiceImpl(String eventUrl, Client client, EventWeatherDAO weatherEventDAO,
+          SessionFactory sessionFactory, TextMessageService textMessageService,
+          EmailService emailService, UserDao userDao, EventNotificationDAO eventNotificationDAO) {
         super(eventUrl, client, sessionFactory);
-                eventDAO = weatherEventDAO;
+        eventDAO = weatherEventDAO;
+        this.textMessageService = textMessageService;
+        this.emailService = emailService;
+        this.userDao = userDao;
+        this.eventNotificationDAO = eventNotificationDAO;
 
     }
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {
         ObjectMapper mapper = new ObjectMapper();
+        EventWeather retEvent = new EventWeather();
 
         Session session = sessionFactory.openSession();
         try {
@@ -50,11 +70,47 @@ public class EventWeatherAPICallerServiceImpl extends APICallerServiceImpl {
             try {
                 LOG.info("Event to save : {}", event.toString());
                 // Archive users based on last login date
-                ((EventWeatherDAO) eventDAO).update(event);
+                retEvent = ((EventWeatherDAO) eventDAO).update(event);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
-                throw new RuntimeException(e);
+                LOG.error("Unable to save event : error: {}", e.getMessage());
+            }
+
+            if(retEvent.getLastModified() != null){
+                LOG.info("Event for notifications");
+
+                List<User> users = userDao.getGeoWithinRadius(geoJson, 50.00);
+
+                EventNotification eventNotification = new EventNotification();
+                eventNotification.setCitizensAffected(users.size());
+                eventNotification.setDescription("Emergency alert: "+event.getProdType()+" in your area. Please log in at <our site> for more information.");
+                eventNotification.setGenerationDate(new Date());
+                eventNotification.setGeometry(event.getGeometry());
+                eventNotification.setUrl1(event.getUrl());
+                eventNotification.setType("Weather");
+                eventNotification.setUserId(userDao.getAdminUser());
+
+                if (users.size() > 0) {
+
+                    LOG.info("Send notifications to : {}", users.toString());
+                    for (User user : users) {
+                        EventNotificationUser currENUser= new EventNotificationUser();
+                        currENUser.setUserId(user);
+                        eventNotification.addNotifiedUser(currENUser);
+
+                        if (user.getSmsNotification()) {
+                            textMessageService.send(user.getPhone(), eventNotification.getDescription());
+                        }
+                        if (user.getEmailNotification()) {
+                            emailService.send(null, Arrays.asList(user.getEmail()), "Emergency alert from MyCAlerts: " + event.getProdType(),
+                                eventNotification.getDescription());
+                        }
+                    }
+                }
+                eventNotificationDAO.save(eventNotification);
+            }else{
+                LOG.debug("Event last modified not changed");
             }
         } catch (IOException ex) {
             LOG.error("Unable to parse the result for the weather event : error: {}", ex.getMessage());

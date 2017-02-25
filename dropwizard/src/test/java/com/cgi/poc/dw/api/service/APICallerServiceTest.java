@@ -183,7 +183,7 @@ public class APICallerServiceTest extends IntegrationTest {
 
 		EventWeatherAPICallerServiceImpl apiCallerService = new EventWeatherAPICallerServiceImpl(
 				"https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/watch_warn_adv/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", 
-                        client, eventWeatherDAO, sessionFactory);
+                        client, eventWeatherDAO, sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -191,18 +191,18 @@ public class APICallerServiceTest extends IntegrationTest {
 		// Having a genricised captor means we don't need to cast
 		final LoggingEvent loggingEvent = logCaptor.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), equalTo(Level.INFO));
+		assertThat(loggingEvent.getLevel(), equalTo(Level.DEBUG));
 		// Check the message being logged is correct
-                if (!loggingEvent.getFormattedMessage().contains("Events to save : 0")){
-		   assertThat(loggingEvent.getFormattedMessage(), containsString("Event to save"));
-                }
+		if (!loggingEvent.getFormattedMessage().contains("Event last modified not changed")){
+			assertThat(loggingEvent.getFormattedMessage(), containsString("Event last modified not changed"));
+		}
 	}
 
 	@Test
 	public void callWeatherServiceAPI_ParseException() {
 
 		EventWeatherAPICallerServiceImpl apiCallerService = new EventWeatherAPICallerServiceImpl("http://www.google.com", client, eventWeatherDAO,
-				sessionFactory);
+				sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -220,7 +220,7 @@ public class APICallerServiceTest extends IntegrationTest {
 	public void callWeatherServiceAPI_IOException() {
 		EventWeatherAPICallerServiceImpl apiCallerService = new EventWeatherAPICallerServiceImpl(
 				"https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/watch_warn_adv/MapServer/0/query?f=json&where=1%3D1&outFields=*&outSR=4326", client, eventWeatherDAO,
-				sessionFactory);
+				sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 	}
         
@@ -229,7 +229,7 @@ public class APICallerServiceTest extends IntegrationTest {
 
 		EventFloodAPICallerServiceImpl apiCallerService = new EventFloodAPICallerServiceImpl(
 				"https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/ahps_riv_gauges/MapServer/0/query?f=json&where=(status%20%3D%20%27moderate%27)%20AND%20(1%3D1)&spatialRel=esriSpatialRelIntersects&outFields=*&outSR=4326",
-                        client, eventFloodDAO, sessionFactory);
+                        client, eventFloodDAO, sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -237,18 +237,18 @@ public class APICallerServiceTest extends IntegrationTest {
 		// Having a genricised captor means we don't need to cast
 		final LoggingEvent loggingEvent = logCaptor.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), equalTo(Level.INFO));
+		assertThat(loggingEvent.getLevel(), equalTo(Level.DEBUG));
 		// Check the message being logged is correct
-                if (!loggingEvent.getFormattedMessage().contains("Events to save : 0")){
-		   assertThat(loggingEvent.getFormattedMessage(), containsString("Event to save"));
-                }
+		if (!loggingEvent.getFormattedMessage().contains("Event last modified not changed")){
+			assertThat(loggingEvent.getFormattedMessage(), containsString("Event last modified not changed"));
+		}
 	}
 
 	@Test
 	public void callFloodServiceAPI_ParseException() {
 
 		EventFloodAPICallerServiceImpl apiCallerService = new EventFloodAPICallerServiceImpl("http://www.google.com", client, eventFloodDAO,
-				sessionFactory);
+				sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 
 		// Now verify our logging interactions
@@ -266,7 +266,7 @@ public class APICallerServiceTest extends IntegrationTest {
 	public void callFloodServiceAPI_IOException() {
 		EventFloodAPICallerServiceImpl apiCallerService = new EventFloodAPICallerServiceImpl(
 				"https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/ahps_riv_gauges/MapServer/0/query?f=json&where=(status%20%3D%20%27moderate%27)%20AND%20(1%3D1)&spatialRel=esriSpatialRelIntersects&outFields=*&outSR=4326",
-                        client, eventFloodDAO, sessionFactory);
+                        client, eventFloodDAO, sessionFactory, textMessageService, emailService, userDao, eventNotificationDAO);
 		apiCallerService.callServiceAPI();
 	}
 
