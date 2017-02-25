@@ -58,7 +58,7 @@ public class EventWeatherAPICallerServiceImpl extends APICallerServiceImpl {
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {
         ObjectMapper mapper = new ObjectMapper();
-        EventWeather retEvent = new EventWeather();
+        EventWeather retEvent;
 
         Session session = sessionFactory.openSession();
         try {
@@ -66,16 +66,13 @@ public class EventWeatherAPICallerServiceImpl extends APICallerServiceImpl {
 
             event.setGeometry(geoJson.toString());
             ManagedSessionContext.bind(session);
+
             Transaction transaction = session.beginTransaction();
-            try {
-                LOG.info("Event to save : {}", event.toString());
-                // Archive users based on last login date
-                retEvent = ((EventWeatherDAO) eventDAO).update(event);
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-                LOG.error("Unable to save event : error: {}", e.getMessage());
-            }
+
+            LOG.info("Event to save : {}", event.toString());
+            // Archive users based on last login date
+            retEvent = eventDAO.update(event);
+            transaction.commit();
 
             if(retEvent.getLastModified() != null){
                 LOG.info("Event for notifications");

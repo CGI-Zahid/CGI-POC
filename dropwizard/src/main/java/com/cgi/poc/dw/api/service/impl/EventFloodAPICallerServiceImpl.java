@@ -57,7 +57,7 @@ public class EventFloodAPICallerServiceImpl extends APICallerServiceImpl {
 
     public void mapAndSave(JsonNode eventJson, JsonNode geoJson) {
         ObjectMapper mapper = new ObjectMapper();
-        EventFlood retEvent = new EventFlood();
+        EventFlood retEvent;
 
         Session session = sessionFactory.openSession();
         try {
@@ -65,16 +65,13 @@ public class EventFloodAPICallerServiceImpl extends APICallerServiceImpl {
 
             event.setGeometry(geoJson.toString());
             ManagedSessionContext.bind(session);
+
             Transaction transaction = session.beginTransaction();
-            try {
-                LOG.info("Event to save : {}", event.toString());
-                // Archive users based on last login date
-                retEvent = ((EventFloodDAO) eventDAO).save(event);
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-                LOG.error("Unable to save event : error: {}", e.getMessage());
-            }
+
+            LOG.info("Event to save : {}", event.toString());
+            // Archive users based on last login date
+            retEvent = eventDAO.save(event);
+            transaction.commit();
 
             if(retEvent.getLastModified() != null){
                 LOG.info("Event for notifications");
