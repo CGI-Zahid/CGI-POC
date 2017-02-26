@@ -109,8 +109,6 @@ public class EventFloodAPICallerServiceImpl extends APICallerServiceImpl {
                     }
                 }
                 eventNotificationDAO.save(eventNotification);
-            }else{
-                LOG.debug("Event last modified not changed");
             }
         } catch (IOException ex) {
             LOG.error("Unable to parse the result for the flood event : error: {}", ex.getMessage());

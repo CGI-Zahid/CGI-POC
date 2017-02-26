@@ -121,7 +121,7 @@ public class APICallerServiceTest extends IntegrationTest {
 		// Having a genricised captor means we don't need to cast
 		final LoggingEvent loggingEvent = logCaptor.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), equalTo(Level.DEBUG));
+		assertThat(loggingEvent.getLevel(), equalTo(Level.INFO));
 		// Check the message being logged is correct
 		if (!loggingEvent.getFormattedMessage().contains("Event")){
 		   assertThat(loggingEvent.getFormattedMessage(), containsString("Event"));
@@ -191,10 +191,10 @@ public class APICallerServiceTest extends IntegrationTest {
 		// Having a genricised captor means we don't need to cast
 		final LoggingEvent loggingEvent = logCaptor.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), equalTo(Level.DEBUG));
+		assertThat(loggingEvent.getLevel(), equalTo(Level.INFO));
 		// Check the message being logged is correct
-		if (!loggingEvent.getFormattedMessage().contains("Event last modified not changed")){
-			assertThat(loggingEvent.getFormattedMessage(), containsString("Event last modified not changed"));
+		if (!loggingEvent.getFormattedMessage().contains("Event")){
+			assertThat(loggingEvent.getFormattedMessage(), containsString("Event"));
 		}
 	}
 
@@ -237,10 +237,10 @@ public class APICallerServiceTest extends IntegrationTest {
 		// Having a genricised captor means we don't need to cast
 		final LoggingEvent loggingEvent = logCaptor.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), equalTo(Level.DEBUG));
+		assertThat(loggingEvent.getLevel(), equalTo(Level.INFO));
 		// Check the message being logged is correct
-		if (!loggingEvent.getFormattedMessage().contains("Event last modified not changed")){
-			assertThat(loggingEvent.getFormattedMessage(), containsString("Event last modified not changed"));
+		if (!loggingEvent.getFormattedMessage().contains("Event")){
+			assertThat(loggingEvent.getFormattedMessage(), containsString("Event"));
 		}
 	}
 

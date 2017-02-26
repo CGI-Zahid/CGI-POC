@@ -106,8 +106,6 @@ public class EventWeatherAPICallerServiceImpl extends APICallerServiceImpl {
                     }
                 }
                 eventNotificationDAO.save(eventNotification);
-            }else{
-                LOG.debug("Event last modified not changed");
             }
         } catch (IOException ex) {
             LOG.error("Unable to parse the result for the weather event : error: {}", ex.getMessage());

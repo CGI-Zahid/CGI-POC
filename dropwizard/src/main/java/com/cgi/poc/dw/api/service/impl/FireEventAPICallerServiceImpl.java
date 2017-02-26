@@ -114,8 +114,6 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
                      }
                 }
                 eventNotificationDAO.save(eventNotification);
-            }else{
-                LOG.debug("Event last modified not changed");
             }
         } catch (IOException ex) {
             LOG.error("Unable to parse the result for the fire event : error: {}", ex.getMessage());
