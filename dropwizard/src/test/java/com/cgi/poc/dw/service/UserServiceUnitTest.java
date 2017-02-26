@@ -70,12 +70,6 @@ public class UserServiceUnitTest {
   @Mock
   private MapsApiService mapsApiService;
 
-  @Mock
-  private EmailService emailService;
-
-  @Mock
-  private TextMessageService textMessageService;
-
   private User user;
 
   @SuppressWarnings("unchecked")
@@ -115,9 +109,6 @@ public class UserServiceUnitTest {
     Invocation.Builder mockBuilder = mock(Invocation.Builder.class);
     when(mockWebTarget.request(anyString())).thenReturn(mockBuilder);
     when(mockBuilder.get(String.class)).thenReturn(jsonRespone.toString());
-
-    doNothing().when(emailService).send(anyString(), anyList(), anyString(), anyString());
-    when(textMessageService.send(anyString(), anyString())).thenReturn(true);
   }
 
   @Test
