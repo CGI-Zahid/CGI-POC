@@ -180,7 +180,7 @@ public class UserResourceIntegrationTest extends IntegrationTest {
     smtpServer.waitForIncomingEmail(7000,1);
 
     MimeMessage[] receivedMails = smtpServer.getReceivedMessages();
-    assertEquals( "Should have received 1 emails.", 1, receivedMails.length);
+    assertEquals( "Should have received 0 email.", 0, receivedMails.length);
 
     for(MimeMessage mail : receivedMails) {
       assertTrue(GreenMailUtil.getHeaders(mail).contains("Registration confirmation"));
