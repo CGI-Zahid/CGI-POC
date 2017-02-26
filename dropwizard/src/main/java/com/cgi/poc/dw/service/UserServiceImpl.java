@@ -62,11 +62,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		validate(user, "save", Default.class, PersistValidationGroup.class);
 
 		userDao.save(user);
-		if (!registered) {
-			// Future TODO enhancement: make the subject and email body configurable
-			emailService.send(null, Arrays.asList(user.getEmail()), "Registration confirmation",
-					"Hello there, thank you for registering.");
-		}
 	}
 	
 	public Response updateUser(User user, User modifiedUser) {
