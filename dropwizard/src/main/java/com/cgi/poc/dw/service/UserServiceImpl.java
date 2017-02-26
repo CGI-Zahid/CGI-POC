@@ -78,8 +78,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		user.setLatitude(geoCoordinates.getLatitude());
 		user.setLongitude(geoCoordinates.getLongitude());
 
-    validate(user, "save", Default.class, PersistValidationGroup.class);
-    userDao.save(user);
+		validate(user, "save", Default.class, PersistValidationGroup.class);
+		userDao.save(user);
 
 		response = Response.ok().entity(user).build();
 
