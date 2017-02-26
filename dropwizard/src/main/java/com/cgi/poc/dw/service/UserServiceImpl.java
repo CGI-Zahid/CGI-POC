@@ -28,20 +28,14 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	private final PasswordHash passwordHash;
 	
 	private MapsApiService mapsApiService;
-
-	private final EmailService emailService;
-
-	private final TextMessageService textMessageService;
 	
 	@Inject
 	public UserServiceImpl(MapsApiService mapsApiService, UserDao userDao, PasswordHash passwordHash,
-			Validator validator, EmailService emailService, TextMessageService textMessageService) {
+			Validator validator) {
 		super(validator);
 		this.userDao = userDao;
 		this.passwordHash = passwordHash;
 		this.mapsApiService = mapsApiService;
-		this.emailService = emailService;
-		this.textMessageService = textMessageService;
 	}
 
 	public Response registerUser(User user) {
@@ -56,12 +50,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		}
 
 		return processForSave(user, false);
-	}
-
-	private void saveUser(User user) {
-		validate(user, "save", Default.class, PersistValidationGroup.class);
-
-		userDao.save(user);
 	}
 	
 	public Response updateUser(User user, User modifiedUser) {
@@ -90,7 +78,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		user.setLatitude(geoCoordinates.getLatitude());
 		user.setLongitude(geoCoordinates.getLongitude());
 
-		saveUser(user);
+    validate(user, "save", Default.class, PersistValidationGroup.class);
+    userDao.save(user);
+
 		response = Response.ok().entity(user).build();
 
 		return response;
