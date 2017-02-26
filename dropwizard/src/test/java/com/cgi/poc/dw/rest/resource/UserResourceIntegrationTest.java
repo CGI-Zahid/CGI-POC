@@ -181,13 +181,7 @@ public class UserResourceIntegrationTest extends IntegrationTest {
 
     MimeMessage[] receivedMails = smtpServer.getReceivedMessages();
     assertEquals( "Should have received 0 email.", 0, receivedMails.length);
-
-    for(MimeMessage mail : receivedMails) {
-      assertTrue(GreenMailUtil.getHeaders(mail).contains("Registration confirmation"));
-      assertTrue(GreenMailUtil.getBody(mail).contains("Hello there, thank you for registering."));
-    }
-    assertEquals("random_mail12@gmail.com", receivedMails[0].getRecipients(RecipientType.TO)[0].toString());
-  }
+}
 
   @Test
   public void updateSuccessWithoutPasswordChange() throws MessagingException {
