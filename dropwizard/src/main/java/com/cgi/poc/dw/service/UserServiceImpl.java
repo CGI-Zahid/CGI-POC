@@ -55,10 +55,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 			throw new BadRequestException(ValidationErrors.DUPLICATE_USER);
 		}
 
-		return processForSave(user, false, false);
+		return processForSave(user, false);
 	}
 
-	private void saveUser(User user, boolean registered) {
+	private void saveUser(User user) {
 		validate(user, "save", Default.class, PersistValidationGroup.class);
 
 		userDao.save(user);
@@ -76,10 +76,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		}
 		modifiedUser.setId(user.getId());
 		modifiedUser.setRole(user.getRole());
-		return processForSave(modifiedUser, true, keepPassword);
+		return processForSave(modifiedUser, keepPassword);
 	}
 
-	private Response processForSave(User user, boolean registered, boolean keepPassword) {
+	private Response processForSave(User user, boolean keepPassword) {
 		Response response = null;
 		if (!keepPassword) {
 			String hash = passwordHash.createHash(user.getPassword());
@@ -90,7 +90,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		user.setLatitude(geoCoordinates.getLatitude());
 		user.setLongitude(geoCoordinates.getLongitude());
 
-		saveUser(user, registered);
+		saveUser(user);
 		response = Response.ok().entity(user).build();
 
 		return response;
