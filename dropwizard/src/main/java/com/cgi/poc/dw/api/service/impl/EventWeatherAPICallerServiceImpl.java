@@ -90,7 +90,7 @@ public class EventWeatherAPICallerServiceImpl extends APICallerServiceImpl {
 
                 EventNotification eventNotification = new EventNotification();
                 eventNotification.setCitizensAffected(users.size());
-                eventNotification.setDescription("Emergency alert: "+event.getProdType()+" in your area. Please log in at <our site> for more information.");
+                eventNotification.setDescription("Emergency alert: "+event.getProdType()+" in your area. Please log in at https://mycalerts.com/ for more information.");
                 eventNotification.setGenerationDate(new Date());
                 eventNotification.setGeometry(event.getGeometry());
                 eventNotification.setUrl1(event.getUrl());
