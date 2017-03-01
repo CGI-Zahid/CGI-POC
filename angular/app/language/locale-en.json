@@ -63,7 +63,7 @@
   "NOTIFICATION.LABEL.NOTIFICATIONTYPE.EMERGENCY" : "Emergency",
   "NOTIFICATION.LABEL.NOTIFICATIONTYPE.NONEMERGENCY" : "Non-emergency",
   "NOTIFICATION.LABEL.ZIPCODES" : "Zip Code(s)",
-  "NOTIFICATION.LABEL.ZIPCODES.INFO" : "Enter one or more zip codes to issue this notification to. Multiple zip codes should be separated by commas.",
+  "NOTIFICATION.LABEL.ZIPCODES.INFO" : "Enter one or more zip codes affected by this event. Multiple zip codes should be separated by commas. Note that users within 15 miles of these ZIP codes will receive notifications about this event.",
   "NOTIFICATION.LABEL.MESSAGE" : "Notification Text",
   "BUTTON.CANCEL" : "CANCEL",
   "BUTTON.SEND" : "SEND",

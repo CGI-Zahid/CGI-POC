@@ -86,7 +86,7 @@ public class EventWeatherAPICallerServiceImpl extends APICallerServiceImpl {
       if (isNewEvent || isChangedEvent(retEvent, eventFromDB)) {
         LOG.info("Event for notifications");
 
-        List<User> users = userDao.getGeoWithinRadius(geoJson, 50.00);
+        List<User> users = userDao.getGeoWithinRadius(geoJson, 15.00);
 
                 EventNotification eventNotification = new EventNotification();
                 eventNotification.setCitizensAffected(users.size());

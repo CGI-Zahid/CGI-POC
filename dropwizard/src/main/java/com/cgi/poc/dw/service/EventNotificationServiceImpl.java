@@ -75,7 +75,7 @@ public class EventNotificationServiceImpl extends BaseServiceImpl implements
       geoCoordinates.add(mapsApiService.getGeoCoordinatesByZipCode(zipcode.getZipCode()));
     }
 
-    List<User> affectedUsers = userDao.getGeoWithinRadius(geoCoordinates, 50.00);
+    List<User> affectedUsers = userDao.getGeoWithinRadius(geoCoordinates, 15.00);
 
     List<String> emailAddresses = new ArrayList<>(); //subscribed users by email
     List<String> phoneNumbers = new ArrayList<>(); //subscribed users by sms

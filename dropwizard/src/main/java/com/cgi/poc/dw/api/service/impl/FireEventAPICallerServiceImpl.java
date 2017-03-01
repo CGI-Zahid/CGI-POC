@@ -91,7 +91,7 @@ public class FireEventAPICallerServiceImpl extends APICallerServiceImpl {
         geo.setLatitude(event.getLatitude().doubleValue());
         geo.setLongitude(event.getLongitude().doubleValue());
 
-        List<User> users = userDao.getGeoWithinRadius(Arrays.asList(geo), 50.00);
+        List<User> users = userDao.getGeoWithinRadius(Arrays.asList(geo), 15.00);
 
                     EventNotification eventNotification = new EventNotification();
                     eventNotification.setCitizensAffected(users.size());
