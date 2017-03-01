@@ -39,6 +39,8 @@ import com.cgi.poc.dw.service.EmailService;
 import com.cgi.poc.dw.service.EmailServiceImpl;
 import com.cgi.poc.dw.rest.resource.LoginResource;
 import com.cgi.poc.dw.rest.resource.UserResource;
+import com.cgi.poc.dw.service.FirebasePushService;
+import com.cgi.poc.dw.service.FirebasePushServiceImpl;
 import com.cgi.poc.dw.service.TextMessageService;
 import com.cgi.poc.dw.service.TextMessageServiceImpl;
 import com.cgi.poc.dw.sockets.AlertEndpoint;
@@ -308,6 +310,8 @@ public class CgiPocApplication extends Application<CgiPocConfiguration> {
         bind(APICallerService.class).annotatedWith(Names.named("weatherService")).to(FireEventAPICallerServiceImpl.class);
         bind(MapsApiService.class).to(MapsApiServiceImpl.class).asEagerSingleton();
         bind(AddressBuilder.class).to(AddressBuilderImpl.class).asEagerSingleton();
+        bind(FirebaseConfiguration.class).toInstance(conf.getFirebaseConfiguration());
+        bind(FirebasePushService.class).to(FirebasePushServiceImpl.class).asEagerSingleton();
 
         //Create Jersey client.
         final Client client = new JerseyClientBuilder(env)

@@ -34,6 +34,16 @@ public class CgiPocConfiguration extends Configuration {
     this.twilioApiConfiguration = twilioApiConfiguration;
   }
 
+  private FirebaseConfiguration firebaseConfiguration = new FirebaseConfiguration();
+
+  public FirebaseConfiguration getFirebaseConfiguration() {
+    return firebaseConfiguration;
+  }
+  @JsonProperty("firebase")
+  public void setFirebaseConfiguration(FirebaseConfiguration firebaseConfiguration) {
+    this.firebaseConfiguration = firebaseConfiguration;
+  }
+
   /**
    * Assign swagger bundle configuration.
    */

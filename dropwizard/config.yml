@@ -140,3 +140,7 @@ twilio:
   accountSID: AC911b35928f09f10ffa8e544127a22016
   authToken: dc093bd56e75d4897a2fac1f374578ca
   phoneNumber: +19162490778
+
+firebase:
+  fcmURL: https://fcm.googleapis.com/fcm/send
+  fcmKey: AAAA8XU5NgQ:APA91bEfETw0rTo7J1exWlzARff99f_SlyI1SVZywP_LGsLBOMAuVGbclayJGIfVRRb624N87-CP0MY6TmHR2jgBLU5irF7T4N40cFanF6or6pxLEGYMEisWilC6GjOL2Wx-0BXt8LRv

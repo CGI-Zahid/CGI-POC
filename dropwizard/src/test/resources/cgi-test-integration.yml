@@ -125,3 +125,7 @@ twilio:
   accountSID: ACf7fd4c1c6ce58597ea87ef2b6c179cdb
   authToken: ff0440de6f1a7586bfaa9d87f558e1a4
   phoneNumber: +15005550006
+
+firebase:
+  fcmURL: https://fcm.googleapis.com/fcm/send
+  fcmKey: AAAA8XU5NgQ:APA91bEfETw0rTo7J1exWlzARff99f_SlyI1SVZywP_LGsLBOMAuVGbclayJGIfVRRb624N87-CP0MY6TmHR2jgBLU5irF7T4N40cFanF6or6pxLEGYMEisWilC6GjOL2Wx-0BXt8LRv
