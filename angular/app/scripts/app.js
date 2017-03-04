@@ -24,6 +24,9 @@ cgiWebApp.constant('urls', {
     suffix: '.json' // suffix, currently- extension of the translations
   });
   $translateProvider.preferredLanguage('en');
+  //disabling escaping for the time being, eliminates warnings for browsers
+  //plan: introduce $sanitize library to support sanitization of characters when used in translate 
+  $translateProvider.useSanitizeValueStrategy(null);
 
   //if no url is specified redirect to login
   $urlRouterProvider.otherwise('login');
